@@ -4,7 +4,7 @@ class Location:
         self.name = name
         self.country = country
 
-loc = Location("Your_Name", "Your_Country")
+loc = Location("Adis", "Kyrgyzstan")
 print(loc.name)
 print(loc.country)
 print(type(loc))

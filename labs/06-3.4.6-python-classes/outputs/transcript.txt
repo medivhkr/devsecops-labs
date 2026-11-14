@@ -61,13 +61,13 @@ class Location:
         self.name = name
         self.country = country
 
-loc = Location("Your_Name", "Your_Country")
+loc = Location("Adis", "Kyrgyzstan")
 print(loc.name)
 print(loc.country)
 print(type(loc))
 devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
-Your_Name
-Your_Country
+Adis
+Kyrgyzstan
 <class '__main__.Location'>
 devasc@labvm:~/labs/devnet-src/python$ cat myLocation.py
 class Location:
@@ -84,7 +84,7 @@ devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
 Hi, my name is Tomas and I live in Portugal.
 Hi, my name is Ying and I live in China.
 Hi, my name is Amare and I live in Kenya.
-Hi, my name is Your_Name and I live in Your_Country.
+Hi, my name is Adis and I live in Kyrgyzstan.
 devasc@labvm:~/labs/devnet-src/python$ cat myLocation.py
 class Location:
     def __init__(self, name, country):
@@ -103,7 +103,7 @@ loc2 = Location("Ying", "China")
 loc3 = Location("Amare", "Kenya")
 loc2.myLocation()
 loc3.myLocation()
-your_loc = Location("Your_Name", "Your_Country")
+your_loc = Location("Adis", "Kyrgyzstan")
 your_loc.myLocation()
 devasc@labvm:~/labs/devnet-src/python$ cat circleClass.py
 # circleClass.py: given a radius, print the circumference of a circle
