@@ -1,0 +1,23 @@
+name: "Лаб. 7.6.3: pyATS и Genie"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/16-7.6.3-pyats-genie/scenario.yml"
+      - "labs/16-7.6.3-pyats-genie/prepare.sh"
+      - "labs/16-7.6.3-pyats-genie/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    with:
+      lab: 16-7.6.3-pyats-genie
+      env: container

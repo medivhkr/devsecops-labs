@@ -1,0 +1,227 @@
+lab: "7.6.3"
+title: "Automated Testing Using pyATS and Genie"
+collect:
+  - ~/labs/devnet-src/pyats/csr1kv/yaml
+  - ~/labs/devnet-src/pyats/csr1kv/verify-ipv6-1
+  - ~/labs/devnet-src/pyats/csr1kv/verify-ipv6-2
+  - ~/labs/devnet-src/pyats/csr1kv/diff_CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+  - ~/labs/devnet-src/pyats/csr1kv/pyvenv.cfg
+  - /tmp/csr1kv.log
+steps:
+  # ---------- Part 2: Python virtual environment ----------
+  - id: mkdir_pyats
+    title: "Part 2 Step 2a: каталог pyats"
+    cmd: "mkdir labs/devnet-src/pyats && cd labs/devnet-src/pyats"
+  - id: venv
+    title: "Part 2 Step 2b: создание venv csr1kv"
+    cmd: "python3 -m venv csr1kv"
+  - id: cd_venv
+    title: "Part 2 Step 3a"
+    cmd: "cd csr1kv"
+  - id: ls_venv
+    title: "Part 2 Step 3a: содержимое venv"
+    cmd: "ls -l"
+  - id: pyvenv_cfg
+    title: "Part 2 Step 3b: pyvenv.cfg"
+    cmd: "cat pyvenv.cfg"
+  - id: ls_usr_bin_python
+    title: "Part 2 Step 3c: интерпретаторы в /usr/bin"
+    cmd: "ls -1 /usr/bin/python*"
+  - id: ls_bin
+    title: "Part 2 Step 3d: каталог bin"
+    cmd: "ls -l bin"
+  - id: activate
+    title: "Part 2 Step 3e: активация venv"
+    cmd: "source bin/activate"
+
+  # ---------- Part 3: pyATS ----------
+  - id: pip_upgrade
+    title: "Обновление pip внутри venv"
+    cmd: "pip3 install --upgrade pip"
+    timeout: 600
+  - id: pip_install_pyats
+    title: "Part 3 Step 1: установка pyATS"
+    cmd: "pip3 install pyats[full]"
+    timeout: 2400
+  - id: pyats_version
+    title: "Установленные версии пакетов pyATS"
+    cmd: "pyats version check"
+    timeout: 300
+  - id: pyats_help
+    title: "Part 3 Step 2: pyats --help"
+    cmd: "pyats --help"
+  - id: git_clone
+    title: "Part 3 Step 3a: клонирование примеров"
+    cmd: "git clone https://github.com/CiscoTestAutomation/examples"
+    timeout: 300
+  - id: ls_after_clone
+    title: "Part 3 Step 3b"
+    cmd: "ls -l"
+  - id: ls_examples
+    title: "Part 3 Step 3c"
+    cmd: "ls -l examples"
+  - id: ls_basic
+    title: "Part 3 Step 3d"
+    cmd: "ls -l examples/basic"
+  - id: cat_script
+    title: "Part 3 Step 4a: тестовый скрипт"
+    cmd: "cat examples/basic/basic_example_script.py"
+  - id: cat_job
+    title: "Part 3 Step 4b: job-файл"
+    cmd: "cat examples/basic/basic_example_job.py"
+  - id: pyats_run_job
+    title: "Part 3 Step 5: запуск job"
+    cmd: "pyats run job examples/basic/basic_example_job.py"
+    timeout: 900
+
+  # ---------- Part 4: Genie parse ----------
+  - id: genie_help
+    title: "Part 4 Step 1a: genie --help"
+    cmd: "genie --help"
+  - id: genie_create_help
+    title: "Part 4 Step 1a: genie create --help"
+    cmd: "genie create --help"
+  - id: genie_create_testbed
+    title: "Part 4 Step 1b: создание testbed"
+    cmd: "genie create testbed interactive --output yaml/testbed.yml --encode-password"
+    timeout: 300
+    interact:
+      - expect: "same username\\? \\[y/n\\]"
+        send: "n"
+      - expect: "same default password\\? \\[y/n\\]"
+        send: "n"
+      - expect: "same enable password\\? \\[y/n\\]"
+        send: "n"
+      - expect: "Device hostname:"
+        send: "CSR1kv"
+      - expect: "IP \\(ip, or ip:port\\):"
+        send: "192.168.56.101"
+      - expect: "Username:"
+        send: "cisco"
+      - expect: "Default Password[^:]*:"
+        send: "cisco123!"
+      - expect: "Enable Password[^:]*:"
+        send: ""
+      - expect: "Protocol[^:]*:"
+        send: "ssh -o KexAlgorithms=diffie-hellman-group14-sha1"
+      - expect: "OS \\([^)]*\\):"
+        send: "iosxe"
+      - expect: "More devices to add \\? \\[y/n\\]"
+        send: "n"
+  - id: cat_testbed
+    title: "Part 4 Step 1c: testbed.yml"
+    cmd: "cat yaml/testbed.yml"
+  - id: router_show_ip
+    title: "Part 4 Step 2b: show ip interface brief на CSR1kv"
+    cmd: "ssh -o KexAlgorithms=diffie-hellman-group14-sha1 cisco@192.168.56.101"
+    interact:
+      - expect: "continue connecting \\(yes/no[^)]*\\)\\?"
+        send: "yes"
+        optional: true
+        timeout: 20
+      - expect: "[Pp]assword:"
+        send: "cisco123!"
+      - expect: "CSR1kv#"
+        send: "show ip interface brief"
+      - expect: "CSR1kv#"
+        send: "exit"
+  - id: genie_parse_ip
+    title: "Part 4 Step 2c: genie parse show ip interface brief"
+    cmd: "genie parse \"show ip interface brief\" --testbed-file yaml/testbed.yml --devices CSR1kv"
+    timeout: 300
+    interact:
+      - expect: "Enter enable password for device CSR1kv:"
+        send: ""
+        optional: true
+        timeout: 120
+  - id: genie_parse_version
+    title: "Part 4 Step 3: genie parse show version"
+    cmd: "genie parse \"show version\" --testbed-file yaml/testbed.yml --devices CSR1kv"
+    timeout: 300
+    interact:
+      - expect: "Enter enable password for device CSR1kv:"
+        send: ""
+        optional: true
+        timeout: 120
+
+  # ---------- Part 5: Genie diff ----------
+  - id: router_add_ipv6
+    title: "Part 5 Step 1: IPv6-адрес на CSR1kv"
+    cmd: "ssh -o KexAlgorithms=diffie-hellman-group14-sha1 cisco@192.168.56.101"
+    interact:
+      - expect: "[Pp]assword:"
+        send: "cisco123!"
+      - expect: "CSR1kv#"
+        send: "configure terminal"
+      - expect: "\\(config\\)#"
+        send: "interface gig 1"
+      - expect: "\\(config-if\\)#"
+        send: "ipv6 address 2001:db8:acad:56::101/64"
+      - expect: "\\(config-if\\)#"
+        send: "end"
+      - expect: "CSR1kv#"
+        send: "exit"
+  - id: genie_parse_v6_1
+    title: "Part 5 Step 2a: снимок verify-ipv6-1"
+    cmd: "genie parse \"show ipv6 interface gig 1\" --testbed-file yaml/testbed.yml --devices CSR1kv --output verify-ipv6-1"
+    timeout: 300
+    interact:
+      - expect: "Enter enable password for device CSR1kv:"
+        send: ""
+        optional: true
+        timeout: 120
+  - id: ls_v6_1
+    title: "Part 5 Step 2b"
+    cmd: "ls -l verify-ipv6-1"
+  - id: cat_v6_1_console
+    title: "Part 5 Step 2c"
+    cmd: "cat verify-ipv6-1/CSR1kv_show-ipv6-interface-gig-1_console.txt"
+  - id: cat_v6_1_parsed
+    title: "Part 5 Step 2d"
+    cmd: "cat verify-ipv6-1/CSR1kv_show-ipv6-interface-gig-1_parsed.txt"
+  - id: router_link_local
+    title: "Part 5 Step 3: новый link-local адрес"
+    cmd: "ssh -o KexAlgorithms=diffie-hellman-group14-sha1 cisco@192.168.56.101"
+    interact:
+      - expect: "[Pp]assword:"
+        send: "cisco123!"
+      - expect: "CSR1kv#"
+        send: "configure terminal"
+      - expect: "\\(config\\)#"
+        send: "interface gig 1"
+      - expect: "\\(config-if\\)#"
+        send: "ipv6 address fe80::56:1 link-local"
+      - expect: "\\(config-if\\)#"
+        send: "end"
+      - expect: "CSR1kv#"
+        send: "exit"
+  - id: genie_parse_v6_2
+    title: "Part 5 Step 4a: снимок verify-ipv6-2"
+    cmd: "genie parse \"show ipv6 interface gig 1\" --testbed-file yaml/testbed.yml --devices CSR1kv --output verify-ipv6-2"
+    timeout: 300
+    interact:
+      - expect: "Enter enable password for device CSR1kv:"
+        send: ""
+        optional: true
+        timeout: 120
+  - id: ls_v6_2
+    title: "Part 5 Step 4b"
+    cmd: "ls -l verify-ipv6-2"
+  - id: cat_v6_2_console
+    title: "Part 5 Step 4c"
+    cmd: "cat verify-ipv6-2/CSR1kv_show-ipv6-interface-gig-1_console.txt"
+  - id: cat_v6_2_parsed
+    title: "Part 5 Step 4c"
+    cmd: "cat verify-ipv6-2/CSR1kv_show-ipv6-interface-gig-1_parsed.txt"
+  - id: genie_diff
+    title: "Part 5 Step 5a: genie diff"
+    cmd: "genie diff verify-ipv6-1 verify-ipv6-2"
+    timeout: 300
+  - id: cat_diff
+    title: "Part 5 Step 5b: файл с различиями"
+    cmd: "cat ./diff_CSR1kv_show-ipv6-interface-gig-1_parsed.txt"
+
+  # ---------- Part 6 ----------
+  - id: deactivate
+    title: "Part 6 Step 1: выход из venv"
+    cmd: "deactivate"

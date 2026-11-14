@@ -1,0 +1,42 @@
+lab: "7.0.3"
+title: "Install the CSR1000v VM"
+collect:
+  - /tmp/csr1kv.log
+steps:
+  - id: env
+    title: "Стенд: ОС, имя хоста и сетевые адреса ВМ DEVASC"
+    cmd: "cat /etc/os-release | head -4 && hostname && ip -brief address"
+  - id: console_show_ip
+    title: "Part 2 Step 1: вход на маршрутизатор и show ip interface brief"
+    cmd: "ssh cisco@192.168.56.101"
+    interact:
+      - expect: "continue connecting \\(yes/no[^)]*\\)\\?"
+        send: "yes"
+        optional: true
+        timeout: 20
+      - expect: "[Pp]assword:"
+        send: "cisco123!"
+      - expect: "CSR1kv#"
+        send: "show ip interface brief"
+      - expect: "CSR1kv#"
+        send: "show version | include Version|uptime|processor"
+      - expect: "CSR1kv#"
+        send: "exit"
+  - id: ping
+    title: "Part 2 Step 3: ping 192.168.56.101 с ВМ DEVASC"
+    cmd: "ping 192.168.56.101"
+    interact:
+      - expect: "icmp_seq=4 "
+        delay: 0.3
+        sendcontrol: "c"
+  - id: ssh
+    title: "Part 2 Step 4: SSH-сессия с CSR1kv"
+    cmd: "ssh cisco@192.168.56.101"
+    interact:
+      - expect: "[Pp]assword:"
+        send: "cisco123!"
+      - expect: "CSR1kv#"
+        send: "exit"
+  - id: ssh_fingerprint
+    title: "Отпечаток ключа SSH маршрутизатора в known_hosts"
+    cmd: "ssh-keygen -l -F 192.168.56.101"

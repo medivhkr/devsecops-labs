@@ -1,0 +1,23 @@
+name: "Лаб. 7.0.3: Установка CSR1000v"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/13-7.0.3-csr1000v-install/scenario.yml"
+      - "labs/13-7.0.3-csr1000v-install/prepare.sh"
+      - "labs/13-7.0.3-csr1000v-install/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    with:
+      lab: 13-7.0.3-csr1000v-install
+      env: container

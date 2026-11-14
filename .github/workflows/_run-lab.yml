@@ -1,0 +1,71 @@
+# Общий сценарий прогона лабораторной работы.
+# container: Ubuntu 20.04 (как ВМ DEVASC), имя хоста labvm, пользователь devasc.
+# vm:        полноценная ВМ Ubuntu 24.04 с systemd (для служб: sshd, apache2 и т.п.).
+name: run-lab
+
+on:
+  workflow_call:
+    inputs:
+      lab:
+        required: true
+        type: string
+      env:
+        required: false
+        type: string
+        default: container
+
+permissions:
+  contents: read
+
+jobs:
+  container:
+    if: inputs.env == 'container'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container:
+      image: ubuntu:20.04
+      options: --hostname labvm --cap-add=NET_ADMIN
+    steps:
+      - name: Пакеты для checkout
+        run: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq git ca-certificates >/dev/null
+      - uses: actions/checkout@v4
+      - name: Лабораторная ВМ (аналог DEVASC)
+        run: bash lab-env/setup-labvm.sh
+      - name: Подготовка стенда
+        run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then bash "labs/${{ inputs.lab }}/prepare.sh"; fi
+      - name: Выполнение лабораторной
+        run: python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
+      - name: Протокол сессии
+        if: always()
+        run: cat "out/${{ inputs.lab }}/transcript.txt" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ inputs.lab }}
+          path: out/${{ inputs.lab }}
+          retention-days: 30
+
+  vm:
+    if: inputs.env == 'vm'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Лабораторная ВМ (аналог DEVASC)
+        run: sudo bash lab-env/setup-labvm.sh --vm
+      - name: Подготовка стенда
+        run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then sudo bash "labs/${{ inputs.lab }}/prepare.sh"; fi
+      - name: Выполнение лабораторной
+        run: sudo python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
+      - name: Права на результаты
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" out || true
+      - name: Протокол сессии
+        if: always()
+        run: cat "out/${{ inputs.lab }}/transcript.txt" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ inputs.lab }}
+          path: out/${{ inputs.lab }}
+          retention-days: 30

@@ -1,0 +1,23 @@
+name: "Лаб. 7.4.7: Ansible: резервная копия и настройка"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/14-7.4.7-ansible-backup-config/scenario.yml"
+      - "labs/14-7.4.7-ansible-backup-config/prepare.sh"
+      - "labs/14-7.4.7-ansible-backup-config/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    with:
+      lab: 14-7.4.7-ansible-backup-config
+      env: container

@@ -1,0 +1,163 @@
+lab: "7.4.8"
+title: "Use Ansible to Automate Installing a Web Server"
+shell_init:
+  - "export SYSTEMD_PAGER=cat SYSTEMD_COLORS=0 ANSIBLE_NOCOLOR=1"
+collect:
+  - ~/labs/devnet-src/ansible/ansible-apache
+  - /etc/apache2/ports.conf
+  - /etc/apache2/sites-available/000-default.conf
+  - /tmp/apache_80.png
+  - /tmp/apache_8081.png
+steps:
+  # ---------- Part 2: Configure Ansible ----------
+  - id: ssh_start
+    title: "Part 2 Step 2: запуск SSH-сервера"
+    cmd: "sudo systemctl start ssh"
+  - id: ssh_status
+    title: "Проверка состояния sshd"
+    cmd: "systemctl is-active ssh && dpkg -l openssh-server sshpass | tail -n 2"
+  - id: cd_lab
+    title: "Part 2 Step 3: каталог ansible-apache"
+    cmd: "cd labs/devnet-src/ansible/ansible-apache"
+  - id: hosts
+    title: "Part 2 Step 4b: inventory-файл hosts"
+    write_file:
+      path: ~/labs/devnet-src/ansible/ansible-apache/hosts
+      content: |
+        [webservers]
+        192.0.2.3 ansible_ssh_user=devasc ansible_ssh_pass=Cisco123!
+  - id: ip_addr
+    title: "Part 2 Step 4c: адреса интерфейса dummy0"
+    cmd: "ip addr show dummy0"
+  - id: ansible_cfg
+    title: "Part 2 Step 5: ansible.cfg"
+    write_file:
+      path: ~/labs/devnet-src/ansible/ansible-apache/ansible.cfg
+      content: |
+        [defaults]
+        # Use local hosts file in this folder
+        inventory=./hosts
+        # Don't worry about RSA Fingerprints
+        host_key_checking = False
+        # Do not create retry files
+        retry_files_enabled = False
+  - id: ansible_version
+    title: "Версия Ansible и используемый ansible.cfg"
+    cmd: "ansible --version"
+
+  # ---------- Part 3: Verify communications ----------
+  - id: ad_hoc_ping
+    title: "Part 3 Step 1: модуль ping"
+    cmd: "ansible webservers -m ping"
+    timeout: 300
+  - id: ad_hoc_echo
+    title: "Part 3 Step 2: модуль command"
+    cmd: "ansible webservers -m command -a \"/bin/echo hello world\""
+    timeout: 300
+
+  # ---------- Part 4: Playbooks ----------
+  - id: test_playbook
+    title: "Part 4 Step 1: test_apache_playbook.yaml"
+    write_file:
+      path: ~/labs/devnet-src/ansible/ansible-apache/test_apache_playbook.yaml
+      content: |
+        ---
+        - hosts: webservers
+          tasks:
+            - name: run echo command
+              command: /bin/echo hello world
+  - id: run_test_playbook
+    title: "Part 4 Step 2: запуск тестового плейбука"
+    cmd: "ansible-playbook -v test_apache_playbook.yaml"
+    timeout: 300
+  - id: install_playbook
+    title: "Part 4 Step 3: install_apache_playbook.yaml"
+    write_file:
+      path: ~/labs/devnet-src/ansible/ansible-apache/install_apache_playbook.yaml
+      content: |
+        ---
+        - hosts: webservers
+          become: yes
+          tasks:
+            - name: INSTALL APACHE2
+              apt: name=apache2 update_cache=yes state=latest
+            - name: ENABLED MOD_REWRITE
+              apache2_module: name=rewrite state=present
+              notify:
+                - RESTART APACHE2
+          handlers:
+            - name: RESTART APACHE2
+              service: name=apache2 state=restarted
+  - id: run_install
+    title: "Part 4 Step 5: установка Apache"
+    cmd: "ansible-playbook -v install_apache_playbook.yaml"
+    timeout: 1200
+  - id: apache_status
+    title: "Part 4 Step 6a: состояние службы apache2"
+    cmd: "sudo systemctl status apache2"
+  - id: curl_80
+    title: "Part 4 Step 6b: стартовая страница Apache на порту 80"
+    cmd: "curl -s http://192.0.2.3 | grep -i -o '<title>.*</title>'"
+  - id: shot_80
+    host: "google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1280,900 --screenshot=/tmp/apache_80.png http://192.0.2.3/ || chromium --headless --no-sandbox --screenshot=/tmp/apache_80.png http://192.0.2.3/"
+    timeout: 120
+
+  # ---------- Part 5: Options ----------
+  - id: options_playbook
+    title: "Part 5 Step 1: install_apache_options_playbook.yaml"
+    write_file:
+      path: ~/labs/devnet-src/ansible/ansible-apache/install_apache_options_playbook.yaml
+      content: |
+        ---
+        - hosts: webservers
+          become: yes
+          tasks:
+           - name: INSTALL APACHE2
+             apt: name=apache2 update_cache=yes state=latest
+           - name: ENABLED MOD_REWRITE
+             apache2_module: name=rewrite state=present
+             notify:
+               - RESTART APACHE2
+           - name: APACHE2 LISTEN ON PORT 8081
+             lineinfile: dest=/etc/apache2/ports.conf regexp="^Listen 80" line="Listen 8081" state=present
+             notify:
+               - RESTART APACHE2
+           - name: APACHE2 VIRTUALHOST ON PORT 8081
+             lineinfile: dest=/etc/apache2/sites-available/000-default.conf regexp="^<VirtualHost \*:80>" line="<VirtualHost *:8081>" state=present
+             notify:
+               - RESTART APACHE2
+          handlers:
+           - name: RESTART APACHE2
+             service: name=apache2 state=restarted
+  - id: ports_before
+    title: "Part 5 Step 2: ports.conf до изменения"
+    cmd: "cat /etc/apache2/ports.conf"
+  - id: vhost_before
+    title: "Part 5 Step 2: 000-default.conf до изменения"
+    cmd: "cat /etc/apache2/sites-available/000-default.conf"
+  - id: run_options
+    title: "Part 5 Step 3: запуск плейбука с параметрами"
+    cmd: "ansible-playbook install_apache_options_playbook.yaml"
+    timeout: 900
+  - id: ports_after
+    title: "Part 5 Step 4a: ports.conf после изменения"
+    cmd: "cat /etc/apache2/ports.conf"
+  - id: vhost_after
+    title: "Part 5 Step 4a: 000-default.conf после изменения"
+    cmd: "head -n 5 /etc/apache2/sites-available/000-default.conf"
+  - id: ss_listen
+    title: "Проверка прослушиваемого порта"
+    cmd: "sudo ss -tlnp | grep apache2"
+  - id: curl_8081
+    title: "Part 5 Step 4b: страница на порту 8081"
+    cmd: "curl -s http://192.0.2.3:8081 | grep -i -o '<title>.*</title>'"
+  - id: curl_80_closed
+    title: "Порт 80 больше не обслуживается"
+    cmd: "curl -sS http://192.0.2.3"
+  - id: shot_8081
+    host: "google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1280,900 --screenshot=/tmp/apache_8081.png http://192.0.2.3:8081/ || chromium --headless --no-sandbox --screenshot=/tmp/apache_8081.png http://192.0.2.3:8081/"
+    timeout: 120
+  - id: rerun_options
+    title: "Повторный запуск: идемпотентность"
+    cmd: "ansible-playbook install_apache_options_playbook.yaml"
+    timeout: 900

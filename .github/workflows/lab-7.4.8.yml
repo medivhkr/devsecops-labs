@@ -1,0 +1,23 @@
+name: "Лаб. 7.4.8: Ansible: установка Apache"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/15-7.4.8-ansible-apache/scenario.yml"
+      - "labs/15-7.4.8-ansible-apache/prepare.sh"
+      - "labs/15-7.4.8-ansible-apache/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    with:
+      lab: 15-7.4.8-ansible-apache
+      env: vm
