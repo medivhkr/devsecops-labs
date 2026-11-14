@@ -9,6 +9,7 @@ materials/ содержит итоговые версии файлов, созд
   python tools/make_materials.py            # все работы, у которых есть протокол
 """
 
+import fnmatch
 import json
 import os
 import re
@@ -17,6 +18,8 @@ import shutil
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 SLUG = "medivhkr/devsecops-labs"
 SKIP = {"__pycache__", ".pytest_cache"}
+# закрытые ключи стенда в материалы не попадают
+PRIVATE_KEYS = ("*.key", "*.pem", "id_rsa*", "id_ecdsa*", "id_ed25519*", "*.p12", "*.pfx")
 TEXT_EXT = {".py", ".yml", ".yaml", ".json", ".txt", ".cfg", ".conf", ".xml", ".sh", ".md", ".rules", ""}
 
 
@@ -25,7 +28,7 @@ def copytree(src, dst):
         dirs[:] = [d for d in dirs if d not in SKIP]
         rel = os.path.relpath(root, src)
         for f in files:
-            if f.endswith(".pyc"):
+            if f.endswith(".pyc") or any(fnmatch.fnmatch(f, k) for k in PRIVATE_KEYS):
                 continue
             os.makedirs(os.path.join(dst, rel), exist_ok=True)
             shutil.copy2(os.path.join(root, f), os.path.join(dst, rel, f))

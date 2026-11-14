@@ -37,7 +37,7 @@ def load(path):
     sec = cp["ftp"]
     cfg = {
         "service": sec.getboolean("service", True),
-        "address": sec.get("address", "0.0.0.0").strip(),
+        "address": sec.get("address", "127.0.0.1").strip(),
         "port": sec.getint("port", 21),
         "root": sec.get("root", "/srv/ftp").strip(),
         "banner": sec.get("banner", "FTP server ready.").strip(),

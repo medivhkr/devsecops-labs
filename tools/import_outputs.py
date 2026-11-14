@@ -18,6 +18,9 @@ import sys
 import tempfile
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# Закрытые ключи, созданные на стенде во время работы (например, ключ TLS веб-сервера в 5.5),
+# остаются только в артефакте прогона и в репозиторий не копируются.
+PRIVATE_KEYS = ("*.key", "*.pem", "id_rsa*", "id_ecdsa*", "id_ed25519*", "*.p12", "*.pfx")
 GH = shutil.which("gh") or r"C:\Program Files\GitHub CLI\gh.exe"
 SLUG = "medivhkr/devsecops-labs"
 
@@ -48,7 +51,7 @@ def import_lab(folder, run_id=None, variant=None):
         src = os.path.join(tmp, os.listdir(tmp)[0])
     dst = os.path.join(REPO, "labs", folder, "outputs" + ("-" + variant if variant else ""))
     shutil.rmtree(dst, ignore_errors=True)
-    shutil.copytree(src, dst, ignore=shutil.ignore_patterns("raw.log"))
+    shutil.copytree(src, dst, ignore=shutil.ignore_patterns("raw.log", *PRIVATE_KEYS))
     with open(os.path.join(dst, "RUN.md"), "w", encoding="utf-8") as fh:
         fh.write("# Протокол выполнения\n\n")
         fh.write("Файлы в этом каталоге получены при реальном выполнении сценария `scenario{}.yml` в GitHub Actions.\n\n"

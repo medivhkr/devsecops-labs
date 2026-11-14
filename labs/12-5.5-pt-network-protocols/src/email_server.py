@@ -41,7 +41,7 @@ class Config(object):
             raise SystemExit("cannot read config file " + path)
         sec = cp["email"]
         self.domain = sec.get("domain", "").strip()
-        self.address = sec.get("address", "0.0.0.0").strip()
+        self.address = sec.get("address", "127.0.0.1").strip()
         self.smtp = sec.getboolean("smtp", True)
         self.pop3 = sec.getboolean("pop3", True)
         self.smtp_port = sec.getint("smtp_port", 25)
