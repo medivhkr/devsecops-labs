@@ -1,0 +1,24 @@
+name: "Лаб. 1.2.2: Обзор Linux"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/02-1.2.2-linux-review/scenario.yml"
+      - "labs/02-1.2.2-linux-review/prepare.sh"
+      - "labs/02-1.2.2-linux-review/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 02-1.2.2-linux-review
+      env: vm

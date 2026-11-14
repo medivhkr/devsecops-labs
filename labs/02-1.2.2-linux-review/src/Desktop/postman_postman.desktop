@@ -1,0 +1,8 @@
+[Desktop Entry]
+X-SnapInstanceName=postman
+Type=Application
+Name=Postman
+Comment=API Development Environment
+Exec=env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/postman_postman.desktop /snap/bin/postman %U
+Icon=/snap/postman/current/usr/share/icons/hicolor/128x128/apps/postman.png
+Categories=Development;

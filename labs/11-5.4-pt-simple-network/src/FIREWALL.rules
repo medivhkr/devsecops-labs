@@ -1,0 +1,36 @@
+# FIREWALL (Cisco ASA 5505 in the Packet Tracer file) -> iptables in network namespace FIREWALL.
+# Base configuration, loaded by prepare.sh:
+#   ip netns exec FIREWALL iptables-restore < src/FIREWALL.rules
+#
+# Interfaces (Addressing Table):
+#   VLAN1 = inside  (security-level 100)  192.168.1.1/24
+#   VLAN2 = outside (security-level 0)    209.165.200.226/29 (+ 209.165.200.227/32 for static NAT)
+#   VLAN3 = dmz     (security-level 70)   192.168.2.1/24
+#
+# NAT and the security-level behaviour below are not shown in activity 5.4.6; they reproduce the probable ASA configuration.
+# The access list OUTSIDE-DMZ itself (the two lines shown in activity 5.4.6, the implicit deny
+# and "access-group OUTSIDE-DMZ in interface outside") is NOT here: the scenario creates it with
+# visible iptables commands before Part 1, so the ACL implementation is part of the transcript.
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# object network dmz-server / nat (dmz,outside) static 209.165.200.227
+-A PREROUTING -i VLAN2 -d 209.165.200.227/32 -m comment --comment "static NAT 209.165.200.227 -> 192.168.2.3" -j DNAT --to-destination 192.168.2.3
+-A POSTROUTING -o VLAN2 -s 192.168.2.3/32 -m comment --comment "static NAT 192.168.2.3 -> 209.165.200.227" -j SNAT --to-source 209.165.200.227
+# object network inside-net / nat (inside,outside) dynamic interface
+-A POSTROUTING -o VLAN2 -s 192.168.1.0/24 -m comment --comment "PAT inside -> outside interface" -j MASQUERADE
+COMMIT
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# ASA security levels: return traffic is allowed, higher -> lower level is allowed,
+# lower -> higher level needs an ACL bound with access-group (FORWARD policy DROP denies the rest).
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -m comment --comment "stateful: return traffic" -j ACCEPT
+-A FORWARD -i VLAN1 -m comment --comment "inside(100) -> dmz/outside: permit" -j ACCEPT
+-A FORWARD -i VLAN3 -o VLAN2 -m comment --comment "dmz(70) -> outside(0): permit" -j ACCEPT
+COMMIT

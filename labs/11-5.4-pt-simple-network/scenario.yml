@@ -1,0 +1,210 @@
+lab: "5.4.6"
+title: "Packet Tracer - Explore a Simple Network"
+# Packet Tracer недоступен. Топология .pka воспроизведена на ВМ Linux (prepare.sh): устройство
+# Packet Tracer = сетевое пространство имён с тем же именем, кабель = пара veth, коммутатор = мост,
+# FIREWALL (ASA) = iptables, HTTP-служба сервера = python3 http.server. Команда "на устройстве"
+# выполняется как sudo ip netns exec <УСТРОЙСТВО> <команда>. Подробности в NOTES.md.
+collect:
+  - /srv/DEVASC-Server/http/index.html
+  - /var/log/DEVASC-Server-http.log
+  - /tmp/pcb-web-browser-1.png
+  - /tmp/pcb-web-browser-2.png
+  - /tmp/pt-5.4.6-final-state.txt
+steps:
+  # ---------- Part 1: Add PCs to the Topology ----------
+  - id: topo_devices
+    title: "Part 1 Step 1: исходная топология, устройства без PC-A и PC-B"
+    cmd: "sudo ip netns list"
+  - id: topo_interfaces
+    title: "Part 1 Step 1: интерфейсы и адреса устройств исходной топологии"
+    cmd: "sudo ip -all netns exec ip -br address"
+  # Исходная конфигурация FIREWALL из .pka (в Packet Tracer она уже есть в файле): список доступа
+  # OUTSIDE-DMZ задаётся видимыми командами iptables до начала Part 1, построчно как на ASA.
+  - id: fw_acl_new
+    title: "Part 1 Step 1 (исходная конфигурация .pka): FIREWALL, список доступа OUTSIDE-DMZ"
+    cmd: "sudo ip netns exec FIREWALL iptables -N OUTSIDE-DMZ"
+    expect_exit: 0
+  - id: fw_acl_icmp
+    title: "Part 1 Step 1 (исходная конфигурация .pka): permit icmp any host 192.168.2.3"
+    cmd: "sudo ip netns exec FIREWALL iptables -A OUTSIDE-DMZ -p icmp -d 192.168.2.3 -j ACCEPT"
+    expect_exit: 0
+  - id: fw_acl_www
+    title: "Part 1 Step 1 (исходная конфигурация .pka): permit tcp any host 192.168.2.3 eq www"
+    cmd: "sudo ip netns exec FIREWALL iptables -A OUTSIDE-DMZ -p tcp -d 192.168.2.3 --dport 80 -j ACCEPT"
+    expect_exit: 0
+  - id: fw_acl_deny
+    title: "Part 1 Step 1 (исходная конфигурация .pka): неявный запрет в конце списка доступа"
+    cmd: "sudo ip netns exec FIREWALL iptables -A OUTSIDE-DMZ -j DROP"
+    expect_exit: 0
+  - id: fw_access_group
+    title: "Part 1 Step 1 (исходная конфигурация .pka): access-group OUTSIDE-DMZ in interface outside"
+    cmd: "sudo ip netns exec FIREWALL iptables -A FORWARD -i VLAN2 -j OUTSIDE-DMZ"
+    expect_exit: 0
+  - id: add_pc_a
+    title: "Part 1 Step 1a-b: новое устройство PC-A рядом с S2"
+    cmd: "sudo ip netns add PC-A"
+  - id: add_pc_b
+    title: "Part 1 Step 1c-d: новое устройство PC-B рядом с S3"
+    cmd: "sudo ip netns add PC-B"
+  - id: cable_pc_a
+    title: "Part 1 Step 1e: кабель PC-A FastEthernet0 - S2 Fa0/2 (пара veth)"
+    cmd: "sudo ip link add Fa0 netns PC-A type veth peer name Fa0-2 netns S2"
+  - id: s2_port_up
+    title: "Part 1 Step 1e: порт Fa0/2 коммутатора S2 включён в мост br0"
+    cmd: "sudo ip netns exec S2 ip link set Fa0-2 master br0 up"
+  - id: pc_a_link_up
+    title: "Part 1 Step 1e: включение интерфейсов PC-A"
+    cmd: "sudo ip netns exec PC-A ip link set lo up && sudo ip netns exec PC-A ip link set Fa0 up"
+  - id: cable_pc_b
+    title: "Part 1 Step 1f: кабель PC-B FastEthernet0 - S3 Fa0/2 (пара veth)"
+    cmd: "sudo ip link add Fa0 netns PC-B type veth peer name Fa0-2 netns S3"
+  - id: s3_port_up
+    title: "Part 1 Step 1f: порт Fa0/2 коммутатора S3 включён в мост br0"
+    cmd: "sudo ip netns exec S3 ip link set Fa0-2 master br0 up"
+  - id: pc_b_link_up
+    title: "Part 1 Step 1f: включение интерфейсов PC-B"
+    cmd: "sudo ip netns exec PC-B ip link set lo up && sudo ip netns exec PC-B ip link set Fa0 up"
+  - id: s2_ports
+    title: "Part 1 Step 1e: порты коммутатора S2 (Fa0-1 к FIREWALL, Fa0-2 к PC-A)"
+    cmd: "sudo ip netns exec S2 bridge link"
+  - id: s3_ports
+    title: "Part 1 Step 1f: порты коммутатора S3 (G0-1 к R3, Fa0-2 к PC-B)"
+    cmd: "sudo ip netns exec S3 bridge link"
+  - id: pc_a_ip
+    title: "Part 1 Step 2a-d: IPv4-адрес PC-A 192.168.1.2/24"
+    cmd: "sudo ip netns exec PC-A ip address add 192.168.1.2/24 dev Fa0"
+  - id: pc_a_gw
+    title: "Part 1 Step 2d: шлюз по умолчанию PC-A 192.168.1.1"
+    cmd: "sudo ip netns exec PC-A ip route add default via 192.168.1.1"
+  - id: pc_b_ip
+    title: "Part 1 Step 2e: IPv4-адрес PC-B 172.16.3.2/24"
+    cmd: "sudo ip netns exec PC-B ip address add 172.16.3.2/24 dev Fa0"
+  - id: pc_b_gw
+    title: "Part 1 Step 2e: шлюз по умолчанию PC-B 172.16.3.1"
+    cmd: "sudo ip netns exec PC-B ip route add default via 172.16.3.1"
+  - id: pc_a_ipconfig
+    title: "Part 1 Step 2d: итоговые настройки IPv4 PC-A"
+    cmd: "sudo ip netns exec PC-A ip address show Fa0 && sudo ip netns exec PC-A ip route"
+  - id: pc_b_ipconfig
+    title: "Part 1 Step 2e: итоговые настройки IPv4 PC-B"
+    cmd: "sudo ip netns exec PC-B ip address show Fa0 && sudo ip netns exec PC-B ip route"
+  - id: check_devices
+    title: "Part 1 Step 2f: проверка вместо Check Results, имена устройств"
+    cmd: "sudo ip netns list"
+  - id: check_pc_a
+    title: "Part 1 Step 2f: проверка вместо Check Results, PC-A достигает шлюза"
+    cmd: "sudo ip netns exec PC-A ping -c 4 192.168.1.1"
+    timeout: 60
+    expect_exit: 0
+
+  # ---------- Part 2: Test Connectivity Across the Network ----------
+  # В методичке у Part 2 нет нумерованных шагов (только a-e), поэтому шаг обозначен как Step 1.
+  - id: ping_r3
+    title: "Part 2 Step 1c: ping шлюза R3 172.16.3.1 с PC-B"
+    cmd: "sudo ip netns exec PC-B ping -c 4 172.16.3.1"
+    timeout: 60
+    expect_exit: 0
+  - id: ping_example
+    title: "Part 2 Step 1d: ping Example Server 64.100.0.10 с PC-B"
+    cmd: "sudo ip netns exec PC-B ping -c 4 64.100.0.10"
+    timeout: 60
+    expect_exit: 0
+  - id: ping_devasc
+    title: "Part 2 Step 1e: ping DEVASC Server по внешнему адресу 209.165.200.227"
+    cmd: "sudo ip netns exec PC-B ping -c 4 209.165.200.227"
+    timeout: 60
+    expect_exit: 0
+  - id: trace_example
+    title: "Part 2 Step 1d (доп.): путь PC-B -> Example Server через облако Internet"
+    cmd: "sudo ip netns exec PC-B traceroute -n -I 64.100.0.10"
+    timeout: 120
+    expect_exit: 0
+  - id: trace_devasc
+    title: "Part 2 Step 1e (доп.): путь PC-B -> DEVASC Server через R1 и FIREWALL"
+    cmd: "sudo ip netns exec PC-B traceroute -n -I 209.165.200.227"
+    timeout: 120
+    expect_exit: 0
+
+  # ---------- Part 3: Create a Web Page and View it ----------
+  - id: http_service
+    title: "Part 3 Step 1a-c: служба HTTP на DEVASC Server (Services, HTTP)"
+    cmd: "sudo ip netns exec DEVASC-Server ss -ltnp"
+  - id: http_files_before
+    title: "Part 3 Step 1c: файлы службы HTTP, index.html уже существует"
+    cmd: "ls -l /srv/DEVASC-Server/http/"
+  - id: index_html
+    title: "Part 3 Step 1d-e: файл index.html с кодом HTML из методички"
+    write_file:
+      path: /srv/DEVASC-Server/http/index.html
+      content: |
+        <html>
+        <center><font size='+2' color='blue'>DevNet Associate</font></center>
+        <hr>Welcome to the NetAcad DEVASC course!
+  - id: http_files_after
+    title: "Part 3 Step 1f: файл index.html сохранён поверх прежнего"
+    cmd: "ls -l /srv/DEVASC-Server/http/ && cat /srv/DEVASC-Server/http/index.html"
+  - id: curl_page
+    title: "Part 3 Step 2a-d: страница http://209.165.200.227 с PC-B (curl вместо Web Browser)"
+    cmd: "sudo ip netns exec PC-B curl -i http://209.165.200.227"
+    timeout: 60
+    expect_exit: 0
+  - id: http_log
+    title: "Part 3 Step 2d (доп.): журнал службы HTTP, запрос пришёл от PC-B 172.16.3.2"
+    cmd: "sudo cat /var/log/DEVASC-Server-http.log"
+  - id: browser_shot_1
+    title: "Part 3 Step 2d (служебный): снимок страницы в headless Chrome из PC-B"
+    host: "ip netns exec PC-B timeout -k 5 60 google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --no-first-run --user-data-dir=/tmp/chrome-pcb --window-size=1024,600 --screenshot=/tmp/pcb-web-browser-1.png http://209.165.200.227/ >/tmp/chrome-pcb-1.log 2>&1; ls -l /tmp/pcb-web-browser-1.png"
+    timeout: 150
+
+  # ---------- Part 4: Modify the FIREWALL Access List ----------
+  - id: fw_interfaces
+    title: "Part 4 Step 1a-e: FIREWALL, интерфейсы VLAN1/VLAN2/VLAN3 и маршрут по умолчанию"
+    cmd: "sudo ip netns exec FIREWALL ip -br address && sudo ip netns exec FIREWALL ip route"
+  - id: fw_show_run
+    title: "Part 4 Step 1f-g: конфигурация фильтрации FIREWALL (аналог show run)"
+    cmd: "sudo ip netns exec FIREWALL iptables-save"
+  - id: fw_acl
+    title: "Part 4 Step 1h-i: цепочка OUTSIDE-DMZ (две строки access-list) со счётчиками"
+    cmd: "sudo ip netns exec FIREWALL iptables -L -n -v --line-numbers"
+  - id: fw_nat
+    title: "Part 4 Step 1h (доп.): static NAT 209.165.200.227 -> 192.168.2.3"
+    cmd: "sudo ip netns exec FIREWALL iptables -t nat -L -n -v --line-numbers"
+  - id: fw_no_icmp
+    title: "Part 4 Step 2a-b: удаление правила permit icmp (аналог no access-list ...)"
+    cmd: "sudo ip netns exec FIREWALL iptables -D OUTSIDE-DMZ -p icmp -d 192.168.2.3 -j ACCEPT"
+    expect_exit: 0
+  - id: fw_acl_after
+    title: "Part 4 Step 2b: цепочка OUTSIDE-DMZ после удаления правила"
+    cmd: "sudo ip netns exec FIREWALL iptables -L OUTSIDE-DMZ -n -v --line-numbers"
+  - id: ping_devasc_denied
+    title: "Part 4 Step 2c: ping 209.165.200.227 с PC-B теперь не проходит"
+    cmd: "sudo ip netns exec PC-B ping -c 4 209.165.200.227"
+    timeout: 60
+    expect_exit: 1
+  - id: curl_page_after
+    title: "Part 4 Step 2d: страница http://209.165.200.227 с PC-B по-прежнему открывается"
+    cmd: "sudo ip netns exec PC-B curl -i http://209.165.200.227"
+    timeout: 60
+    expect_exit: 0
+  - id: browser_shot_2
+    title: "Part 4 Step 2d (служебный): снимок страницы в headless Chrome из PC-B"
+    host: "ip netns exec PC-B timeout -k 5 60 google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --no-first-run --user-data-dir=/tmp/chrome-pcb --window-size=1024,600 --screenshot=/tmp/pcb-web-browser-2.png http://209.165.200.227/ >/tmp/chrome-pcb-2.log 2>&1; ls -l /tmp/pcb-web-browser-2.png"
+    timeout: 150
+  - id: curl_other_port
+    title: "Part 4 Step 2d (доп.): другой TCP-порт отбрасывается неявным запретом"
+    cmd: "sudo ip netns exec PC-B curl -sS -m 5 http://209.165.200.227:8080/"
+    timeout: 60
+    expect_exit: 28
+  - id: fw_counters
+    title: "Part 4 Step 2d (доп.): счётчики OUTSIDE-DMZ после проверок"
+    cmd: "sudo ip netns exec FIREWALL iptables -L OUTSIDE-DMZ -n -v --line-numbers"
+  - id: final_state
+    title: "Part 4 Step 2 (служебный): итоговое состояние стенда в файл"
+    host: |
+      {
+        for ns in $(ip netns list | cut -d' ' -f1); do
+          echo "=== $ns"; ip -n "$ns" -br address; ip -n "$ns" route
+        done
+        echo "=== FIREWALL: iptables-save -c"; ip netns exec FIREWALL iptables-save -c
+      } > /tmp/pt-5.4.6-final-state.txt 2>&1
+    timeout: 60

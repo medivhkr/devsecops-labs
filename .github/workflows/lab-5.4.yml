@@ -1,0 +1,24 @@
+name: "Лаб. 5.4: Простая сеть"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/11-5.4-pt-simple-network/scenario.yml"
+      - "labs/11-5.4-pt-simple-network/prepare.sh"
+      - "labs/11-5.4-pt-simple-network/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 11-5.4-pt-simple-network
+      env: vm

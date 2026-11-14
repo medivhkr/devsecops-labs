@@ -1,0 +1,268 @@
+lab: "4.5.5"
+title: "Explore REST APIs with API Simulator and Postman"
+collect:
+  - ~/labs/devnet-src/school-library
+  - ~/library.postman_collection.json
+  - ~/swagger.json
+  - /var/log/school-library-sim.log
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: p1_env
+    title: "Part 1: стенд - ОС, имя хоста, версии Python и curl"
+    cmd: "head -n 4 /etc/os-release && hostname && python3 --version && curl --version | head -n 1"
+  - id: p1_simulator
+    title: "Part 1: процесс симулятора School Library API (переписанная реализация, порт 80)"
+    cmd: "pgrep -a -f school_library_sim"
+
+  # ---------- Part 2: Explore API Documentation Using the API Simulator ----------
+  # Chromium нет (нет GUI): страницы сайта и документации запрашиваются curl, описание API - jq.
+  - id: p2s1_hosts
+    title: "Part 2 Step 1: имя library.demo.local (вместо запуска Chromium)"
+    cmd: "getent hosts library.demo.local"
+  - id: p2s2_site
+    title: "Part 2 Step 2: сайт School Library - заголовок, вкладка Our Books, ссылка на API docs"
+    cmd: "curl -s http://library.demo.local/ | grep -E 'title>|Welcome|API docs|Our Books'"
+  - id: p2s3_docs_page
+    title: "Part 2 Step 3a: страница документации API /api/v1/docs (Swagger UI)"
+    cmd: "curl -s http://library.demo.local/api/v1/docs"
+  - id: p2s3_swagger_download
+    title: "Part 2 Step 3a: описание OpenAPI (Swagger 2.0), которое отображает страница docs"
+    cmd: "curl -o swagger.json http://library.demo.local/api/v1/swagger.json"
+  - id: p2s3_swagger_info
+    title: "Part 2 Step 3a: название API и пространство имён /api/v1 (Default namespace)"
+    cmd: "jq '.info, .basePath, .tags' swagger.json"
+  - id: p2s3_swagger_locks
+    title: "Part 2 Step 3b: список API; true - API со значком замка (нужен токен)"
+    cmd: "jq '.paths | map_values(map_values(has(\"security\")))' swagger.json"
+  - id: p2s4_get_books_doc
+    title: "Part 2 Step 4: GET /books - Response content type, параметры, код 200"
+    cmd: "jq '.produces, .paths.\"/books\".get' swagger.json"
+  - id: p2s5_try_it_out
+    title: "Part 2 Step 5: Try it out / Execute для GET /books - код, заголовки и тело ответа"
+    pause: 2
+    cmd: "curl -i \"http://library.demo.local/api/v1/books\" -H \"accept: application/json\""
+  - id: p2s6_curl_books
+    title: "Part 2 Step 6: команда curl из документации в терминале"
+    pause: 2
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books\" -H \"accept: application/json\""
+  - id: p2s7_include_isbn
+    title: "Part 2 Step 7: GET /books с параметром includeISBN=true"
+    pause: 2
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books?includeISBN=true\" -H \"accept: application/json\""
+  - id: p2s8_login_401
+    title: "Part 2 Step 8a-b: POST /loginViaBasic без учётных данных - 401 и запрос Basic-аутентификации"
+    cmd: |-
+      curl -i -X POST "http://library.demo.local/api/v1/loginViaBasic" \
+        -H "accept: application/json"
+  - id: p2s8_login
+    title: "Part 2 Step 8c-d: вход cisco / Cisco123! (аналог окна Sign in) и получение токена"
+    cmd: |-
+      curl -s -X POST "http://library.demo.local/api/v1/loginViaBasic" -u cisco \
+        -H "accept: application/json" | tee token.json
+    timeout: 60
+    interact:
+      - expect: "Enter host password for user 'cisco':"
+        send: "Cisco123!"
+        timeout: 30
+  - id: p2s8_authorize_scheme
+    title: "Part 2 Step 8e-f: схема авторизации из окна Available authorizations (имя X-API-KEY)"
+    cmd: "jq '.securityDefinitions' swagger.json"
+  - id: p2s8_authorize
+    title: "Part 2 Step 8f-g: токен как значение X-API-KEY для следующих запросов"
+    cmd: "TOKEN=$(jq -r .token token.json); echo \"X-API-KEY: $TOKEN\""
+  - id: p2s9_post_book4
+    title: "Part 2 Step 9a-f: POST /books - книга id 4 (IPv6 Fundamentals)"
+    cmd: |-
+      curl -X POST "http://library.demo.local/api/v1/books" \
+        -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+        -d '{"id": 4, "title": "IPv6 Fundamentals", "author": "Rick Graziani"}'
+  - id: p2s9_post_book5
+    title: "Part 2 Step 9g-i: POST /books - книга id 5 (31 Days Before Your CCNA Exam)"
+    cmd: |-
+      curl -X POST "http://library.demo.local/api/v1/books" \
+        -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+        -d '{"id": 5, "title": "31 Days Before Your CCNA Exam", "author": "Allan Johnson"}'
+  - id: p2s10_list_books
+    title: "Part 2 Step 10: GET /books - в списке книги id 4 и 5"
+    pause: 2
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books\" -H \"accept: application/json\""
+  - id: p2s11_get_book4
+    title: "Part 2 Step 11: GET /books/{id} для id 4"
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books/4\" -H \"accept: application/json\""
+  - id: p2s12_delete_book4
+    title: "Part 2 Step 12: DELETE /books/{id} для id 4 (с токеном X-API-KEY)"
+    cmd: |-
+      curl -X DELETE "http://library.demo.local/api/v1/books/4" \
+        -H "accept: application/json" -H "X-API-KEY: $TOKEN"
+  - id: p2s13_list_books
+    title: "Part 2 Step 13: GET /books - книги id 4 больше нет"
+    pause: 2
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books\" -H \"accept: application/json\""
+
+  # ---------- Part 3: Use Postman to Make API Calls to the API Simulator ----------
+  # Postman (GUI) заменён Newman: те же запросы вкладок Postman в коллекции v2.1.
+  - id: p3s1_newman
+    title: "Part 3 Step 1: Newman - официальный CLI-запуск коллекций Postman (вместо GUI Postman)"
+    cmd: "node --version && newman --version"
+  - id: p3s1_collection
+    title: "Part 3 Step 1: коллекция Postman с запросами вкладок из методички (Basic Auth, API Key, raw JSON, Params)"
+    cmd: "cat library.postman_collection.json"
+  - id: p3s2_newman_get
+    title: "Part 3 Step 2: GET /books (Send) - Status 200 OK и тело ответа"
+    pause: 2
+    cmd: "newman run library.postman_collection.json --folder \"GET /books\" --verbose"
+    timeout: 180
+  - id: p3s3_s4_newman_login_post
+    title: "Part 3 Step 3-4: POST /loginViaBasic (Basic Auth, токен) и POST /books (API Key X-API-KEY, body raw JSON)"
+    cmd: |-
+      newman run library.postman_collection.json --verbose \
+        --folder "POST /loginViaBasic" --folder "POST /books"
+    timeout: 180
+  - id: p3s5_newman_get
+    title: "Part 3 Step 5: повторный GET /books - книга id 4 снова в списке"
+    pause: 2
+    cmd: "newman run library.postman_collection.json --folder \"GET /books\" --verbose"
+    timeout: 180
+  - id: p3s6_try_it_out_params
+    title: "Part 3 Step 6a-e: Try it out для GET /books с includeISBN=true и sortBy=author"
+    pause: 2
+    cmd: "curl -X GET \"http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author\" -H \"accept: application/json\""
+  - id: p3s6_newman_params
+    title: "Part 3 Step 6f-h: GET /books с Query Params includeISBN=true и sortBy=author"
+    pause: 2
+    cmd: "newman run library.postman_collection.json --folder \"GET /books (Params)\" --verbose"
+    timeout: 180
+
+  # ---------- Part 4: Use Python to Add 100 Books to the API Simulator ----------
+  # VS Code нет (нет GUI): программа просматривается cat/grep/sed.
+  - id: p4s1_cd
+    title: "Part 4 Step 1: каталог labs/devnet-src/school-library"
+    cmd: "cd labs/devnet-src/school-library && ls -l"
+  - id: p4s2_script
+    title: "Part 4 Step 2a-c: программа add100RandomBooks.py (shebang, import requests, json, Faker)"
+    cmd: "cat add100RandomBooks.py"
+  - id: p4s2_s3_faker_repl
+    title: "Part 4 Step 2d и Step 3: методы faker (fake. + Tab Tab) и генерация случайных данных"
+    cmd: "python3"
+    timeout: 180
+    interact:
+      - expect: ">>> "
+        send: "from faker import Faker"
+        timeout: 60
+      - expect: ">>> "
+        send: "fake = Faker()"
+        timeout: 60
+      - expect: ">>> "
+        send: "fake.\t\t"
+        raw: true
+        timeout: 60
+      # optional: при сбое последовательность всё равно дойдёт до quit() и python3 завершится.
+      # Пробел readline принимает как ответ "y"; если readline не ждёт ответа (режим callback),
+      # пробел лишь добавится в конец строки "fake. ", которую затем сбросит Ctrl+C.
+      - expect: "Display all \\d+ possibilities\\? \\(y or n\\)"
+        send: " "
+        raw: true
+        optional: true
+        timeout: 20
+      - expect: ">>> fake\\."
+        delay: 0.5
+        sendcontrol: "c"
+        optional: true
+        timeout: 20
+      - expect: "KeyboardInterrupt\\s*>>> "
+        send: "print('My name is {}.'.format(fake.name()))"
+        optional: true
+        timeout: 20
+      - expect: ">>> "
+        send: "print('My name is {} and I wrote \"{}\" (ISBN {}).'.format(fake.name(),fake.catch_phrase(),fake.isbn13()))"
+        timeout: 30
+      - expect: ">>> "
+        send: "for i in range(10):"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: "    print(fake.name())"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: ""
+        timeout: 30
+      - expect: ">>> "
+        send: "quit()"
+        timeout: 30
+  - id: p4s4_variables
+    title: "Part 4 Step 4: переменные APIHOST, LOGIN, PASSWORD"
+    cmd: "grep -n -E '^(APIHOST|LOGIN|PASSWORD) =' add100RandomBooks.py"
+  - id: p4s5_get_auth_token
+    title: "Part 4 Step 5: функция getAuthToken (POST /loginViaBasic, auth=(LOGIN, PASSWORD))"
+    cmd: "sed -n '/^def getAuthToken/,/^$/p' add100RandomBooks.py"
+  - id: p4s6_add_book
+    title: "Part 4 Step 6: функция addBook (POST /books, заголовок X-API-Key)"
+    cmd: "sed -n '/^def addBook/,/^$/p' add100RandomBooks.py"
+  - id: p4s7_main
+    title: "Part 4 Step 7: вызов getAuthToken и цикл for i in range(4, 104)"
+    cmd: "sed -n '/^# Main part/,$p' add100RandomBooks.py"
+  - id: p4s8_run
+    title: "Part 4 Step 8a: запуск add100RandomBooks.py"
+    cmd: "python3 add100RandomBooks.py"
+    timeout: 300
+  - id: p4s8_list_script
+    title: "Part 4 Step 8b: скрипт, который загружает список книг так же, как страница сайта (вместо Chromium)"
+    write_file:
+      path: ~/labs/devnet-src/school-library/list_all_books.py
+      content: |
+        #!/usr/bin/env python3
+        """Read every book of the School Library the same way the web page does.
+
+        The page http://library.demo.local/ starts with GET /api/v1/books and follows the
+        'Link: <...>; rel="next"' response header page by page (10 books per page). When the
+        API answers 429 Too Many Requests it waits Retry-After seconds and repeats the call.
+        """
+        import time
+
+        import requests
+
+        url = "http://library.demo.local/api/v1/books"
+        books = []
+        while url:
+            r = requests.get(url, headers={"accept": "application/json"}, timeout=10)
+            if r.status_code == 429:
+                wait = int(r.headers["Retry-After"])
+                print(f"GET {url} -> 429 {r.json()['error']} Loading in {wait} seconds ...")
+                time.sleep(wait)
+                continue
+            r.raise_for_status()
+            page = r.json()
+            books += page
+            print(f"GET {url} -> {r.status_code}, {len(page)} books")
+            url = r.links.get("next", {}).get("url")
+
+        print()
+        print(f"{'Book ID':<8} {'Title':<42} Author")
+        shown = books if len(books) <= 10 else books[:6] + [None] + books[-3:]
+        for book in shown:
+            if book is None:
+                print("...")
+            else:
+                print(f"{book['id']:<8} {book['title'][:42]:<42} {book['author']}")
+        ids = sorted(book["id"] for book in books)
+        print(f"Total books: {len(books)} (id {ids[0]}..{ids[-1]})")
+  - id: p4s8_list_all
+    title: "Part 4 Step 8b: все книги постранично (Link rel=next, при 429 ожидание Retry-After)"
+    cmd: "python3 list_all_books.py"
+    timeout: 300
+  - id: p4s8_note_page
+    title: "Part 4 Step 8 (Note): GET /books отдаёт 10 книг, следующая страница - параметр page"
+    pause: 11
+    cmd: "curl -i -X GET \"http://library.demo.local/api/v1/books?page=1\" -H \"accept: application/json\""
+
+  # ---------- Вопрос методички: как добавить ещё 100 книг ----------
+  - id: pq_more_books_script
+    title: "Part 4 Question: ещё 100 книг - диапазон range(104, 204)"
+    cmd: "sed 's/range(4, 104)/range(104, 204)/' add100RandomBooks.py > add100MoreBooks.py && grep -n 'range' add100MoreBooks.py"
+  - id: pq_more_books_run
+    title: "Part 4 Question: запуск add100MoreBooks.py (последние строки вывода)"
+    cmd: "python3 add100MoreBooks.py | tail -n 3"
+    timeout: 300
+  - id: final_count
+    title: "Part 4 Question: итоговая проверка - число книг в библиотеке (GET /books по всем страницам)"
+    cmd: "python3 list_all_books.py"
+    timeout: 300

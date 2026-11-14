@@ -1,0 +1,24 @@
+name: "Лаб. 4.5.5: REST API и Postman"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/09-4.5.5-rest-api-postman/scenario.yml"
+      - "labs/09-4.5.5-rest-api-postman/prepare.sh"
+      - "labs/09-4.5.5-rest-api-postman/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 09-4.5.5-rest-api-postman
+      env: container
