@@ -53,7 +53,7 @@ def human(n):
 def run_link(lab_dir, outdir):
     p = os.path.join(lab_dir, outdir, "RUN.md")
     if os.path.exists(p):
-        m = re.search(r"https://github\.com/\S+/actions/runs/\d+", open(p, encoding="utf-8").read())
+        m = re.search(r"https://github\.com/\S+/actions/workflows/\S+\.yml", open(p, encoding="utf-8").read())
         return m.group(0) if m else None
     return None
 
@@ -116,7 +116,7 @@ def main():
             label = "протокол терминала" if o == "outputs" else "протокол ({})".format(o.split("-", 1)[1].upper())
             link = run_link(lab_dir, o)
             md.append("- [{}/transcript.txt]({}/transcript.txt): {}{}".format(
-                o, o, label, ", [прогон в GitHub Actions]({})".format(link) if link else ""))
+                o, o, label, ", [прогоны в GitHub Actions]({})".format(link) if link else ""))
         open(os.path.join(lab_dir, "README.md"), "w", encoding="utf-8", newline="\n").write("\n".join(md) + "\n")
         print("{:8} materials: {} файлов".format(lab, sum(len(f) for _, _, f in os.walk(mat))))
 

@@ -35,8 +35,12 @@ def lab_rows():
         has_pdf = os.path.exists(os.path.join(REPO, pdf))
         wfdir = os.path.join(REPO, ".github", "workflows")
         wfs = sorted(f for f in os.listdir(wfdir) if f == "lab-{}.yml".format(lab) or f.startswith("lab-{}-".format(lab)))
-        badges = " ".join("[![{0}]({1}/actions/workflows/{2}/badge.svg)]({1}/actions/workflows/{2})".format(lab, GH, wf)
-                          for wf in wfs)
+        def badge(wf):
+            text = open(os.path.join(wfdir, wf), encoding="utf-8").read()
+            if "push:" not in text:  # работа запускается только вручную (workflow_dispatch)
+                return "[запуск вручную]({}/actions/workflows/{})".format(GH, wf)
+            return "[![{0}]({1}/actions/workflows/{2}/badge.svg)]({1}/actions/workflows/{2})".format(lab, GH, wf)
+        badges = " ".join(badge(wf) for wf in wfs)
         protos = []
         for out in sorted(os.listdir(os.path.join(REPO, "labs", folder))):
             if out.startswith("outputs") and os.path.exists(os.path.join(REPO, "labs", folder, out, "transcript.txt")):
