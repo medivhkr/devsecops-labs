@@ -26,6 +26,7 @@ import argparse
 import datetime as dt
 import json
 import os
+import pwd
 import re
 import shutil
 import subprocess
@@ -42,6 +43,7 @@ ANSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)
 def clean(text):
     """Удаляет escape-последовательности и применяет \\r и \\b так, как это сделал бы терминал."""
     text = MARK_RE.sub("", text)
+    text = re.sub(r"\x1b\[0?K", "\x1e", text)  # "стереть до конца строки" обрабатываем ниже
     text = ANSI_RE.sub("", text)
     out_lines = []
     for line in text.split("\n"):
@@ -51,6 +53,8 @@ def clean(text):
         for ch in line:
             if ch == "\r":
                 col = 0
+            elif ch == "\x1e":
+                del buf[col:]
             elif ch == "\b":
                 col = max(0, col - 1)
             elif ch in "\x07\x00":
@@ -83,11 +87,24 @@ class LabRunner(object):
         return self.home + path[1:] if path.startswith("~") else path
 
     def start_shell(self):
-        env = dict(os.environ)
-        env.update({"TERM": "xterm", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "COLUMNS": "200", "LINES": "50"})
-        cmd = "su - {} -s /bin/bash -c 'exec bash --noprofile --norc -i'".format(self.user)
-        self.child = pexpect.spawn("/bin/bash", ["-c", cmd], env=env, encoding="utf-8", codec_errors="replace",
-                                   dimensions=(50, 200), timeout=600)
+        # Оболочка запускается сразу от имени пользователя (без su): тогда bash является лидером
+        # сессии в pty, работает управление заданиями и Ctrl+C получает только текущая команда.
+        pw = pwd.getpwnam(self.user)
+        env = {
+            "HOME": pw.pw_dir, "USER": self.user, "LOGNAME": self.user, "SHELL": "/bin/bash",
+            "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "TERM": "xterm", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "COLUMNS": "200", "LINES": "50",
+        }
+
+        def drop_privileges():
+            if os.geteuid() == 0:
+                os.setgid(pw.pw_gid)
+                os.initgroups(self.user, pw.pw_gid)
+                os.setuid(pw.pw_uid)
+
+        self.child = pexpect.spawn("/bin/bash", ["--noprofile", "--norc", "-i"], env=env, cwd=pw.pw_dir,
+                                   encoding="utf-8", codec_errors="replace", dimensions=(50, 200), timeout=600,
+                                   preexec_fn=drop_privileges)
         self.child.logfile_read = self.raw
         time.sleep(1.0)
         init = [
