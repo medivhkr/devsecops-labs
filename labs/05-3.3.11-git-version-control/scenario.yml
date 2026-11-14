@@ -1,0 +1,312 @@
+lab: "3.3.11"
+title: "Software Version Control with Git"
+# git log / git diff / git branch / git config --list выводятся без пейджера less (нажимать q не нужно).
+# GIT_EDITOR=true - страховка: ни один шаг редактор не открывает (все фиксации с -m).
+shell_init:
+  - "export GIT_PAGER=cat GIT_EDITOR=true"
+collect:
+  - ~/labs/devnet-src/git-intro
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  # ВМ DEVASC заменена контейнером ubuntu:20.04 (пользователь devasc, имя хоста labvm), см. NOTES.md.
+
+  # ---------- Part 2: Initializing Git ----------
+  - id: env
+    title: "Part 2 Step 1: терминал devasc@labvm, ОС, имя хоста и версия Git стенда"
+    cmd: "grep PRETTY_NAME /etc/os-release && hostname && git --version"
+  - id: ls_home
+    title: "Part 2 Step 2a: содержимое домашнего каталога"
+    cmd: "ls"
+  - id: config_name
+    title: "Part 2 Step 2b: имя пользователя для фиксаций"
+    cmd: 'git config --global user.name "Adis Azamatov"'
+  - id: config_email
+    title: "Part 2 Step 2b: e-mail для фиксаций (noreply-адрес GitHub)"
+    cmd: "git config --global user.email 147084862+medivhkr@users.noreply.github.com"
+  - id: config_list
+    title: "Part 2 Step 2c: просмотр настроек git config --list"
+    cmd: "git config --list"
+  - id: cd_devnet_src
+    title: "Part 2 Step 2d: переход в каталог devnet-src"
+    cmd: "cd labs/devnet-src/"
+  - id: mkdir_git_intro
+    title: "Part 2 Step 2e: создание каталога git-intro"
+    cmd: "mkdir git-intro"
+  - id: cd_git_intro
+    title: "Part 2 Step 2e: переход в каталог git-intro"
+    cmd: "cd git-intro"
+  - id: git_init
+    title: "Part 2 Step 2f: инициализация репозитория git init"
+    cmd: "git init"
+    expect_exit: 0
+  - id: ls_a
+    title: "Part 2 Step 2f: скрытый каталог .git"
+    cmd: "ls -a"
+  - id: status_empty
+    title: "Part 2 Step 2g: состояние пустого репозитория"
+    cmd: "git status"
+
+  # ---------- Part 3: Staging and Committing a File in the Repository ----------
+  - id: echo_create
+    title: "Part 3 Step 1a: создание файла DEVASC.txt"
+    cmd: 'echo "I am on my way to passing the Cisco DEVASC exam" > DEVASC.txt'
+  - id: ls_la
+    title: "Part 3 Step 1b: файл DEVASC.txt и каталог .git"
+    cmd: "ls -la"
+  - id: cat_created
+    title: "Part 3 Step 1b: содержимое DEVASC.txt"
+    cmd: "cat DEVASC.txt"
+  - id: status_untracked
+    title: "Part 3 Step 2: неотслеживаемый файл"
+    cmd: "git status"
+  - id: add_first
+    title: "Part 3 Step 3a: индексирование файла git add"
+    cmd: "git add DEVASC.txt"
+  - id: status_staged
+    title: "Part 3 Step 3b: файл в индексе (new file)"
+    cmd: "git status"
+  - id: commit_first
+    title: "Part 3 Step 4: первая фиксация"
+    cmd: 'git commit -m "Committing DEVASC.txt to begin tracking changes"'
+    expect_exit: 0
+  - id: log_first
+    title: "Part 3 Step 5: история фиксаций git log"
+    cmd: "git log"
+
+  # ---------- Part 4: Modifying the File and Tracking the Changes ----------
+  - id: echo_append
+    title: "Part 4 Step 1a: добавление второй строки (>>)"
+    cmd: 'echo "I am beginning to understand Git!" >> DEVASC.txt'
+  - id: cat_appended
+    title: "Part 4 Step 1b: изменённый файл"
+    cmd: "cat DEVASC.txt"
+  - id: status_modified
+    title: "Part 4 Step 2: изменение не проиндексировано"
+    cmd: "git status"
+  - id: add_second
+    title: "Part 4 Step 3: индексирование изменённого файла"
+    cmd: "git add DEVASC.txt"
+  - id: commit_second
+    title: "Part 4 Step 4: вторая фиксация"
+    cmd: 'git commit -m "Added additional line to file"'
+    expect_exit: 0
+  - id: log_second
+    title: "Part 4 Step 5a: история из двух фиксаций"
+    cmd: "git log"
+  - id: diff_commits
+    title: "Part 4 Step 5b: различия первой (HEAD~1) и последней (HEAD) фиксаций"
+    cmd: "git diff HEAD~1 HEAD"
+
+  # ---------- Part 5: Branches and Merging ----------
+  - id: branch_feature
+    title: "Part 5 Step 1: создание ветки feature"
+    cmd: "git branch feature"
+  - id: branch_list_1
+    title: "Part 5 Step 2: список веток, текущая master"
+    cmd: "git branch"
+  - id: checkout_feature
+    title: "Part 5 Step 3: переход на ветку feature"
+    cmd: "git checkout feature"
+  - id: branch_list_2
+    title: "Part 5 Step 4a: текущая ветка feature"
+    cmd: "git branch"
+  - id: echo_feature
+    title: "Part 5 Step 4b: третья строка в ветке feature"
+    cmd: 'echo "This text was added originally while in the feature branch" >> DEVASC.txt'
+  - id: cat_feature
+    title: "Part 5 Step 4c: файл в ветке feature"
+    cmd: "cat DEVASC.txt"
+  - id: add_feature
+    title: "Part 5 Step 5a: индексирование в ветке feature"
+    cmd: "git add DEVASC.txt"
+  - id: status_feature
+    title: "Part 5 Step 5b: состояние в ветке feature"
+    cmd: "git status"
+  - id: commit_feature
+    title: "Part 5 Step 6a: фиксация в ветке feature"
+    cmd: 'git commit -m "Added a third line in feature branch"'
+    expect_exit: 0
+  - id: log_feature
+    title: "Part 5 Step 6b: история ветки feature"
+    cmd: "git log"
+  - id: checkout_master_1
+    title: "Part 5 Step 7: возврат на ветку master"
+    cmd: "git checkout master"
+  - id: branch_list_3
+    title: "Part 5 Step 7: текущая ветка master"
+    cmd: "git branch"
+  - id: merge_feature
+    title: "Part 5 Step 8a: слияние feature в master (fast-forward)"
+    cmd: "git merge feature"
+    expect_exit: 0
+  - id: cat_merged
+    title: "Part 5 Step 8b: файл в master после слияния"
+    cmd: "cat DEVASC.txt"
+  - id: branch_list_4
+    title: "Part 5 Step 9a: ветка feature ещё существует"
+    cmd: "git branch"
+  - id: branch_delete
+    title: "Part 5 Step 9b: удаление ветки feature"
+    cmd: "git branch -d feature"
+    expect_exit: 0
+  - id: branch_list_5
+    title: "Part 5 Step 9c: осталась только ветка master"
+    cmd: "git branch"
+
+  # ---------- Part 6: Handling Merge Conflicts ----------
+  - id: branch_test
+    title: "Part 6 Step 1: создание ветки test"
+    cmd: "git branch test"
+  - id: checkout_test
+    title: "Part 6 Step 2a: переход на ветку test"
+    cmd: "git checkout test"
+  - id: branch_list_6
+    title: "Part 6 Step 2b: текущая ветка test"
+    cmd: "git branch"
+  - id: cat_before_sed
+    title: "Part 6 Step 3: исходное содержимое DEVASC.txt"
+    cmd: "cat DEVASC.txt"
+  - id: sed_netacad
+    title: "Part 6 Step 4: замена Cisco на NetAcad в ветке test"
+    cmd: "sed -i 's/Cisco/NetAcad/' DEVASC.txt"
+  - id: cat_netacad
+    title: "Part 6 Step 5: файл в ветке test после замены"
+    cmd: "cat DEVASC.txt"
+  - id: commit_test
+    title: "Part 6 Step 6: индексирование и фиксация в ветке test (git commit -a)"
+    cmd: 'git commit -a -m "Change Cisco to NetAcad"'
+    expect_exit: 0
+  - id: checkout_master_2
+    title: "Part 6 Step 7a: переход на ветку master"
+    cmd: "git checkout master"
+  - id: branch_list_7
+    title: "Part 6 Step 7b: текущая ветка master"
+    cmd: "git branch"
+  - id: sed_devnet
+    title: "Part 6 Step 8: замена Cisco на DevNet в ветке master"
+    cmd: "sed -i 's/Cisco/DevNet/' DEVASC.txt"
+  - id: cat_devnet
+    title: "Part 6 Step 9: файл в ветке master после замены"
+    cmd: "cat DEVASC.txt"
+  - id: commit_master
+    title: "Part 6 Step 10: индексирование и фиксация в ветке master (git commit -a)"
+    cmd: 'git commit -a -m "Changed Cisco to DevNet"'
+    expect_exit: 0
+  - id: merge_test_conflict
+    title: "Part 6 Step 11: попытка слияния test в master, конфликт (код возврата 1)"
+    cmd: "git merge test"
+    expect_exit: 1
+  - id: log_conflict
+    title: "Part 6 Step 12a: история, HEAD указывает на master"
+    cmd: "git log"
+  - id: cat_conflict
+    title: "Part 6 Step 12b: маркеры конфликта в DEVASC.txt"
+    cmd: "cat DEVASC.txt"
+  - id: resolve_conflict
+    title: "Part 6 Step 13: удаление строк конфликта в редакторе (вместо vim), остаётся строка DevNet"
+    write_file:
+      path: ~/labs/devnet-src/git-intro/DEVASC.txt
+      content: |
+        I am on my way to passing the DevNet DEVASC exam
+        I am beginning to understand Git!
+        This text was added originally while in the feature branch
+  - id: cat_resolved
+    title: "Part 6 Step 14: файл после разрешения конфликта"
+    cmd: "cat DEVASC.txt"
+  - id: add_resolved
+    title: "Part 6 Step 15: индексирование исправленного файла"
+    cmd: "git add DEVASC.txt"
+  - id: commit_merge
+    title: "Part 6 Step 15: фиксация слияния"
+    cmd: 'git commit -a -m "Manually merged from test branch"'
+    expect_exit: 0
+  - id: log_merge
+    title: "Part 6 Step 16: фиксация слияния в истории (строка Merge)"
+    cmd: "git log"
+
+  # ---------- Part 7: Integrating Git with GitHub ----------
+  # Steps 1-3 (учётная запись, вход, создание пустого репозитория devasc-study-team) выполнены
+  # заранее в веб-интерфейсе GitHub. Доступ по SSH-ключу развёртывания, его ставит prepare.sh.
+  - id: cd_git_intro_again
+    title: "Part 7 Step 4a: каталог git-intro"
+    cmd: "cd ~/labs/devnet-src/git-intro"
+  - id: mkdir_team
+    title: "Part 7 Step 4b: создание каталога devasc-study-team"
+    cmd: "mkdir devasc-study-team"
+  - id: cd_team
+    title: "Part 7 Step 5: переход в devasc-study-team"
+    cmd: "cd devasc-study-team"
+  - id: cp_devasc
+    title: "Part 7 Step 6a: копирование DEVASC.txt из родительского каталога"
+    cmd: "cp ../DEVASC.txt ."
+  - id: ls_team
+    title: "Part 7 Step 6b: файл скопирован"
+    cmd: "ls"
+  - id: cat_team
+    title: "Part 7 Step 6b: содержимое копии"
+    cmd: "cat DEVASC.txt"
+  - id: git_init_team
+    title: "Part 7 Step 7a: новый репозиторий devasc-study-team"
+    cmd: "git init"
+    expect_exit: 0
+  - id: config_list_team
+    title: "Part 7 Step 7b: глобальные и локальные настройки Git"
+    cmd: "git config --list"
+  - id: config_name_github
+    title: "Part 7 Step 7c: имя для GitHub (то же, что в Part 2)"
+    cmd: 'git config --global user.name "Adis Azamatov"'
+  - id: config_email_github
+    title: "Part 7 Step 7c: e-mail учётной записи GitHub medivhkr (то же, что в Part 2)"
+    cmd: "git config --global user.email 147084862+medivhkr@users.noreply.github.com"
+  - id: remote_add
+    title: "Part 7 Step 8a: удалённый репозиторий origin (SSH-адрес GitHub)"
+    cmd: "git remote add origin git@github.com:medivhkr/devasc-study-team.git"
+  - id: remote_verbose
+    title: "Part 7 Step 8b: проверка адресов origin"
+    cmd: "git remote --verbose"
+  - id: log_no_commits
+    title: "Part 7 Step 8c: в новом репозитории ещё нет фиксаций (код возврата 128)"
+    cmd: "git log"
+    expect_exit: 128
+  - id: add_team
+    title: "Part 7 Step 9a: индексирование DEVASC.txt"
+    cmd: "git add DEVASC.txt"
+  - id: commit_team
+    title: "Part 7 Step 9b: фиксация DEVASC.txt"
+    cmd: 'git commit -m "Add DEVASC.txt file to devasc-study-team"'
+    expect_exit: 0
+  - id: log_team
+    title: "Part 7 Step 10a: проверка фиксации"
+    cmd: "git log"
+  - id: status_team
+    title: "Part 7 Step 10b: рабочее дерево чистое"
+    cmd: "git status"
+  - id: ssh_auth_check
+    title: "Part 7 Step 11: проверка SSH-аутентификации на GitHub вместо логина и пароля (код 1 - норма)"
+    cmd: "ssh -T git@github.com"
+    timeout: 120
+    expect_exit: 1
+  - id: push
+    title: "Part 7 Step 11: отправка ветки master на GitHub"
+    cmd: "git push -u origin master"
+    timeout: 180
+    expect_exit: 0
+  - id: ls_remote
+    title: "Part 7 Step 12a: ветки репозитория на GitHub (вместо просмотра в браузере)"
+    cmd: "git ls-remote origin"
+    timeout: 120
+    expect_exit: 0
+  - id: cd_tmp
+    title: "Part 7 Step 12a: каталог для проверочной копии"
+    cmd: "cd /tmp"
+  - id: clone_check
+    title: "Part 7 Step 12a: клонирование репозитория с GitHub"
+    cmd: "git clone git@github.com:medivhkr/devasc-study-team.git"
+    timeout: 180
+    expect_exit: 0
+  - id: ls_clone
+    title: "Part 7 Step 12b: DEVASC.txt есть в репозитории на GitHub"
+    cmd: "ls devasc-study-team"
+  - id: cat_clone
+    title: "Part 7 Step 12b: содержимое DEVASC.txt, полученного с GitHub"
+    cmd: "cat devasc-study-team/DEVASC.txt"
