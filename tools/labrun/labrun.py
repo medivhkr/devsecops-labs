@@ -42,6 +42,7 @@ ANSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)
 
 WIDTH = 100  # ширина терминала, как у обычного окна эмулятора терминала
 VENV_PREFIX_RE = re.compile(r"^\([\w.-]+\) ?$")
+OSC_RE = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)")
 
 
 def screen_text(raw, width=WIDTH):
@@ -51,6 +52,7 @@ def screen_text(raw, width=WIDTH):
     стирание строки, перемещения курсора (readline, more, индикаторы прогресса).
     """
     raw = MARK_RE.sub("", raw)
+    raw = OSC_RE.sub("", raw)  # OSC: заголовки окна, гиперссылки systemd
     try:
         import pyte
     except ImportError:
@@ -201,7 +203,7 @@ class LabRunner(object):
             return
 
         if "host" in step:
-            res = subprocess.run(step["host"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            res = subprocess.run(step["host"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,  # nosec B602: команды берутся из сценария в репозитории
                                  universal_newlines=True, timeout=step.get("timeout", 900))
             rec.update({"type": "host", "cmd": step["host"], "exit": res.returncode, "output": res.stdout[-6000:]})
             self.meta.append(rec)

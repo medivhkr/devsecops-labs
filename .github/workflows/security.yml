@@ -1,0 +1,37 @@
+# Проверки безопасности репозитория (DevSecOps):
+#   gitleaks - поиск секретов (ключей, токенов, паролей) в истории git;
+#   bandit   - статический анализ Python-кода (SAST).
+name: "Проверки безопасности"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar -xz gitleaks
+          ./gitleaks detect --source . --config .gitleaks.toml --redact --verbose --exit-code 1
+
+  bandit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: bandit
+        run: |
+          pip install -q bandit==1.7.10
+          bandit -r tools labs -x "*/node_modules/*" --severity-level medium --confidence-level medium

@@ -945,7 +945,7 @@ def handle_client(sock, addr, device, host_key):
 
 def main():
     ap = argparse.ArgumentParser(description="CSR1000v IOS XE CLI emulator (SSH)")
-    ap.add_argument("--host", default="0.0.0.0")
+    ap.add_argument("--host", default="127.0.0.1", help="адрес для прослушивания (в лабораторных 192.168.56.101)")
     ap.add_argument("--port", type=int, default=22)
     ap.add_argument("--hostname", default="CSR1kv")
     ap.add_argument("--username", default="cisco")

@@ -1,0 +1,30 @@
+# Конфигурация gitleaks. Учебные пароли из методичек Cisco (cisco123!, Cisco123!)
+# являются общеизвестными значениями лабораторного стенда и разрешены явно.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Учебные учётные данные стенда DEVASC из методичек Cisco"
+regexes = [
+  '''(?i)cisco123!''',
+  # хэш type 9 учебного пароля в резервной копии конфигурации эмулятора CSR1kv
+  '''\$9\$[./0-9A-Za-z]{14}\$[./0-9A-Za-z]{43}''',
+  # пароль testbed pyATS, закодированный общим ключом по умолчанию (см. отчёт 7.6.3)
+  '''%ENC\{[^}]+\}''',
+  # почтовые учётные записи из задания Packet Tracer 5.5.7 (Student1/Student2, пароль class)
+  '''Student[12]:class''',
+]
+# Файлы-образцы из методички 3.6.6 (myfile.json/yaml/xml) содержат вымышленные
+# access_token и refresh_token. Это учебные данные, а не реальные секреты.
+#
+# В коммите с протоколом работы 5.5 в репозиторий попал закрытый ключ TLS
+# devasc.key. Его создала команда openssl genrsa на одноразовом стенде в GitHub Actions
+# для учебного HTTPS-сервера, нигде больше он не использовался. gitleaks нашёл ключ,
+# после чего файл удалён, а tools/import_outputs.py и tools/make_materials.py больше
+# не переносят закрытые ключи из артефактов прогона. Исключение касается только
+# этого пути в старом коммите.
+paths = [
+  '''labs/08-3.6.6-parse-data-formats/''',
+  '''reports/lab-3\.6\.6\.(docx|pdf)''',
+  '''labs/12-5\.5-pt-network-protocols/outputs/files/pt-protocols/DEVASC-Server/devasc\.key''',
+]

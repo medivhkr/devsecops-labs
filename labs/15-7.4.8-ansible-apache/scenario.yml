@@ -93,8 +93,14 @@ steps:
     cmd: "ansible-playbook -v install_apache_playbook.yaml"
     timeout: 1200
   - id: apache_status
-    title: "Part 4 Step 6a: состояние службы apache2"
+    title: "Part 4 Step 6a: состояние службы apache2 (выход из просмотра клавишей q)"
     cmd: "sudo systemctl status apache2"
+    interact:
+      - expect: '\(END\)'
+        delay: 0.5
+        send: "q"
+        raw: true
+        timeout: 60
   - id: curl_80
     title: "Part 4 Step 6b: стартовая страница Apache на порту 80"
     cmd: "curl -s http://192.0.2.3 | grep -i -o '<title>.*</title>'"
