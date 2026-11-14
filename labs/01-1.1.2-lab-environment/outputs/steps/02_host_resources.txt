@@ -1,0 +1,6 @@
+devasc@labvm:~$ free -h && df -h /
+              total        used        free      shared  buff/cache   available
+Mem:           15Gi       668Mi        13Gi        43Mi       1.9Gi        14Gi
+Swap:         3.0Gi          0B       3.0Gi
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         145G   60G   85G  42% /

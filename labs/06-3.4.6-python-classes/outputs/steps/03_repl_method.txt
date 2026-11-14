@@ -1,0 +1,26 @@
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> class className:
+...     def method1Name(self):
+...         print("method1Name() is called through the object")
+...     def method2Name(self):
+...         print("method2Name() is called through the object")
+...     def method3Name(self):
+...         print("method3Name() is called through the object")
+...
+>>> myClass = className()
+>>> myClass.method1Name()
+method1Name() is called through the object
+>>> myClass.method2Name()
+method2Name() is called through the object
+>>> myClass.method3Name()
+method3Name() is called through the object
+>>> type(myClass.method1Name)
+<class 'method'>
+>>> method1Name()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'method1Name' is not defined
+>>> exit()

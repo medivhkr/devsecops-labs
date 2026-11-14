@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+Your_Name
+Your_Country
+<class '__main__.Location'>

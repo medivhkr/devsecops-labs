@@ -1,0 +1,4 @@
+(venv-check) devasc@labvm:~$ which python3 pip3 && pip3 --version
+/tmp/venv-check/bin/python3
+/tmp/venv-check/bin/pip3
+pip 20.0.2 from /tmp/venv-check/lib/python3.8/site-packages/pip (python 3.8)

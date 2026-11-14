@@ -1,0 +1,7 @@
+devasc@labvm:~$ sudo -l
+Matching Defaults entries for devasc on labvm:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User devasc may run the following commands on labvm:
+    (ALL) NOPASSWD: ALL

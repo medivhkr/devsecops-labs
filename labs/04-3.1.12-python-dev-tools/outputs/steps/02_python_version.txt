@@ -1,0 +1,2 @@
+devasc@labvm:~$ python3 -V
+Python 3.8.10

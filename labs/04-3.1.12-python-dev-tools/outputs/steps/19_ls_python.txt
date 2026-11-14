@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/python$ ls
+devfun  requirements.txt

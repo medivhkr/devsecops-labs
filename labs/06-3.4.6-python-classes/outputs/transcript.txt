@@ -1,0 +1,153 @@
+devasc@labvm:~$ head -n 4 /etc/os-release && hostname && python3 --version
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+labvm
+Python 3.8.10
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def functionName():
+...     print("functionName() is called directly by its name")
+...
+>>> functionName()
+functionName() is called directly by its name
+>>> type(functionName)
+<class 'function'>
+>>> exit()
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> class className:
+...     def method1Name(self):
+...         print("method1Name() is called through the object")
+...     def method2Name(self):
+...         print("method2Name() is called through the object")
+...     def method3Name(self):
+...         print("method3Name() is called through the object")
+...
+>>> myClass = className()
+>>> myClass.method1Name()
+method1Name() is called through the object
+>>> myClass.method2Name()
+method2Name() is called through the object
+>>> myClass.method3Name()
+method3Name() is called through the object
+>>> type(myClass.method1Name)
+<class 'method'>
+>>> method1Name()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'method1Name' is not defined
+>>> exit()
+devasc@labvm:~$ cd ~/labs/devnet-src/python
+devasc@labvm:~/labs/devnet-src/python$ cat myCity.py
+def myCity(city):
+    print("I live in " + city + ".")
+
+myCity("Austin")
+myCity("Tokyo")
+myCity("Salzburg")
+devasc@labvm:~/labs/devnet-src/python$ python3 myCity.py
+I live in Austin.
+I live in Tokyo.
+I live in Salzburg.
+devasc@labvm:~/labs/devnet-src/python$ cat myLocation.py
+class Location:
+    def __init__(self, name, country):
+        self.name = name
+        self.country = country
+
+loc = Location("Your_Name", "Your_Country")
+print(loc.name)
+print(loc.country)
+print(type(loc))
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+Your_Name
+Your_Country
+<class '__main__.Location'>
+devasc@labvm:~/labs/devnet-src/python$ cat myLocation.py
+class Location:
+    def __init__(self, name, country):
+        self.name = name
+        self.country = country
+
+    def myLocation(self):
+        print("Hi, my name is " + self.name + " and I live in " + self.country + ".")
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+Hi, my name is Tomas and I live in Portugal.
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+Hi, my name is Tomas and I live in Portugal.
+Hi, my name is Ying and I live in China.
+Hi, my name is Amare and I live in Kenya.
+Hi, my name is Your_Name and I live in Your_Country.
+devasc@labvm:~/labs/devnet-src/python$ cat myLocation.py
+class Location:
+    def __init__(self, name, country):
+        self.name = name
+        self.country = country
+
+    def myLocation(self):
+        print("Hi, my name is " + self.name + " and I live in " + self.country + ".")
+
+# first Location object
+loc1 = Location("Tomas", "Portugal")
+# call the myLocation() method of that object
+loc1.myLocation()
+
+loc2 = Location("Ying", "China")
+loc3 = Location("Amare", "Kenya")
+loc2.myLocation()
+loc3.myLocation()
+your_loc = Location("Your_Name", "Your_Country")
+your_loc.myLocation()
+devasc@labvm:~/labs/devnet-src/python$ cat circleClass.py
+# circleClass.py: given a radius, print the circumference of a circle
+# formula: c = pi * 2 * radius
+
+class Circle:
+
+    def __init__(self, radius):
+        self.radius = radius
+
+    def circumference(self):
+        pi = 3.14
+        circumferenceValue = pi * self.radius * 2
+        return circumferenceValue
+
+    def printCircumference(self):
+        myCircumference = self.circumference()
+        print ("Circumference of a circle with a radius of " + str(self.radius) + " is " + str(myCir
+cumference))
+
+# first Circle object and its circumference
+circle1 = Circle(2)
+circle1.printCircumference()
+
+# two more Circle objects and their method calls
+circle2 = Circle(5)
+circle2.printCircumference()
+
+circle3 = Circle(7)
+circle3.printCircumference()
+devasc@labvm:~/labs/devnet-src/python$ python3 circleClass.py
+Circumference of a circle with a radius of 2 is 12.56
+Circumference of a circle with a radius of 5 is 31.400000000000002
+Circumference of a circle with a radius of 7 is 43.96
+devasc@labvm:~/labs/devnet-src/python$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> radius = 2
+>>> "Circumference of a circle with a radius of " + radius
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate str (not "int") to str
+>>> "Circumference of a circle with a radius of " + str(radius)
+'Circumference of a circle with a radius of 2'
+>>> exit()
+devasc@labvm:~/labs/devnet-src/python$

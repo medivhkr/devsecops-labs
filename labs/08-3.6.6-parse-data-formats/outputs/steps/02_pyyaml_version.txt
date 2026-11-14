@@ -1,0 +1,2 @@
+devasc@labvm:~$ python3 -c "import yaml; print(yaml.__version__)"
+5.3.1

@@ -1,0 +1,20 @@
+(devfun) devasc@labvm:~/labs/devnet-src/python$ pip3 install requests
+Collecting requests
+  Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+     |████████████████████████████████| 64 kB 7.4 MB/s
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2
+_5_x86_64.whl (253 kB)
+     |████████████████████████████████| 253 kB 18.4 MB/s
+Collecting certifi>=2017.4.17
+  Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+     |████████████████████████████████| 135 kB 185.2 MB/s
+Collecting urllib3<3,>=1.21.1
+  Downloading urllib3-2.2.3-py3-none-any.whl (126 kB)
+     |████████████████████████████████| 126 kB 171.4 MB/s
+Collecting idna<4,>=2.5
+  Downloading idna-3.15-py3-none-any.whl (72 kB)
+     |████████████████████████████████| 72 kB 6.4 MB/s
+Installing collected packages: charset-normalizer, certifi, urllib3, idna, requests
+Successfully installed certifi-2026.10.23 charset-normalizer-3.5.2 idna-3.15 requests-2.32.4 urllib3
+-2.2.3

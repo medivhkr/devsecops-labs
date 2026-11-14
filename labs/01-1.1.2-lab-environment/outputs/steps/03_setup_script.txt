@@ -1,0 +1,49 @@
+devasc@labvm:~$ cat ~/lab-env/setup-labvm.sh
+#!/usr/bin/env bash
+# Подготовка лабораторной среды, аналогичной ВМ DEVASC (Ubuntu 20.04, пользователь devasc,
+# имя хоста labvm, каталог ~/labs/devnet-src). Выполняется от root.
+#   Контейнер ubuntu:20.04 (основные лабораторные): bash lab-env/setup-labvm.sh
+#   ВМ раннера ubuntu-24.04 (лабораторные с systemd): sudo bash lab-env/setup-labvm.sh --vm
+set -euo pipefail
+
+MODE="${1:-container}"
+export DEBIAN_FRONTEND=noninteractive
+
+echo "== Пакеты"
+apt-get update -qq
+BASE_PKGS="sudo git curl wget ca-certificates nano less tree jq iproute2 iputils-ping net-tools dnsu
+tils \
+  openssh-client sshpass procps psmisc file unzip locales tzdata python3 python3-pip python3-venv \
+  python3-pexpect python3-yaml python3-paramiko"
+if [ "$MODE" = "--vm" ]; then
+  apt-get install -y -qq $BASE_PKGS ansible openssh-server >/dev/null
+else
+  apt-get install -y -qq $BASE_PKGS ansible >/dev/null
+fi
+
+# эмулятор терминала для записи протоколов (одна версия на обеих платформах)
+python3 -m pip install -q pyte==0.8.2 2>/dev/null || python3 -m pip install -q --break-system-packag
+es pyte==0.8.2
+
+echo "== Пользователь devasc"
+if ! id devasc >/dev/null 2>&1; then
+  useradd -m -s /bin/bash devasc
+fi
+echo "devasc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/devasc
+chmod 0440 /etc/sudoers.d/devasc
+
+if [ "$MODE" = "--vm" ]; then
+  echo "== Имя хоста labvm"
+  hostnamectl set-hostname labvm || hostname labvm
+  grep -q labvm /etc/hosts || echo "127.0.1.1 labvm" >> /etc/hosts
+fi
+
+echo "== Каталог лабораторных"
+sudo -u devasc mkdir -p /home/devasc/labs/devnet-src
+sudo -u devasc git config --global init.defaultBranch master || true
+
+echo "== Версии"
+. /etc/os-release && echo "OS: $PRETTY_NAME"
+python3 --version
+ansible --version | head -1 || true
+echo "hostname: $(hostname)"

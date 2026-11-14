@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/parsing$ ls -l
+total 24
+-rw-r--r-- 1 devasc devasc 230 Nov 14 10:11 myfile.json
+-rw-r--r-- 1 devasc devasc 438 Nov 14 10:11 myfile.xml
+-rw-r--r-- 1 devasc devasc 215 Nov 14 10:11 myfile.yaml
+-rw-r--r-- 1 devasc devasc  61 Nov 14 10:11 parsejson.py
+-rw-r--r-- 1 devasc devasc  60 Nov 14 10:11 parsexml.py
+-rw-r--r-- 1 devasc devasc  61 Nov 14 10:11 parseyaml.py

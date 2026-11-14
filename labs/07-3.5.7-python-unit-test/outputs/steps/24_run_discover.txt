@@ -1,0 +1,7 @@
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK

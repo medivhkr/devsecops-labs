@@ -1,0 +1,344 @@
+devasc@labvm:~$ head -n 2 /etc/os-release && hostname && python3 --version
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+labvm
+Python 3.8.10
+devasc@labvm:~$ cd labs/devnet-src
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import unittest
+>>> print(unittest.TestCase.__doc__)
+A class whose instances are single test cases.
+
+    By default, the test code itself should be placed in a method named
+    'runTest'.
+
+    If the fixture may be used for many test cases, create as
+    many test methods as are needed. When instantiating such a TestCase
+    subclass, specify in the constructor arguments the name of the test method
+    that the instance is to execute.
+
+    Test authors should subclass TestCase for their own tests. Construction
+    and deconstruction of the test's environment ('fixture') can be
+    implemented by overriding the 'setUp' and 'tearDown' methods respectively.
+
+    If it is necessary to override the __init__ method, the base class
+    __init__ method must always be called. It is important that subclasses
+    should not change the signature of their __init__ method, since instances
+    of the classes are instantiated automatically by parts of the framework
+    in order to be run.
+
+    When subclassing TestCase, you can set these attributes:
+    * failureException: determines which exception will be raised when
+        the instance's assertion methods fail; test methods raising this
+        exception will be deemed to have 'failed' rather than 'errored'.
+    * longMessage: determines whether long messages (including repr of
+        objects used in assert methods) will be printed on failure in *addition*
+        to any explicit message passed.
+    * maxDiff: sets the maximum length of a diff in failure messages
+        by assert methods using difflib. It is looked up as an instance
+        attribute so can be configured by individual tests if required.
+
+>>> unittest.TestLoader.testMethodPrefix
+'test'
+>>> exit()
+devasc@labvm:~/labs/devnet-src$ python3 -m unittest -h
+usage: python3 -m unittest [-h] [-v] [-q] [--locals] [-f] [-c] [-b] [-k TESTNAMEPATTERNS]
+                           [tests [tests ...]]
+
+positional arguments:
+  tests                a list of any number of test modules, classes and test methods.
+
+optional arguments:
+  -h, --help           show this help message and exit
+  -v, --verbose        Verbose output
+  -q, --quiet          Quiet output
+  --locals             Show local variables in tracebacks
+  -f, --failfast       Stop on first fail or error
+  -c, --catch          Catch Ctrl-C and display results so far
+  -b, --buffer         Buffer stdout and stderr during tests
+  -k TESTNAMEPATTERNS  Only run tests which match the given substring
+
+Examples:
+  python3 -m unittest test_module               - run tests from test_module
+  python3 -m unittest module.TestClass          - run tests from module.TestClass
+  python3 -m unittest module.Class.test_method  - run specified test method
+  python3 -m unittest path/to/test_file.py      - run tests from test_file.py
+
+usage: python3 -m unittest discover [-h] [-v] [-q] [--locals] [-f] [-c] [-b] [-k TESTNAMEPATTERNS]
+                                    [-s START] [-p PATTERN] [-t TOP]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         Verbose output
+  -q, --quiet           Quiet output
+  --locals              Show local variables in tracebacks
+  -f, --failfast        Stop on first fail or error
+  -c, --catch           Catch Ctrl-C and display results so far
+  -b, --buffer          Buffer stdout and stderr during tests
+  -k TESTNAMEPATTERNS   Only run tests which match the given substring
+  -s START, --start-directory START
+                        Directory to start discovery ('.' default)
+  -p PATTERN, --pattern PATTERN
+                        Pattern to match tests ('test*.py' default)
+  -t TOP, --top-level-directory TOP
+                        Top level directory of project (defaults to start directory)
+
+For test discovery all test modules must be importable from the top level directory of the
+project.
+devasc@labvm:~/labs/devnet-src$ ls -l unittest
+total 16
+-rw-r--r-- 1 devasc devasc   36 Nov 14 10:11 recursive_json_search.py
+-rw-r--r-- 1 devasc devasc 4272 Nov 14 10:11 test_data.py
+-rw-r--r-- 1 devasc devasc   36 Nov 14 10:11 test_json_search.py
+devasc@labvm:~/labs/devnet-src$ more unittest/test_data.py
+key1 = "issueSummary"
+key2 = "XY&^$#*@!1234%^&"
+
+data = {
+  "id": "AWcvsjx864kVeDHDi2gB",
+  "instanceId": "E-NETWORK-EVENT-AWcvsjx864kVeDHDi2gB-1542693469197",
+  "category": "Warn",
+  "status": "NEW",
+  "timestamp": 1542693469197,
+  "severity": "P1",
+  "domain": "Availability",
+  "source": "DNAC",
+  "priority": "P1",
+  "type": "Network",
+  "title": "Device unreachable",
+  "description": "This network device leaf2.abc.inc is unreachable from controller. The device role
+is ACCESS.",
+  "actualServiceId": "10.10.20.82",
+  "assignedTo": "",
+  "enrichmentInfo": {
+    "issueDetails": {
+      "issue": [
+        {
+          "issueId": "AWcvsjx864kVeDHDi2gB",
+          "issueSource": "Cisco DNA",
+          "issueCategory": "Availability",
+          "issueName": "snmp_device_down",
+          "issueDescription": "This network device leaf2.abc.inc is unreachable from controller. The
+ device role is ACCESS.",
+          "issueEntity": "network_device",
+          "issueEntityValue": "10.10.20.82",
+          "issueSeverity": "HIGH",
+          "issuePriority": "",
+          "issueSummary": "Network Device 10.10.20.82 Is Unreachable From Controller",
+          "issueTimestamp": 1542693469197,
+          "suggestedActions": [
+            {
+              "message": "From the controller, verify whether the last hop is reachable.",
+              "steps": []
+            },
+            {
+              "message": "Verify that the physical port(s) on the network device associated with the
+ network device discovery(IP) is UP.",
+              "steps": []
+            },
+            {
+              "message": "Verify access to the device.",
+              "steps": []
+            }
+devasc@labvm:~/labs/devnet-src$ cd unittest
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n recursive_json_search.py
+     1  # Fill the Python code in this file
+     2  from test_data import *
+     3  def json_search(key,input_object):
+     4      ret_val=[]
+     5      if isinstance(input_object, dict): # walk through a dictionary
+     6          for k, v in input_object.items(): # compare each key with the wanted key
+     7              if k == key:
+     8                  temp={k:v}
+     9                  ret_val.append(temp)
+    10              if isinstance(v, dict): # value is a nested dict: search it too
+    11                  json_search(key,v)
+    12              elif isinstance(v, list): # value is a list
+    13                  for item in v:
+    14                      if not isinstance(item, (str,int)): # nested dict/list: recurse
+    15                          json_search(key,item)
+    16      else: # input is a list (some APIs wrap JSON objects in a list)
+    17          for val in input_object:
+    18              if not isinstance(val, (str,int)):
+    19                  json_search(key,val)
+    20      return ret_val
+    21  print(json_search("issueSummary",data))
+devasc@labvm:~/labs/devnet-src/unittest$ python3 recursive_json_search.py
+[]
+devasc@labvm:~/labs/devnet-src/unittest$ grep -n issueSummary test_data.py
+1:key1 = "issueSummary"
+32:          "issueSummary": "Network Device 10.10.20.82 Is Unreachable From Controller",
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n test_json_search.py
+     1  # Fill the Python code in this file
+     2  import unittest
+     3  from recursive_json_search import *
+     4  from test_data import *
+     5
+     6
+     7  class json_search_test(unittest.TestCase):
+     8      '''unit tests for json_search() defined in `recursive_json_search.py`'''
+     9      def test_search_found(self):
+    10          '''existing key: the returned list must not be empty'''
+    11          self.assertTrue([]!=json_search(key1,data))
+    12      def test_search_not_found(self):
+    13          '''missing key: the returned list must be empty'''
+    14          self.assertTrue([]==json_search(key2,data))
+    15      def test_is_a_list(self):
+    16          '''the return value must always be a list'''
+    17          self.assertIsInstance(json_search(key1,data),list)
+    18
+    19  if __name__ == '__main__':
+    20      unittest.main()
+devasc@labvm:~/labs/devnet-src/unittest$ python3 test_json_search.py
+[]
+.F.
+======================================================================
+FAIL: test_search_found (__main__.json_search_test)
+existing key: the returned list must not be empty
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_json_search.py", line 11, in test_search_found
+    self.assertTrue([]!=json_search(key1,data))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest -v test_json_search
+[]
+test_is_a_list (test_json_search.json_search_test)
+the return value must always be a list ... ok
+test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty ... FAIL
+test_search_not_found (test_json_search.json_search_test)
+missing key: the returned list must be empty ... ok
+
+======================================================================
+FAIL: test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/devasc/labs/devnet-src/unittest/test_json_search.py", line 11, in test_search_found
+    self.assertTrue([]!=json_search(key1,data))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n recursive_json_search.py
+     1  # Fill the Python code in this file
+     2  from test_data import *
+     3  ret_val=[]
+     4  def json_search(key,input_object):
+     5      if isinstance(input_object, dict): # walk through a dictionary
+     6          for k, v in input_object.items(): # compare each key with the wanted key
+     7              if k == key:
+     8                  temp={k:v}
+     9                  ret_val.append(temp)
+    10              if isinstance(v, dict): # value is a nested dict: search it too
+    11                  json_search(key,v)
+    12              elif isinstance(v, list): # value is a list
+    13                  for item in v:
+    14                      if not isinstance(item, (str,int)): # nested dict/list: recurse
+    15                          json_search(key,item)
+    16      else: # input is a list (some APIs wrap JSON objects in a list)
+    17          for val in input_object:
+    18              if not isinstance(val, (str,int)):
+    19                  json_search(key,val)
+    20      return ret_val
+    21  print(json_search("issueSummary",data))
+devasc@labvm:~/labs/devnet-src/unittest$ python3 recursive_json_search.py
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest test_json_search
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+..F
+======================================================================
+FAIL: test_search_not_found (test_json_search.json_search_test)
+missing key: the returned list must be empty
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/devasc/labs/devnet-src/unittest/test_json_search.py", line 14, in test_search_not_foun
+d
+    self.assertTrue([]==json_search(key2,data))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)
+devasc@labvm:~/labs/devnet-src/unittest$ grep -n -F -e issueSummary -e 'XY&^$#*@!1234%^&' test_data.
+py
+1:key1 = "issueSummary"
+2:key2 = "XY&^$#*@!1234%^&"
+32:          "issueSummary": "Network Device 10.10.20.82 Is Unreachable From Controller",
+devasc@labvm:~/labs/devnet-src/unittest$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from recursive_json_search import *
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+>>> len(json_search(key1,data))
+2
+>>> len(json_search(key1,data))
+3
+>>> json_search(key2,data)
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}, {'issueSummary': 'Ne
+twork Device 10.10.20.82 Is Unreachable From Controller'}, {'issueSummary': 'Network Device 10.10.20
+.82 Is Unreachable From Controller'}]
+>>> exit()
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n recursive_json_search.py
+     1  from test_data import *
+     2  def json_search(key,input_object):
+     3      """
+     4      Find every key:value pair whose key equals `key`; return them as a list of dicts
+     5      key : name of the key to look for (case sensitive)
+     6      input_object : parsed JSON (dict or list), here the data object from test_data.py
+     7      inner_function() does the actual recursive walk; the list is created anew per call
+     8      returns an empty list when the key is not present
+     9      """
+    10      ret_val=[]
+    11      def inner_function(key,input_object):
+    12          if isinstance(input_object, dict): # walk through a dictionary
+    13              for k, v in input_object.items(): # compare each key with the wanted key
+    14                  if k == key:
+    15                      temp={k:v}
+    16                      ret_val.append(temp)
+    17                  if isinstance(v, dict): # value is a nested dict: search it too
+    18                      inner_function(key,v)
+    19                  elif isinstance(v, list):
+    20                      for item in v:
+    21                          if not isinstance(item, (str,int)): # nested dict/list: recurse
+    22                              inner_function(key,item)
+    23          else: # input is a list (some APIs wrap JSON objects in a list)
+    24              for val in input_object:
+    25                  if not isinstance(val, (str,int)):
+    26                      inner_function(key,val)
+    27      inner_function(key,input_object)
+    28      return ret_val
+    29  print(json_search("issueSummary",data))
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest -v
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+test_is_a_list (test_json_search.json_search_test)
+the return value must always be a list ... ok
+test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty ... ok
+test_search_not_found (test_json_search.json_search_test)
+missing key: the returned list must be empty ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK
+devasc@labvm:~/labs/devnet-src/unittest$

@@ -1,0 +1,101 @@
+devasc@labvm:~$ cat /etc/os-release | head -4 && hostname && python3 --version
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+labvm
+Python 3.8.10
+devasc@labvm:~$ python3 -c "import yaml; print(yaml.__version__)"
+5.3.1
+devasc@labvm:~$ cd ~/labs/devnet-src/parsing
+devasc@labvm:~/labs/devnet-src/parsing$ ls -l
+total 24
+-rw-r--r-- 1 devasc devasc 230 Nov 14 10:11 myfile.json
+-rw-r--r-- 1 devasc devasc 438 Nov 14 10:11 myfile.xml
+-rw-r--r-- 1 devasc devasc 215 Nov 14 10:11 myfile.yaml
+-rw-r--r-- 1 devasc devasc  61 Nov 14 10:11 parsejson.py
+-rw-r--r-- 1 devasc devasc  60 Nov 14 10:11 parsexml.py
+-rw-r--r-- 1 devasc devasc  61 Nov 14 10:11 parseyaml.py
+devasc@labvm:~/labs/devnet-src/parsing$ cat myfile.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="1"
+ xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+ <edit-config>
+  <target>
+   <candidate/>
+  </target>
+  <default-operation>merge</default-operation>
+  <test-option>set</test-option>
+  <config>
+   <int8.1
+    xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0"
+    nc:operation="create"
+    xmlns="http://netconfcentral.org/ns/test">9</int8.1>
+  </config>
+ </edit-config>
+</rpc>
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parsexml.py
+The default-operation contains: merge
+The test-option contains: set
+devasc@labvm:~/labs/devnet-src/parsing$ cat myfile.json
+{
+ "access_token":"ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3",
+ "expires_in":1209600,
+ "refresh_token":"MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4",
+ "refreshtokenexpires_in":7776000
+}
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parsejson.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parsejson.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+The access token is: ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+The token expires in 1209600 seconds.
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parsejson.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+The access token is: ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+The token expires in 1209600 seconds.
+
+
+---
+access_token: ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+expires_in: 1209600
+refresh_token: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4
+refreshtokenexpires_in: 7776000
+devasc@labvm:~/labs/devnet-src/parsing$ cat myfile.yaml
+---
+access_token: ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+expires_in: 1209600
+refresh_token: MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4
+refreshtokenexpires_in: 7776000
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parseyaml.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parseyaml.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+The access token is ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+The token expires in 1209600 seconds.
+devasc@labvm:~/labs/devnet-src/parsing$ python3 parseyaml.py
+{'access_token': 'ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3', 'expires_in': 1
+209600, 'refresh_token': 'MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4', 'refres
+htokenexpires_in': 7776000}
+The access token is ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3
+The token expires in 1209600 seconds.
+
+
+
+{
+    "access_token": "ZDI3MGEyYzQtNmFlNS00NDNhLWFlNzAtZGVjNjE0MGU1OGZmZWNmZDEwN2ItYTU3",
+    "expires_in": 1209600,
+    "refresh_token": "MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTEyMzQ1Njc4",
+    "refreshtokenexpires_in": 7776000
+}
+devasc@labvm:~/labs/devnet-src/parsing$

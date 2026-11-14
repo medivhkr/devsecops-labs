@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest -v
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+test_is_a_list (test_json_search.json_search_test)
+the return value must always be a list ... ok
+test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty ... ok
+test_search_not_found (test_json_search.json_search_test)
+missing key: the returned list must be empty ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK

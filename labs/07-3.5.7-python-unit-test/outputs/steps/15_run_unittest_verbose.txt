@@ -1,0 +1,22 @@
+devasc@labvm:~/labs/devnet-src/unittest$ python3 -m unittest -v test_json_search
+[]
+test_is_a_list (test_json_search.json_search_test)
+the return value must always be a list ... ok
+test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty ... FAIL
+test_search_not_found (test_json_search.json_search_test)
+missing key: the returned list must be empty ... ok
+
+======================================================================
+FAIL: test_search_found (test_json_search.json_search_test)
+existing key: the returned list must not be empty
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/devasc/labs/devnet-src/unittest/test_json_search.py", line 11, in test_search_found
+    self.assertTrue([]!=json_search(key1,data))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+FAILED (failures=1)

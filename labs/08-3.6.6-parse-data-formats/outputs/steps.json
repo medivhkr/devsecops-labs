@@ -1,0 +1,224 @@
+{
+  "lab": "3.6.6",
+  "title": "Parse Different Data Types with Python",
+  "finished": "2026-11-14T10:11:34.537997Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "env",
+      "title": "Part 1 Step 1: стенд вместо ВМ DEVASC (ОС, имя хоста, версия Python)",
+      "start": "2026-11-14T10:11:33.433773Z",
+      "type": "cmd",
+      "cmd": "cat /etc/os-release | head -4 && hostname && python3 --version",
+      "exit": 0,
+      "seconds": 0.07,
+      "file": "steps/01_env.txt"
+    },
+    {
+      "n": 2,
+      "id": "pyyaml_version",
+      "title": "Part 1 Step 1: версия библиотеки PyYAML на стенде",
+      "start": "2026-11-14T10:11:33.508816Z",
+      "type": "cmd",
+      "cmd": "python3 -c \"import yaml; print(yaml.__version__)\"",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/02_pyyaml_version.txt"
+    },
+    {
+      "n": 3,
+      "id": "cd_parsing",
+      "title": "Part 2 Step 1a: переход в каталог ~/labs/devnet-src/parsing",
+      "start": "2026-11-14T10:11:33.589020Z",
+      "type": "cmd",
+      "cmd": "cd ~/labs/devnet-src/parsing",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/03_cd_parsing.txt"
+    },
+    {
+      "n": 4,
+      "id": "ls_parsing",
+      "title": "Part 2 Step 1a: файлы лабораторной (данные и заготовки скриптов)",
+      "start": "2026-11-14T10:11:33.642514Z",
+      "type": "cmd",
+      "cmd": "ls -l",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/04_ls_parsing.txt"
+    },
+    {
+      "n": 5,
+      "id": "cat_xml",
+      "title": "Part 2 Step 1a: исходные данные myfile.xml (сообщение NETCONF edit-config)",
+      "start": "2026-11-14T10:11:33.698407Z",
+      "type": "cmd",
+      "cmd": "cat myfile.xml",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/05_cat_xml.txt"
+    },
+    {
+      "n": 6,
+      "id": "parsexml",
+      "title": "Part 2 Step 1b-e: скрипт parsexml.py (ElementTree, поиск по пространству имён)",
+      "start": "2026-11-14T10:11:33.755053Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parsexml.py",
+      "content": "import xml.etree.ElementTree as ET\nimport re\n\nxml = ET.parse(\"myfile.xml\")\nroot = xml.getroot()\n\nns = re.match('{.*}', root.tag).group(0)\neditconf = root.find(\"{}edit-config\".format(ns))\ndefop = editconf.find(\"{}default-operation\".format(ns))\ntestop = editconf.find(\"{}test-option\".format(ns))\n\nprint(\"The default-operation contains: {}\".format(defop.text))\nprint(\"The test-option contains: {}\".format(testop.text))\n"
+    },
+    {
+      "n": 7,
+      "id": "run_parsexml",
+      "title": "Part 2 Step 2: запуск parsexml.py",
+      "start": "2026-11-14T10:11:33.761542Z",
+      "type": "cmd",
+      "cmd": "python3 parsexml.py",
+      "exit": 0,
+      "seconds": 0.07,
+      "file": "steps/07_run_parsexml.txt"
+    },
+    {
+      "n": 8,
+      "id": "cat_json",
+      "title": "Part 3 Step 1a: исходные данные myfile.json (ответ на запрос токена)",
+      "start": "2026-11-14T10:11:33.834477Z",
+      "type": "cmd",
+      "cmd": "cat myfile.json",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/08_cat_json.txt"
+    },
+    {
+      "n": 9,
+      "id": "parsejson_v1",
+      "title": "Part 3 Step 1b-d: parsejson.py, загрузка JSON и печать словаря",
+      "start": "2026-11-14T10:11:33.889447Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parsejson.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.json','r') as json_file:\n    ourjson = json.load(json_file)\nprint(ourjson)\n"
+    },
+    {
+      "n": 10,
+      "id": "run_parsejson_v1",
+      "title": "Part 3 Step 2a: запуск parsejson.py (данные JSON как словарь Python)",
+      "start": "2026-11-14T10:11:33.896239Z",
+      "type": "cmd",
+      "cmd": "python3 parsejson.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/10_run_parsejson_v1.txt"
+    },
+    {
+      "n": 11,
+      "id": "parsejson_v2",
+      "title": "Part 3 Step 2b: печать токена и времени до окончания его действия",
+      "start": "2026-11-14T10:11:33.978510Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parsejson.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.json','r') as json_file:\n    ourjson = json.load(json_file)\nprint(ourjson)\n\nprint(\"The access token is: {}\".format(ourjson['access_token']))\nprint(\"The token expires in {} seconds.\".format(ourjson['expires_in']))\n"
+    },
+    {
+      "n": 12,
+      "id": "run_parsejson_v2",
+      "title": "Part 3 Step 2c: повторный запуск parsejson.py",
+      "start": "2026-11-14T10:11:33.985297Z",
+      "type": "cmd",
+      "cmd": "python3 parsejson.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/12_run_parsejson_v2.txt"
+    },
+    {
+      "n": 13,
+      "id": "parsejson_v3",
+      "title": "Part 3 Step 3a: вывод разобранных данных в формате YAML",
+      "start": "2026-11-14T10:11:34.069179Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parsejson.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.json','r') as json_file:\n    ourjson = json.load(json_file)\nprint(ourjson)\n\nprint(\"The access token is: {}\".format(ourjson['access_token']))\nprint(\"The token expires in {} seconds.\".format(ourjson['expires_in']))\n\nprint(\"\\n\\n---\")\nprint(yaml.dump(ourjson))\n"
+    },
+    {
+      "n": 14,
+      "id": "run_parsejson_v3",
+      "title": "Part 3 Step 3b: запуск parsejson.py (данные в формате YAML)",
+      "start": "2026-11-14T10:11:34.076202Z",
+      "type": "cmd",
+      "cmd": "python3 parsejson.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/14_run_parsejson_v3.txt"
+    },
+    {
+      "n": 15,
+      "id": "cat_yaml",
+      "title": "Part 4 Step 1a: исходные данные myfile.yaml (те же данные токена в YAML)",
+      "start": "2026-11-14T10:11:34.159936Z",
+      "type": "cmd",
+      "cmd": "cat myfile.yaml",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/15_cat_yaml.txt"
+    },
+    {
+      "n": 16,
+      "id": "parseyaml_v1",
+      "title": "Part 4 Step 1b-d: parseyaml.py, загрузка YAML и печать словаря",
+      "start": "2026-11-14T10:11:34.214956Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parseyaml.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.yaml','r') as yaml_file:\n    ouryaml = yaml.safe_load(yaml_file)\nprint(ouryaml)\n"
+    },
+    {
+      "n": 17,
+      "id": "run_parseyaml_v1",
+      "title": "Part 4 Step 2a: запуск parseyaml.py (данные YAML как словарь Python)",
+      "start": "2026-11-14T10:11:34.221545Z",
+      "type": "cmd",
+      "cmd": "python3 parseyaml.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/17_run_parseyaml_v1.txt"
+    },
+    {
+      "n": 18,
+      "id": "parseyaml_v2",
+      "title": "Part 4 Step 2b: печать токена и времени до окончания его действия",
+      "start": "2026-11-14T10:11:34.304637Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parseyaml.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.yaml','r') as yaml_file:\n    ouryaml = yaml.safe_load(yaml_file)\nprint(ouryaml)\n\nprint(\"The access token is {}\".format(ouryaml['access_token']))\nprint(\"The token expires in {} seconds.\".format(ouryaml['expires_in']))\n"
+    },
+    {
+      "n": 19,
+      "id": "run_parseyaml_v2",
+      "title": "Part 4 Step 2c: повторный запуск parseyaml.py",
+      "start": "2026-11-14T10:11:34.311652Z",
+      "type": "cmd",
+      "cmd": "python3 parseyaml.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/19_run_parseyaml_v2.txt"
+    },
+    {
+      "n": 20,
+      "id": "parseyaml_v3",
+      "title": "Part 4 Step 3a: вывод разобранных данных в формате JSON",
+      "start": "2026-11-14T10:11:34.395029Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/parsing/parseyaml.py",
+      "content": "import json\nimport yaml\n\nwith open('myfile.yaml','r') as yaml_file:\n    ouryaml = yaml.safe_load(yaml_file)\nprint(ouryaml)\n\nprint(\"The access token is {}\".format(ouryaml['access_token']))\nprint(\"The token expires in {} seconds.\".format(ouryaml['expires_in']))\n\nprint(\"\\n\\n\")\nprint(json.dumps(ouryaml, indent=4))\n"
+    },
+    {
+      "n": 21,
+      "id": "run_parseyaml_v3",
+      "title": "Part 4 Step 3b: запуск parseyaml.py (данные в формате JSON)",
+      "start": "2026-11-14T10:11:34.402197Z",
+      "type": "cmd",
+      "cmd": "python3 parseyaml.py",
+      "exit": 0,
+      "seconds": 0.08,
+      "file": "steps/21_run_parseyaml_v3.txt"
+    }
+  ]
+}

@@ -1,0 +1,293 @@
+{
+  "lab": "3.1.12",
+  "title": "Explore Python Development Tools",
+  "finished": "2026-11-14T10:11:42.395215Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "env",
+      "title": "Part 1 Step 1: стенд вместо ВМ DEVASC (ОС, пользователь, имя хоста)",
+      "start": "2026-11-14T10:11:31.324387Z",
+      "type": "cmd",
+      "cmd": "cat /etc/os-release | head -4 && whoami && hostname",
+      "exit": 0,
+      "seconds": 0.07,
+      "file": "steps/01_env.txt"
+    },
+    {
+      "n": 2,
+      "id": "python_version",
+      "title": "Part 2 Step a: версия Python 3",
+      "start": "2026-11-14T10:11:31.393821Z",
+      "type": "cmd",
+      "cmd": "python3 -V",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/02_python_version.txt"
+    },
+    {
+      "n": 3,
+      "id": "which_python",
+      "title": "Part 2 Step b: расположение интерпретатора python3",
+      "start": "2026-11-14T10:11:31.447653Z",
+      "type": "cmd",
+      "cmd": "which python3",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/03_which_python.txt"
+    },
+    {
+      "n": 4,
+      "id": "pip_version_system",
+      "title": "Part 2 Step b: (дополнительно) версия системного pip",
+      "start": "2026-11-14T10:11:31.501484Z",
+      "type": "cmd",
+      "cmd": "pip3 --version",
+      "exit": 0,
+      "seconds": 0.46,
+      "file": "steps/04_pip_version_system.txt"
+    },
+    {
+      "n": 5,
+      "id": "cd_python",
+      "title": "Part 3 Step 1a: переход в каталог labs/devnet-src/python",
+      "start": "2026-11-14T10:11:31.961297Z",
+      "type": "cmd",
+      "cmd": "cd labs/devnet-src/python/",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/05_cd_python.txt"
+    },
+    {
+      "n": 6,
+      "id": "venv_devfun",
+      "title": "Part 3 Step 1b: создание виртуального окружения devfun",
+      "start": "2026-11-14T10:11:32.014217Z",
+      "type": "cmd",
+      "cmd": "python3 -m venv devfun",
+      "exit": 0,
+      "seconds": 1.11,
+      "file": "steps/06_venv_devfun.txt"
+    },
+    {
+      "n": 7,
+      "id": "activate_devfun",
+      "title": "Part 3 Step 2a: активация devfun",
+      "start": "2026-11-14T10:11:33.127990Z",
+      "type": "cmd",
+      "cmd": "source devfun/bin/activate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/07_activate_devfun.txt"
+    },
+    {
+      "n": 8,
+      "id": "which_in_devfun",
+      "title": "Part 3 Step 2a: (дополнительно) python3 и pip3 берутся из devfun",
+      "start": "2026-11-14T10:11:33.180893Z",
+      "type": "cmd",
+      "cmd": "which python3 pip3",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/08_which_in_devfun.txt"
+    },
+    {
+      "n": 9,
+      "id": "freeze_devfun_empty",
+      "title": "Part 3 Step 2b: pip3 freeze в новом окружении",
+      "start": "2026-11-14T10:11:33.235130Z",
+      "type": "cmd",
+      "cmd": "pip3 freeze",
+      "exit": 0,
+      "seconds": 0.62,
+      "file": "steps/09_freeze_devfun_empty.txt"
+    },
+    {
+      "n": 10,
+      "id": "install_requests",
+      "title": "Part 3 Step 2c: установка пакета requests в devfun",
+      "start": "2026-11-14T10:11:33.855608Z",
+      "type": "cmd",
+      "cmd": "pip3 install requests",
+      "exit": 0,
+      "seconds": 1.59,
+      "file": "steps/10_install_requests.txt"
+    },
+    {
+      "n": 11,
+      "id": "freeze_devfun",
+      "title": "Part 3 Step 2d: pip3 freeze после установки",
+      "start": "2026-11-14T10:11:35.449109Z",
+      "type": "cmd",
+      "cmd": "pip3 freeze",
+      "exit": 0,
+      "seconds": 0.63,
+      "file": "steps/11_freeze_devfun.txt"
+    },
+    {
+      "n": 12,
+      "id": "list_devfun",
+      "title": "Part 3 Step 2d: (дополнительно) pip3 list показывает и pip/setuptools",
+      "start": "2026-11-14T10:11:36.076730Z",
+      "type": "cmd",
+      "cmd": "pip3 list",
+      "exit": 0,
+      "seconds": 0.66,
+      "file": "steps/12_list_devfun.txt"
+    },
+    {
+      "n": 13,
+      "id": "deactivate_devfun",
+      "title": "Part 3 Step 2e: выход из devfun",
+      "start": "2026-11-14T10:11:36.736107Z",
+      "type": "cmd",
+      "cmd": "deactivate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/13_deactivate_devfun.txt"
+    },
+    {
+      "n": 14,
+      "id": "system_freeze",
+      "title": "Part 3 Step 3a: пакеты системного Python",
+      "start": "2026-11-14T10:11:36.788931Z",
+      "type": "cmd",
+      "cmd": "python3 -m pip freeze",
+      "exit": 0,
+      "seconds": 0.65,
+      "file": "steps/14_system_freeze.txt"
+    },
+    {
+      "n": 15,
+      "id": "system_freeze_requests",
+      "title": "Part 3 Step 3b: версия requests в системном Python",
+      "start": "2026-11-14T10:11:37.439421Z",
+      "type": "cmd",
+      "cmd": "python3 -m pip freeze | grep requests",
+      "exit": 0,
+      "seconds": 0.65,
+      "file": "steps/15_system_freeze_requests.txt"
+    },
+    {
+      "n": 16,
+      "id": "reactivate_devfun",
+      "title": "Part 4 Step a: повторная активация devfun",
+      "start": "2026-11-14T10:11:38.085867Z",
+      "type": "cmd",
+      "cmd": "source devfun/bin/activate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/16_reactivate_devfun.txt"
+    },
+    {
+      "n": 17,
+      "id": "freeze_to_requirements",
+      "title": "Part 4 Step b: сохранение pip3 freeze в requirements.txt",
+      "start": "2026-11-14T10:11:38.138866Z",
+      "type": "cmd",
+      "cmd": "pip3 freeze > requirements.txt",
+      "exit": 0,
+      "seconds": 0.64,
+      "file": "steps/17_freeze_to_requirements.txt"
+    },
+    {
+      "n": 18,
+      "id": "deactivate_devfun_2",
+      "title": "Part 4 Step c: выход из devfun",
+      "start": "2026-11-14T10:11:38.775220Z",
+      "type": "cmd",
+      "cmd": "deactivate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/18_deactivate_devfun_2.txt"
+    },
+    {
+      "n": 19,
+      "id": "ls_python",
+      "title": "Part 4 Step c: requirements.txt в каталоге python",
+      "start": "2026-11-14T10:11:38.828131Z",
+      "type": "cmd",
+      "cmd": "ls",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/19_ls_python.txt"
+    },
+    {
+      "n": 20,
+      "id": "cat_requirements",
+      "title": "Part 4 Step c: (дополнительно) содержимое requirements.txt",
+      "start": "2026-11-14T10:11:38.882405Z",
+      "type": "cmd",
+      "cmd": "cat requirements.txt",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/20_cat_requirements.txt"
+    },
+    {
+      "n": 21,
+      "id": "venv_devnew",
+      "title": "Part 4 Step d: создание окружения devnew",
+      "start": "2026-11-14T10:11:38.936532Z",
+      "type": "cmd",
+      "cmd": "python3 -m venv devnew",
+      "exit": 0,
+      "seconds": 1.13,
+      "file": "steps/21_venv_devnew.txt"
+    },
+    {
+      "n": 22,
+      "id": "activate_devnew",
+      "title": "Part 4 Step d: активация devnew",
+      "start": "2026-11-14T10:11:40.063288Z",
+      "type": "cmd",
+      "cmd": "source devnew/bin/activate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/22_activate_devnew.txt"
+    },
+    {
+      "n": 23,
+      "id": "install_requirements",
+      "title": "Part 4 Step e: установка пакетов из requirements.txt в devnew",
+      "start": "2026-11-14T10:11:40.116486Z",
+      "type": "cmd",
+      "cmd": "pip3 install -r requirements.txt",
+      "exit": 0,
+      "seconds": 1.49,
+      "file": "steps/23_install_requirements.txt"
+    },
+    {
+      "n": 24,
+      "id": "freeze_devnew",
+      "title": "Part 4 Step f: pip3 freeze в devnew",
+      "start": "2026-11-14T10:11:41.605031Z",
+      "type": "cmd",
+      "cmd": "pip3 freeze",
+      "exit": 0,
+      "seconds": 0.63,
+      "file": "steps/24_freeze_devnew.txt"
+    },
+    {
+      "n": 25,
+      "id": "deactivate_devnew",
+      "title": "Part 4 Step g: выход из devnew",
+      "start": "2026-11-14T10:11:42.236262Z",
+      "type": "cmd",
+      "cmd": "deactivate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/25_deactivate_devnew.txt"
+    },
+    {
+      "n": 26,
+      "id": "ls_final",
+      "title": "Part 4 Step g: (дополнительно) итоговое содержимое каталога python",
+      "start": "2026-11-14T10:11:42.289121Z",
+      "type": "cmd",
+      "cmd": "ls",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/26_ls_final.txt"
+    }
+  ]
+}

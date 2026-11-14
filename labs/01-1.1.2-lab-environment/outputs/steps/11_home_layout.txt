@@ -1,0 +1,9 @@
+devasc@labvm:~$ pwd && tree ~
+/home/devasc
+/home/devasc
+├── lab-env
+│   └── setup-labvm.sh
+└── labs
+    └── devnet-src
+
+3 directories, 1 file

@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 myCity.py
+I live in Austin.
+I live in Tokyo.
+I live in Salzburg.

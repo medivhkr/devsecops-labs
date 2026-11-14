@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 myLocation.py
+Hi, my name is Tomas and I live in Portugal.
+Hi, my name is Ying and I live in China.
+Hi, my name is Amare and I live in Kenya.
+Hi, my name is Your_Name and I live in Your_Country.

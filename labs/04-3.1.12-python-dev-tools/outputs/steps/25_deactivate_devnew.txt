@@ -1,0 +1,1 @@
+(devnew) devasc@labvm:~/labs/devnet-src/python$ deactivate

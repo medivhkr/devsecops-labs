@@ -1,0 +1,274 @@
+{
+  "lab": "3.5.7",
+  "title": "Create a Python Unit Test",
+  "finished": "2026-11-14T10:11:29.608101Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "env",
+      "title": "Part 1: стенд вместо ВМ DEVASC (ОС, имя хоста, версия Python)",
+      "start": "2026-11-14T10:11:27.539624Z",
+      "type": "cmd",
+      "cmd": "head -n 2 /etc/os-release && hostname && python3 --version",
+      "exit": 0,
+      "seconds": 0.07,
+      "file": "steps/01_env.txt"
+    },
+    {
+      "n": 2,
+      "id": "cd_devnet_src",
+      "title": "Part 2: переход в каталог ~/labs/devnet-src",
+      "start": "2026-11-14T10:11:27.610847Z",
+      "type": "cmd",
+      "cmd": "cd labs/devnet-src",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/02_cd_devnet_src.txt"
+    },
+    {
+      "n": 3,
+      "id": "q1_q2_repl",
+      "title": "Part 2: вопросы 1 и 2, класс TestCase и префикс имён тестов (проверка в интерпретаторе)",
+      "start": "2026-11-14T10:11:27.663088Z",
+      "type": "cmd",
+      "cmd": "python3",
+      "exit": 0,
+      "seconds": 0.3,
+      "file": "steps/03_q1_q2_repl.txt"
+    },
+    {
+      "n": 4,
+      "id": "unittest_help",
+      "title": "Part 2: вопрос 3, параметры командной строки python3 -m unittest -h",
+      "start": "2026-11-14T10:11:27.960158Z",
+      "type": "cmd",
+      "cmd": "python3 -m unittest -h",
+      "exit": 0,
+      "seconds": 0.1,
+      "file": "steps/04_unittest_help.txt"
+    },
+    {
+      "n": 5,
+      "id": "ls_unittest",
+      "title": "Part 3: исходные файлы каталога unittest",
+      "start": "2026-11-14T10:11:28.058524Z",
+      "type": "cmd",
+      "cmd": "ls -l unittest",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/05_ls_unittest.txt"
+    },
+    {
+      "n": 6,
+      "id": "more_test_data",
+      "title": "Part 3 Step 1: просмотр test_data.py командой more (первый экран, выход по q)",
+      "start": "2026-11-14T10:11:28.113101Z",
+      "type": "cmd",
+      "cmd": "more unittest/test_data.py",
+      "exit": 0,
+      "seconds": 0.11,
+      "file": "steps/06_more_test_data.txt"
+    },
+    {
+      "n": 7,
+      "id": "cd_unittest",
+      "title": "Part 3 Step 2a: переход в каталог unittest",
+      "start": "2026-11-14T10:11:28.220676Z",
+      "type": "cmd",
+      "cmd": "cd unittest",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/07_cd_unittest.txt"
+    },
+    {
+      "n": 8,
+      "id": "rjs_v1",
+      "title": "Part 3 Step 2b: функция json_search() в recursive_json_search.py (исходная версия)",
+      "start": "2026-11-14T10:11:28.272979Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/unittest/recursive_json_search.py",
+      "content": "# Fill the Python code in this file\nfrom test_data import *\ndef json_search(key,input_object):\n    ret_val=[]\n    if isinstance(input_object, dict): # walk through a dictionary\n        for k, v in input_object.items(): # compare each key with the wanted key\n            if k == key:\n                temp={k:v}\n                ret_val.append(temp)\n            if isinstance(v, dict): # value is a nested dict: search it too\n                json_search(key,v)\n            elif isinstance(v, list): # value is a list\n                for item in v:\n                    if not isinstance(item, (str,int)): # nested dict/list: recurse\n                        json_search(key,item)\n    else: # input is a list (some APIs wrap JSON objects in a list)\n        for val in input_object:\n            if not isinstance(val, (str,int)):\n                json_search(key,val)\n    return ret_val\nprint(json_search(\"issueSummary\",data))\n"
+    },
+    {
+      "n": 9,
+      "id": "cat_rjs_v1",
+      "title": "Part 3 Step 2b: содержимое recursive_json_search.py (21 строка)",
+      "start": "2026-11-14T10:11:28.279574Z",
+      "type": "cmd",
+      "cmd": "cat -n recursive_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/09_cat_rjs_v1.txt"
+    },
+    {
+      "n": 10,
+      "id": "run_rjs_v1",
+      "title": "Part 3 Step 2c: запуск скрипта, функция вернула пустой список",
+      "start": "2026-11-14T10:11:28.334853Z",
+      "type": "cmd",
+      "cmd": "python3 recursive_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/10_run_rjs_v1.txt"
+    },
+    {
+      "n": 11,
+      "id": "grep_issue_summary",
+      "title": "Part 3 Step 2d: поиск issueSummary в test_data.py (grep вместо поиска в редакторе)",
+      "start": "2026-11-14T10:11:28.396840Z",
+      "type": "cmd",
+      "cmd": "grep -n issueSummary test_data.py",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/11_grep_issue_summary.txt"
+    },
+    {
+      "n": 12,
+      "id": "test_file",
+      "title": "Part 3 Step 3b-3e: модульные тесты в test_json_search.py",
+      "start": "2026-11-14T10:11:28.450910Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/unittest/test_json_search.py",
+      "content": "# Fill the Python code in this file\nimport unittest\nfrom recursive_json_search import *\nfrom test_data import *\n\n\nclass json_search_test(unittest.TestCase):\n    '''unit tests for json_search() defined in `recursive_json_search.py`'''\n    def test_search_found(self):\n        '''existing key: the returned list must not be empty'''\n        self.assertTrue([]!=json_search(key1,data))\n    def test_search_not_found(self):\n        '''missing key: the returned list must be empty'''\n        self.assertTrue([]==json_search(key2,data))\n    def test_is_a_list(self):\n        '''the return value must always be a list'''\n        self.assertIsInstance(json_search(key1,data),list)\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    },
+    {
+      "n": 13,
+      "id": "cat_test_file",
+      "title": "Part 3 Step 3: содержимое test_json_search.py (20 строк)",
+      "start": "2026-11-14T10:11:28.457508Z",
+      "type": "cmd",
+      "cmd": "cat -n test_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/13_cat_test_file.txt"
+    },
+    {
+      "n": 14,
+      "id": "run_test_script",
+      "title": "Part 3 Step 4a: первый запуск тестов, результат .F. (не прошёл test_search_found)",
+      "start": "2026-11-14T10:11:28.512705Z",
+      "type": "cmd",
+      "cmd": "python3 test_json_search.py",
+      "exit": 1,
+      "seconds": 0.1,
+      "file": "steps/14_run_test_script.txt"
+    },
+    {
+      "n": 15,
+      "id": "run_unittest_verbose",
+      "title": "Part 3 Step 4b: подробный вывод -v, тесты в алфавитном порядке",
+      "start": "2026-11-14T10:11:28.611214Z",
+      "type": "cmd",
+      "cmd": "python3 -m unittest -v test_json_search",
+      "exit": 1,
+      "seconds": 0.1,
+      "file": "steps/15_run_unittest_verbose.txt"
+    },
+    {
+      "n": 16,
+      "id": "rjs_v2",
+      "title": "Part 3 Step 5a: ret_val=[] вынесен из функции (глобальная переменная)",
+      "start": "2026-11-14T10:11:28.706795Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/unittest/recursive_json_search.py",
+      "content": "# Fill the Python code in this file\nfrom test_data import *\nret_val=[]\ndef json_search(key,input_object):\n    if isinstance(input_object, dict): # walk through a dictionary\n        for k, v in input_object.items(): # compare each key with the wanted key\n            if k == key:\n                temp={k:v}\n                ret_val.append(temp)\n            if isinstance(v, dict): # value is a nested dict: search it too\n                json_search(key,v)\n            elif isinstance(v, list): # value is a list\n                for item in v:\n                    if not isinstance(item, (str,int)): # nested dict/list: recurse\n                        json_search(key,item)\n    else: # input is a list (some APIs wrap JSON objects in a list)\n        for val in input_object:\n            if not isinstance(val, (str,int)):\n                json_search(key,val)\n    return ret_val\nprint(json_search(\"issueSummary\",data))\n"
+    },
+    {
+      "n": 17,
+      "id": "cat_rjs_v2",
+      "title": "Part 3 Step 5a: содержимое recursive_json_search.py после первой правки",
+      "start": "2026-11-14T10:11:28.713782Z",
+      "type": "cmd",
+      "cmd": "cat -n recursive_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/17_cat_rjs_v2.txt"
+    },
+    {
+      "n": 18,
+      "id": "run_rjs_v2",
+      "title": "Part 3 Step 5b: запуск скрипта, ключ issueSummary найден",
+      "start": "2026-11-14T10:11:28.768992Z",
+      "type": "cmd",
+      "cmd": "python3 recursive_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/18_run_rjs_v2.txt"
+    },
+    {
+      "n": 19,
+      "id": "run_unittest_2",
+      "title": "Part 3 Step 6a: повторный запуск тестов, результат ..F (не прошёл test_search_not_found)",
+      "start": "2026-11-14T10:11:28.830989Z",
+      "type": "cmd",
+      "cmd": "python3 -m unittest test_json_search",
+      "exit": 1,
+      "seconds": 0.1,
+      "file": "steps/19_run_unittest_2.txt"
+    },
+    {
+      "n": 20,
+      "id": "grep_keys",
+      "title": "Part 3 Step 6b: значение key1 встречается в test_data.py дважды, значение key2 один раз",
+      "start": "2026-11-14T10:11:28.926191Z",
+      "type": "cmd",
+      "cmd": "grep -n -F -e issueSummary -e 'XY&^$#*@!1234%^&' test_data.py",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/20_grep_keys.txt"
+    },
+    {
+      "n": 21,
+      "id": "repl_global_ret_val",
+      "title": "Part 3 Step 7a: глобальный ret_val накапливает результаты (проверка в интерпретаторе)",
+      "start": "2026-11-14T10:11:28.980464Z",
+      "type": "cmd",
+      "cmd": "python3",
+      "exit": 0,
+      "seconds": 0.32,
+      "file": "steps/21_repl_global_ret_val.txt"
+    },
+    {
+      "n": 22,
+      "id": "rjs_v3",
+      "title": "Part 3 Step 7b: внешняя функция json_search() и вложенная inner_function()",
+      "start": "2026-11-14T10:11:29.298697Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/unittest/recursive_json_search.py",
+      "content": "from test_data import *\ndef json_search(key,input_object):\n    \"\"\"\n    Find every key:value pair whose key equals `key`; return them as a list of dicts\n    key : name of the key to look for (case sensitive)\n    input_object : parsed JSON (dict or list), here the data object from test_data.py\n    inner_function() does the actual recursive walk; the list is created anew per call\n    returns an empty list when the key is not present\n    \"\"\"\n    ret_val=[]\n    def inner_function(key,input_object):\n        if isinstance(input_object, dict): # walk through a dictionary\n            for k, v in input_object.items(): # compare each key with the wanted key\n                if k == key:\n                    temp={k:v}\n                    ret_val.append(temp)\n                if isinstance(v, dict): # value is a nested dict: search it too\n                    inner_function(key,v)\n                elif isinstance(v, list):\n                    for item in v:\n                        if not isinstance(item, (str,int)): # nested dict/list: recurse\n                            inner_function(key,item)\n        else: # input is a list (some APIs wrap JSON objects in a list)\n            for val in input_object:\n                if not isinstance(val, (str,int)):\n                    inner_function(key,val)\n    inner_function(key,input_object)\n    return ret_val\nprint(json_search(\"issueSummary\",data))\n"
+    },
+    {
+      "n": 23,
+      "id": "cat_rjs_v3",
+      "title": "Part 3 Step 7b: содержимое recursive_json_search.py после второй правки (29 строк)",
+      "start": "2026-11-14T10:11:29.305999Z",
+      "type": "cmd",
+      "cmd": "cat -n recursive_json_search.py",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/23_cat_rjs_v3.txt"
+    },
+    {
+      "n": 24,
+      "id": "run_discover",
+      "title": "Part 3 Step 7c: обнаружение тестов python3 -m unittest, все три теста пройдены",
+      "start": "2026-11-14T10:11:29.362359Z",
+      "type": "cmd",
+      "cmd": "python3 -m unittest",
+      "exit": 0,
+      "seconds": 0.1,
+      "file": "steps/24_run_discover.txt"
+    },
+    {
+      "n": 25,
+      "id": "run_discover_verbose",
+      "title": "Part 3 Step 7c (дополнительно): подробный вывод после исправления",
+      "start": "2026-11-14T10:11:29.459551Z",
+      "type": "cmd",
+      "cmd": "python3 -m unittest -v",
+      "exit": 0,
+      "seconds": 0.1,
+      "file": "steps/25_run_discover_verbose.txt"
+    }
+  ]
+}

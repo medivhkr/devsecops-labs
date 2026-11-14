@@ -1,0 +1,30 @@
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n recursive_json_search.py
+     1  from test_data import *
+     2  def json_search(key,input_object):
+     3      """
+     4      Find every key:value pair whose key equals `key`; return them as a list of dicts
+     5      key : name of the key to look for (case sensitive)
+     6      input_object : parsed JSON (dict or list), here the data object from test_data.py
+     7      inner_function() does the actual recursive walk; the list is created anew per call
+     8      returns an empty list when the key is not present
+     9      """
+    10      ret_val=[]
+    11      def inner_function(key,input_object):
+    12          if isinstance(input_object, dict): # walk through a dictionary
+    13              for k, v in input_object.items(): # compare each key with the wanted key
+    14                  if k == key:
+    15                      temp={k:v}
+    16                      ret_val.append(temp)
+    17                  if isinstance(v, dict): # value is a nested dict: search it too
+    18                      inner_function(key,v)
+    19                  elif isinstance(v, list):
+    20                      for item in v:
+    21                          if not isinstance(item, (str,int)): # nested dict/list: recurse
+    22                              inner_function(key,item)
+    23          else: # input is a list (some APIs wrap JSON objects in a list)
+    24              for val in input_object:
+    25                  if not isinstance(val, (str,int)):
+    26                      inner_function(key,val)
+    27      inner_function(key,input_object)
+    28      return ret_val
+    29  print(json_search("issueSummary",data))

@@ -1,0 +1,15 @@
+devasc@labvm:~/labs/devnet-src/unittest$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from recursive_json_search import *
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]
+>>> len(json_search(key1,data))
+2
+>>> len(json_search(key1,data))
+3
+>>> json_search(key2,data)
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}, {'issueSummary': 'Ne
+twork Device 10.10.20.82 Is Unreachable From Controller'}, {'issueSummary': 'Network Device 10.10.20
+.82 Is Unreachable From Controller'}]
+>>> exit()

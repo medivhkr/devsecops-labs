@@ -1,0 +1,12 @@
+devasc@labvm:~/labs/devnet-src/python$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> radius = 2
+>>> "Circumference of a circle with a radius of " + radius
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate str (not "int") to str
+>>> "Circumference of a circle with a radius of " + str(radius)
+'Circumference of a circle with a radius of 2'
+>>> exit()

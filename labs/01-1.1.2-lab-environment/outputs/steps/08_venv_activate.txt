@@ -1,0 +1,1 @@
+devasc@labvm:~$ source /tmp/venv-check/bin/activate

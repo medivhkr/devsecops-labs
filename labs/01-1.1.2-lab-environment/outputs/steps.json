@@ -1,0 +1,183 @@
+{
+  "lab": "1.1.2",
+  "title": "Install the Virtual Machine Lab Environment",
+  "finished": "2026-11-14T10:11:34.519397Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "host_platform",
+      "title": "Part 1 Step 1: вместо VirtualBox контейнер на раннере GitHub Actions (ядро хоста, /.dockerenv)",
+      "start": "2026-11-14T10:11:30.751498Z",
+      "type": "cmd",
+      "cmd": "uname -a && ls -l /.dockerenv",
+      "exit": 0,
+      "seconds": 0.07,
+      "file": "steps/01_host_platform.txt"
+    },
+    {
+      "n": 2,
+      "id": "host_resources",
+      "title": "Part 1 Step 1: ресурсы хоста и требования методички (RAM от 4 ГБ, диск от 15 ГБ)",
+      "start": "2026-11-14T10:11:30.823898Z",
+      "type": "cmd",
+      "cmd": "free -h && df -h /",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/02_host_resources.txt"
+    },
+    {
+      "n": 3,
+      "id": "setup_script",
+      "title": "Part 1 Step 2: вместо импорта DEVASC_VM.ova сценарий сборки ВМ lab-env/setup-labvm.sh",
+      "start": "2026-11-14T10:11:30.881116Z",
+      "type": "cmd",
+      "cmd": "cat ~/lab-env/setup-labvm.sh",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/03_setup_script.txt"
+    },
+    {
+      "n": 4,
+      "id": "os_release",
+      "title": "Part 2 Step a: ВМ запущена, версия ОС",
+      "start": "2026-11-14T10:11:30.940179Z",
+      "type": "cmd",
+      "cmd": "cat /etc/os-release",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/04_os_release.txt"
+    },
+    {
+      "n": 5,
+      "id": "user_host",
+      "title": "Part 2 Step a: вошедший пользователь и имя хоста",
+      "start": "2026-11-14T10:11:30.995525Z",
+      "type": "cmd",
+      "cmd": "whoami && id && hostname",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/05_user_host.txt"
+    },
+    {
+      "n": 6,
+      "id": "tool_versions",
+      "title": "Part 2 Step d: терминал, версии python3, pip3, git и ansible",
+      "start": "2026-11-14T10:11:31.053382Z",
+      "type": "cmd",
+      "cmd": "python3 --version && pip3 --version && git --version && ansible --version",
+      "exit": 0,
+      "seconds": 0.72,
+      "file": "steps/06_tool_versions.txt"
+    },
+    {
+      "n": 7,
+      "id": "venv_create",
+      "title": "Part 2 Step d: создание виртуального окружения python3 -m venv",
+      "start": "2026-11-14T10:11:31.770135Z",
+      "type": "cmd",
+      "cmd": "python3 -m venv /tmp/venv-check",
+      "exit": 0,
+      "seconds": 1.29,
+      "file": "steps/07_venv_create.txt"
+    },
+    {
+      "n": 8,
+      "id": "venv_activate",
+      "title": "Part 2 Step d: активация окружения",
+      "start": "2026-11-14T10:11:33.062605Z",
+      "type": "cmd",
+      "cmd": "source /tmp/venv-check/bin/activate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/08_venv_activate.txt"
+    },
+    {
+      "n": 9,
+      "id": "venv_check",
+      "title": "Part 2 Step d: python3 и pip3 берутся из окружения",
+      "start": "2026-11-14T10:11:33.116142Z",
+      "type": "cmd",
+      "cmd": "which python3 pip3 && pip3 --version",
+      "exit": 0,
+      "seconds": 0.57,
+      "file": "steps/09_venv_check.txt"
+    },
+    {
+      "n": 10,
+      "id": "venv_deactivate",
+      "title": "Part 2 Step d: выход из окружения",
+      "start": "2026-11-14T10:11:33.683460Z",
+      "type": "cmd",
+      "cmd": "deactivate",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/10_venv_deactivate.txt"
+    },
+    {
+      "n": 11,
+      "id": "home_layout",
+      "title": "Part 2 Step e: Places, домашний каталог и ~/labs/devnet-src",
+      "start": "2026-11-14T10:11:33.736775Z",
+      "type": "cmd",
+      "cmd": "pwd && tree ~",
+      "exit": 0,
+      "seconds": 0.05,
+      "file": "steps/11_home_layout.txt"
+    },
+    {
+      "n": 12,
+      "id": "github_site",
+      "title": "Part 3 Step 2a: доступ в интернет, github.com отвечает",
+      "start": "2026-11-14T10:11:33.791754Z",
+      "type": "cmd",
+      "cmd": "curl -sI https://github.com | head -1",
+      "exit": 0,
+      "seconds": 0.1,
+      "file": "steps/12_github_site.txt"
+    },
+    {
+      "n": 13,
+      "id": "github_api",
+      "title": "Part 3 Step 2: учётная запись GitHub medivhkr существует (публичный API)",
+      "start": "2026-11-14T10:11:33.891262Z",
+      "type": "cmd",
+      "cmd": "curl -s https://api.github.com/users/medivhkr | grep -E '\"login\"|\"html_url\"'",
+      "exit": 0,
+      "seconds": 0.17,
+      "file": "steps/13_github_api.txt"
+    },
+    {
+      "n": 14,
+      "id": "github_profile",
+      "title": "Part 3 Step 2: страница профиля github.com/medivhkr",
+      "start": "2026-11-14T10:11:34.060752Z",
+      "type": "cmd",
+      "cmd": "curl -sI https://github.com/medivhkr | head -1",
+      "exit": 0,
+      "seconds": 0.29,
+      "file": "steps/14_github_profile.txt"
+    },
+    {
+      "n": 15,
+      "id": "sudo_list",
+      "title": "Part 3 Step 4: права sudo пользователя devasc (sudo shutdown -h now и sudo reboot не выполняются)",
+      "start": "2026-11-14T10:11:34.351287Z",
+      "type": "cmd",
+      "cmd": "sudo -l",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/15_sudo_list.txt"
+    },
+    {
+      "n": 16,
+      "id": "sudo_whoami",
+      "title": "Part 3 Step 4: команда от имени root через sudo",
+      "start": "2026-11-14T10:11:34.409038Z",
+      "type": "cmd",
+      "cmd": "sudo whoami",
+      "exit": 0,
+      "seconds": 0.06,
+      "file": "steps/16_sudo_whoami.txt"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+devasc@labvm:~$ uname -a && ls -l /.dockerenv
+Linux labvm 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026 x86_64 x86_
+64 x86_64 GNU/Linux
+-rwxr-xr-x 1 root root 0 Nov 14 10:10 /.dockerenv
+devasc@labvm:~$ free -h && df -h /
+              total        used        free      shared  buff/cache   available
+Mem:           15Gi       668Mi        13Gi        43Mi       1.9Gi        14Gi
+Swap:         3.0Gi          0B       3.0Gi
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         145G   60G   85G  42% /
+devasc@labvm:~$ cat ~/lab-env/setup-labvm.sh
+#!/usr/bin/env bash
+# Подготовка лабораторной среды, аналогичной ВМ DEVASC (Ubuntu 20.04, пользователь devasc,
+# имя хоста labvm, каталог ~/labs/devnet-src). Выполняется от root.
+#   Контейнер ubuntu:20.04 (основные лабораторные): bash lab-env/setup-labvm.sh
+#   ВМ раннера ubuntu-24.04 (лабораторные с systemd): sudo bash lab-env/setup-labvm.sh --vm
+set -euo pipefail
+
+MODE="${1:-container}"
+export DEBIAN_FRONTEND=noninteractive
+
+echo "== Пакеты"
+apt-get update -qq
+BASE_PKGS="sudo git curl wget ca-certificates nano less tree jq iproute2 iputils-ping net-tools dnsu
+tils \
+  openssh-client sshpass procps psmisc file unzip locales tzdata python3 python3-pip python3-venv \
+  python3-pexpect python3-yaml python3-paramiko"
+if [ "$MODE" = "--vm" ]; then
+  apt-get install -y -qq $BASE_PKGS ansible openssh-server >/dev/null
+else
+  apt-get install -y -qq $BASE_PKGS ansible >/dev/null
+fi
+
+# эмулятор терминала для записи протоколов (одна версия на обеих платформах)
+python3 -m pip install -q pyte==0.8.2 2>/dev/null || python3 -m pip install -q --break-system-packag
+es pyte==0.8.2
+
+echo "== Пользователь devasc"
+if ! id devasc >/dev/null 2>&1; then
+  useradd -m -s /bin/bash devasc
+fi
+echo "devasc ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/devasc
+chmod 0440 /etc/sudoers.d/devasc
+
+if [ "$MODE" = "--vm" ]; then
+  echo "== Имя хоста labvm"
+  hostnamectl set-hostname labvm || hostname labvm
+  grep -q labvm /etc/hosts || echo "127.0.1.1 labvm" >> /etc/hosts
+fi
+
+echo "== Каталог лабораторных"
+sudo -u devasc mkdir -p /home/devasc/labs/devnet-src
+sudo -u devasc git config --global init.defaultBranch master || true
+
+echo "== Версии"
+. /etc/os-release && echo "OS: $PRETTY_NAME"
+python3 --version
+ansible --version | head -1 || true
+echo "hostname: $(hostname)"
+devasc@labvm:~$ cat /etc/os-release
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+devasc@labvm:~$ whoami && id && hostname
+devasc
+uid=1000(devasc) gid=1000(devasc) groups=1000(devasc)
+labvm
+devasc@labvm:~$ python3 --version && pip3 --version && git --version && ansible --version
+Python 3.8.10
+pip 20.0.2 from /usr/lib/python3/dist-packages/pip (python 3.8)
+git version 2.25.1
+ansible 2.9.6
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/devasc/.ansible/plugins/modules', '/usr/share/ansible/plug
+ins/modules']
+  ansible python module location = /usr/lib/python3/dist-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 3.8.10 (default, Mar 18 2025, 20:04:55) [GCC 9.4.0]
+devasc@labvm:~$ python3 -m venv /tmp/venv-check
+devasc@labvm:~$ source /tmp/venv-check/bin/activate
+(venv-check) devasc@labvm:~$ which python3 pip3 && pip3 --version
+/tmp/venv-check/bin/python3
+/tmp/venv-check/bin/pip3
+pip 20.0.2 from /tmp/venv-check/lib/python3.8/site-packages/pip (python 3.8)
+(venv-check) devasc@labvm:~$ deactivate
+devasc@labvm:~$ pwd && tree ~
+/home/devasc
+/home/devasc
+├── lab-env
+│   └── setup-labvm.sh
+└── labs
+    └── devnet-src
+
+3 directories, 1 file
+devasc@labvm:~$ curl -sI https://github.com | head -1
+HTTP/2 200
+devasc@labvm:~$ curl -s https://api.github.com/users/medivhkr | grep -E '"login"|"html_url"'
+  "login": "medivhkr",
+  "html_url": "https://github.com/medivhkr",
+devasc@labvm:~$ curl -sI https://github.com/medivhkr | head -1
+HTTP/2 200
+devasc@labvm:~$ sudo -l
+Matching Defaults entries for devasc on labvm:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User devasc may run the following commands on labvm:
+    (ALL) NOPASSWD: ALL
+devasc@labvm:~$ sudo whoami
+root
+devasc@labvm:~$

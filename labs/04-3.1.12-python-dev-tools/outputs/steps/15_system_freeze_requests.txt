@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 -m pip freeze | grep requests
+requests==2.22.0
+requests-kerberos==0.12.0
+requests-ntlm==1.1.0

@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 circleClass.py
+Circumference of a circle with a radius of 2 is 12.56
+Circumference of a circle with a radius of 5 is 31.400000000000002
+Circumference of a circle with a radius of 7 is 43.96

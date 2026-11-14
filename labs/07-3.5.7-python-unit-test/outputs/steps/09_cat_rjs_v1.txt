@@ -1,0 +1,22 @@
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n recursive_json_search.py
+     1  # Fill the Python code in this file
+     2  from test_data import *
+     3  def json_search(key,input_object):
+     4      ret_val=[]
+     5      if isinstance(input_object, dict): # walk through a dictionary
+     6          for k, v in input_object.items(): # compare each key with the wanted key
+     7              if k == key:
+     8                  temp={k:v}
+     9                  ret_val.append(temp)
+    10              if isinstance(v, dict): # value is a nested dict: search it too
+    11                  json_search(key,v)
+    12              elif isinstance(v, list): # value is a list
+    13                  for item in v:
+    14                      if not isinstance(item, (str,int)): # nested dict/list: recurse
+    15                          json_search(key,item)
+    16      else: # input is a list (some APIs wrap JSON objects in a list)
+    17          for val in input_object:
+    18              if not isinstance(val, (str,int)):
+    19                  json_search(key,val)
+    20      return ret_val
+    21  print(json_search("issueSummary",data))

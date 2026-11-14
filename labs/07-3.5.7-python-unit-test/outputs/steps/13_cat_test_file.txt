@@ -1,0 +1,21 @@
+devasc@labvm:~/labs/devnet-src/unittest$ cat -n test_json_search.py
+     1  # Fill the Python code in this file
+     2  import unittest
+     3  from recursive_json_search import *
+     4  from test_data import *
+     5
+     6
+     7  class json_search_test(unittest.TestCase):
+     8      '''unit tests for json_search() defined in `recursive_json_search.py`'''
+     9      def test_search_found(self):
+    10          '''existing key: the returned list must not be empty'''
+    11          self.assertTrue([]!=json_search(key1,data))
+    12      def test_search_not_found(self):
+    13          '''missing key: the returned list must be empty'''
+    14          self.assertTrue([]==json_search(key2,data))
+    15      def test_is_a_list(self):
+    16          '''the return value must always be a list'''
+    17          self.assertIsInstance(json_search(key1,data),list)
+    18
+    19  if __name__ == '__main__':
+    20      unittest.main()

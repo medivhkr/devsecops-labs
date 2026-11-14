@@ -1,0 +1,3 @@
+devasc@labvm:~$ curl -s https://api.github.com/users/medivhkr | grep -E '"login"|"html_url"'
+  "login": "medivhkr",
+  "html_url": "https://github.com/medivhkr",

@@ -1,0 +1,4 @@
+devasc@labvm:~$ whoami && id && hostname
+devasc
+uid=1000(devasc) gid=1000(devasc) groups=1000(devasc)
+labvm

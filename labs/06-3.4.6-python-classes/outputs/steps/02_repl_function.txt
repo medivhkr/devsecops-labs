@@ -1,0 +1,12 @@
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> def functionName():
+...     print("functionName() is called directly by its name")
+...
+>>> functionName()
+functionName() is called directly by its name
+>>> type(functionName)
+<class 'function'>
+>>> exit()

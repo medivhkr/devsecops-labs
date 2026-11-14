@@ -1,0 +1,5 @@
+devasc@labvm:~$ head -n 2 /etc/os-release && hostname && python3 --version
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+labvm
+Python 3.8.10

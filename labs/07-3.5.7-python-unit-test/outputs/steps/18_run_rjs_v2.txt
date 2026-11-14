@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/unittest$ python3 recursive_json_search.py
+[{'issueSummary': 'Network Device 10.10.20.82 Is Unreachable From Controller'}]

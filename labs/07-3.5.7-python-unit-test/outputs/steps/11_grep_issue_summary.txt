@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/unittest$ grep -n issueSummary test_data.py
+1:key1 = "issueSummary"
+32:          "issueSummary": "Network Device 10.10.20.82 Is Unreachable From Controller",
