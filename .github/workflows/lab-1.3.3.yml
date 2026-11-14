@@ -1,0 +1,24 @@
+name: "Лаб. 1.3.3: Обзор Python"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/03-1.3.3-python-review/scenario.yml"
+      - "labs/03-1.3.3-python-review/prepare.sh"
+      - "labs/03-1.3.3-python-review/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 03-1.3.3-python-review
+      env: container

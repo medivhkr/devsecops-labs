@@ -1,0 +1,551 @@
+lab: "1.3.3"
+title: "Python Programming Review"
+collect:
+  - ~/labs/devnet-src/python
+# Интерпретатор python3 ведётся через interact: ожидаются приглашения ">>> " и "... "
+# (точки в регулярном выражении экранированы: '\.\.\. '). labrun в конце каждого шага ждёт
+# приглашение bash, поэтому каждая сессия интерпретатора завершается quit() в том же шаге.
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env
+    title: "Part 1: запуск ВМ DEVASC (стенд: ОС, имя хоста, пользователь)"
+    cmd: "cat /etc/os-release | head -4 && hostname && whoami"
+
+  # ---------- Part 2: Start Python and VS Code ----------
+  - id: python_version
+    title: "Part 2 Step 1a: версия Python"
+    cmd: "python3 -V"
+  - id: repl_calc_strings
+    title: "Part 2 Step 1b-3c: интерпретатор python3: калькулятор, строки, print(), quit()"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: "2+3"
+      - expect: '>>> '
+        send: "10-4"
+      - expect: '>>> '
+        send: "2*4"
+      - expect: '>>> '
+        send: "20/5"
+      - expect: '>>> '
+        send: "3**2"
+      - expect: '>>> '
+        send: "2+3*4**2/(7-5)"
+      - expect: '>>> '
+        send: '"Hello World!"'
+      - expect: '>>> '
+        send: "'Hello World!'"
+      - expect: '>>> '
+        send: 'print("Hello World!")'
+      - expect: '>>> '
+        send: "quit()"
+  - id: hello_world_file
+    title: "Part 2 Step 4a-d: файл hello-world.py в labs/devnet-src/python (вместо редактора VS Code)"
+    write_file:
+      path: ~/labs/devnet-src/python/hello-world.py
+      content: |
+        print("Hello World!")
+  - id: cd_python
+    title: "Part 2 Step 4e: терминал в каталоге ~/labs/devnet-src/python (вместо терминала VS Code)"
+    cmd: "cd ~/labs/devnet-src/python"
+  - id: cat_hello_world
+    title: "Part 2 Step 4e: содержимое hello-world.py"
+    cmd: "cat hello-world.py"
+  - id: run_hello_world
+    title: "Part 2 Step 4f: запуск hello-world.py в терминале"
+    cmd: "python3 hello-world.py"
+  - id: cd_home
+    title: "Part 2 Step 4g: терминал вне VS Code (домашний каталог)"
+    cmd: "cd ~"
+  - id: run_hello_world_path
+    title: "Part 2 Step 4g: запуск скрипта с указанием пути к файлу"
+    cmd: "python3 ~/labs/devnet-src/python/hello-world.py"
+
+  # ---------- Part 3: Review Data Types and Variables ----------
+  - id: cd_devnet_src
+    title: "Part 3 Step 1: переход в каталог ~/labs/devnet-src"
+    cmd: "cd labs/devnet-src"
+  - id: repl_types
+    title: "Part 3 Step 1: базовые типы данных и функция type()"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: "type(98)"
+      - expect: '>>> '
+        send: "type(98.6)"
+      - expect: '>>> '
+        send: 'type("Hi!")'
+      - expect: '>>> '
+        send: "type(True)"
+      - expect: '>>> '
+        send: "quit()"
+  - id: repl_boolean
+    title: "Part 3 Step 2: логические операторы сравнения"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: "1<2"
+      - expect: '>>> '
+        send: "1<1"
+      - expect: '>>> '
+        send: "1==1"
+      - expect: '>>> '
+        send: "1>=1"
+      - expect: '>>> '
+        send: "1<=1"
+      - expect: '>>> '
+        send: "1>2"
+      - expect: '>>> '
+        send: "1!=1"
+      - expect: '>>> '
+        send: "quit()"
+  - id: repl_variable
+    title: "Part 3 Step 3: создание и использование переменной"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: "x=3"
+      - expect: '>>> '
+        send: "x*5"
+      - expect: '>>> '
+        send: '"Cisco"*x'
+      - expect: '>>> '
+        send: "quit()"
+  - id: repl_concat
+    title: "Part 3 Step 4: конкатенация строковых переменных"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: 'str1="Cisco"'
+      - expect: '>>> '
+        send: 'str2="Networking"'
+      - expect: '>>> '
+        send: 'str3="Academy"'
+      - expect: '>>> '
+        send: 'space=" "'
+      - expect: '>>> '
+        send: "print(str1+space+str2+space+str3)"
+      - expect: '>>> '
+        send: "print(str1,str2,str3)"
+      - expect: '>>> '
+        send: "quit()"
+  - id: repl_casting
+    title: "Part 3 Step 5: приведение типов, f-строки и format()"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: "x=3"
+      - expect: '>>> '
+        send: 'print("The value of x is " + x)'
+      - expect: '>>> '
+        send: 'print("The value of x is " + str(x))'
+      - expect: '>>> '
+        send: "type(x)"
+      - expect: '>>> '
+        send: "x=str(x)"
+      - expect: '>>> '
+        send: "type(x)"
+      - expect: '>>> '
+        send: "num = 22/7"
+      - expect: '>>> '
+        send: 'f"The value of num is {num}"'
+      - expect: '>>> '
+        send: 'pi = "{:.2f}".format(num)'
+      - expect: '>>> '
+        send: 'f"The value of pi is {pi}."'
+      - expect: '>>> '
+        send: "quit()"
+
+  # ---------- Part 4: Review Lists and Dictionaries ----------
+  - id: repl_list
+    title: "Part 4 Step 1: список hostnames: type(), len(), индексы, изменение, del"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: 'hostnames=["R1","R2","R3","S1","S2"]'
+      - expect: '>>> '
+        send: "type(hostnames)"
+      - expect: '>>> '
+        send: "len(hostnames)"
+      - expect: '>>> '
+        send: "hostnames"
+      - expect: '>>> '
+        send: "hostnames[0]"
+      - expect: '>>> '
+        send: "hostnames[-1]"
+      - expect: '>>> '
+        send: 'hostnames[0]="RTR1"'
+      - expect: '>>> '
+        send: "hostnames"
+      - expect: '>>> '
+        send: "del hostnames[3]"
+      - expect: '>>> '
+        send: "hostnames"
+      - expect: '>>> '
+        send: "quit()"
+  - id: repl_dict
+    title: "Part 4 Step 2: словарь ipAddress: ключи, in, новая пара, список адресов R3"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: 'ipAddress={"R1":"10.1.1.1","R2":"10.2.2.1","R3":"10.3.3.1"}'
+      - expect: '>>> '
+        send: "type(ipAddress)"
+      - expect: '>>> '
+        send: "ipAddress"
+      - expect: '>>> '
+        send: "ipAddress['R1']"
+      - expect: '>>> '
+        send: '"R3" in ipAddress'
+      - expect: '>>> '
+        send: 'ipAddress["S1"]="10.1.1.10"'
+      - expect: '>>> '
+        send: "ipAddress"
+      - expect: '>>> '
+        send: 'ipAddress["R3"]=["10.3.3.1","10.3.3.2","10.3.3.3"]'
+      - expect: '>>> '
+        send: "ipAddress"
+      - expect: '>>> '
+        send: "quit()"
+
+  # ---------- Part 5: Review the Input Function ----------
+  - id: repl_input
+    title: "Part 5 Step 1: input() в интерпретаторе и вывод введённого значения"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: 'firstName = input("What is your first name? ")'
+      # [^"] отличает настоящий запрос input() от эха набранной строки, где перед текстом стоит кавычка
+      - expect: '[^"]What is your first name\? '
+        send: "Bob"
+      - expect: '>>> '
+        send: 'print("Hello " + firstName +"!")'
+      - expect: '>>> '
+        send: "quit()"
+  - id: cd_python_2
+    title: "Part 5 Step 2a: переход в каталог ~/labs/devnet-src/python"
+    cmd: "cd python"
+  - id: personal_info_file
+    title: "Part 5 Step 2a-c: скрипт personal-info.py (четыре input() и один print())"
+    write_file:
+      path: ~/labs/devnet-src/python/personal-info.py
+      content: |
+        firstName = input("What is your first name? ")
+        lastName = input("What is your last name? ")
+        location = input("What is your location? ")
+        age = input("What is your age? ")
+        print("Hi " + firstName, lastName + "! Your location is " + location + " and you are " + age + " years old.")
+  - id: cat_personal_info
+    title: "Part 5 Step 2c: содержимое personal-info.py"
+    cmd: "cat personal-info.py"
+  - id: run_personal_info
+    title: "Part 5 Step 2d: запуск personal-info.py"
+    cmd: "python3 personal-info.py"
+    timeout: 120
+    interact:
+      - expect: 'What is your first name\? '
+        send: "Bob"
+      - expect: 'What is your last name\? '
+        send: "Smith"
+      - expect: 'What is your location\? '
+        send: "London"
+      - expect: 'What is your age\? '
+        send: "36"
+
+  # ---------- Part 6: Review If, For, and While Functions ----------
+  - id: if_vlan_file
+    title: "Part 6 Step 1a: скрипт if-vlan.py (if/else)"
+    write_file:
+      path: ~/labs/devnet-src/python/if-vlan.py
+      content: |
+        nativeVLAN = 1
+        dataVLAN = 100
+        if nativeVLAN == dataVLAN:
+            print("The native VLAN and the data VLAN are the same.")
+        else:
+            print("The native VLAN and the data VLAN are different.")
+  - id: cat_if_vlan
+    title: "Part 6 Step 1a: содержимое if-vlan.py"
+    cmd: "cat if-vlan.py"
+  - id: run_if_vlan
+    title: "Part 6 Step 1b: запуск if-vlan.py (VLAN различаются)"
+    cmd: "python3 if-vlan.py"
+  - id: if_vlan_same_file
+    title: "Part 6 Step 1c: в if-vlan.py задано dataVLAN = 1"
+    write_file:
+      path: ~/labs/devnet-src/python/if-vlan.py
+      content: |
+        nativeVLAN = 1
+        dataVLAN = 1
+        if nativeVLAN == dataVLAN:
+            print("The native VLAN and the data VLAN are the same.")
+        else:
+            print("The native VLAN and the data VLAN are different.")
+  - id: cat_if_vlan_same
+    title: "Part 6 Step 1c: содержимое изменённого if-vlan.py"
+    cmd: "cat if-vlan.py"
+  - id: run_if_vlan_same
+    title: "Part 6 Step 1c: запуск if-vlan.py (VLAN совпадают)"
+    cmd: "python3 if-vlan.py"
+  - id: if_acl_file
+    title: "Part 6 Step 2a: скрипт if-acl.py (if/elif/else)"
+    write_file:
+      path: ~/labs/devnet-src/python/if-acl.py
+      content: |
+        aclNum = int(input("What is the IPv4 ACL number? "))
+        if aclNum >= 1 and aclNum <= 99:
+            print("This is a standard IPv4 ACL.")
+        elif aclNum >=100 and aclNum <= 199:
+            print("This is an extended IPv4 ACL.")
+        else:
+            print("This is not a standard or extended IPv4 ACL.")
+  - id: cat_if_acl
+    title: "Part 6 Step 2a: содержимое if-acl.py"
+    cmd: "cat if-acl.py"
+  - id: run_if_acl_10
+    title: "Part 6 Step 2b: if-acl.py, номер 10 (стандартный ACL)"
+    cmd: "python3 if-acl.py"
+    timeout: 120
+    interact:
+      - expect: 'What is the IPv4 ACL number\? '
+        send: "10"
+  - id: run_if_acl_110
+    title: "Part 6 Step 2b: if-acl.py, номер 110 (расширенный ACL)"
+    cmd: "python3 if-acl.py"
+    timeout: 120
+    interact:
+      - expect: 'What is the IPv4 ACL number\? '
+        send: "110"
+  - id: run_if_acl_200
+    title: "Part 6 Step 2b: if-acl.py, номер 200 (ни стандартный, ни расширенный)"
+    cmd: "python3 if-acl.py"
+    timeout: 120
+    interact:
+      - expect: 'What is the IPv4 ACL number\? '
+        send: "200"
+  - id: repl_for
+    title: "Part 6 Step 3a-c: цикл for в интерпретаторе, вложенный if, append()"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: '>>> '
+        send: 'devices=["R1","R2","R3","S1","S2"]'
+      - expect: '>>> '
+        send: "for item in devices:"
+      - expect: '\.\.\. '
+        send: "    print(item)"
+      - expect: '\.\.\. '
+        send: ""
+      - expect: '>>> '
+        send: "for item in devices:"
+      - expect: '\.\.\. '
+        send: '    if "R" in item:'
+      - expect: '\.\.\. '
+        send: "        print(item)"
+      - expect: '\.\.\. '
+        send: ""
+      - expect: '>>> '
+        send: "switches=[]"
+      - expect: '>>> '
+        send: "for item in devices:"
+      - expect: '\.\.\. '
+        send: '    if "S" in item:'
+      - expect: '\.\.\. '
+        send: "        switches.append(item)"
+      - expect: '\.\.\. '
+        send: ""
+      - expect: '>>> '
+        send: "switches"
+      - expect: '>>> '
+        send: "quit()"
+  - id: while_v1_file
+    title: "Part 6 Step 4a: скрипт while-loop.py (while y<=x)"
+    write_file:
+      path: ~/labs/devnet-src/python/while-loop.py
+      content: |
+        x=input("Enter a number to count to: ")
+        x=int(x)
+        y=1
+        while y<=x:
+            print(y)
+            y=y+1
+  - id: cat_while_v1
+    title: "Part 6 Step 4a: содержимое while-loop.py"
+    cmd: "cat while-loop.py"
+  - id: run_while_v1
+    title: "Part 6 Step 4b: запуск while-loop.py, счёт до 10"
+    cmd: "python3 while-loop.py"
+    timeout: 120
+    interact:
+      - expect: "Enter a number to count to: "
+        send: "10"
+  - id: while_v2_file
+    title: "Part 6 Step 4c: while True и break в while-loop.py"
+    write_file:
+      path: ~/labs/devnet-src/python/while-loop.py
+      content: |
+        x=input("Enter a number to count to: ")
+        x=int(x)
+        y=1
+        while True:
+            print(y)
+            y=y+1
+            if y>x:
+                break
+  - id: cat_while_v2
+    title: "Part 6 Step 4c: содержимое while-loop.py"
+    cmd: "cat while-loop.py"
+  - id: run_while_v2
+    title: "Part 6 Step 4d: повторный запуск while-loop.py, счёт до 10"
+    cmd: "python3 while-loop.py"
+    timeout: 120
+    interact:
+      - expect: "Enter a number to count to: "
+        send: "10"
+  - id: while_v3_file
+    title: "Part 6 Step 5a: внешний цикл while с командой выхода q/quit"
+    write_file:
+      path: ~/labs/devnet-src/python/while-loop.py
+      content: |
+        while True:
+            x=input("Enter a number to count to: ")
+            if x == 'q' or x == 'quit':
+                break
+
+            x=int(x)
+            y=1
+            while True:
+                print(y)
+                y=y+1
+                if y>x:
+                    break
+  - id: cat_while_v3
+    title: "Part 6 Step 5a: содержимое while-loop.py"
+    cmd: "cat while-loop.py"
+  - id: run_while_v3
+    title: "Part 6 Step 5b: запуск while-loop.py: 3, 5, затем quit"
+    cmd: "python3 while-loop.py"
+    timeout: 120
+    interact:
+      - expect: "Enter a number to count to: "
+        send: "3"
+      - expect: "Enter a number to count to: "
+        send: "5"
+      - expect: "Enter a number to count to: "
+        send: "quit"
+
+  # ---------- Part 7: Review Methods for File Access ----------
+  - id: ls_python
+    title: "Part 7 Step 1: каталог python, файл devices.txt (есть в ВМ DEVASC)"
+    cmd: "ls -l"
+  - id: file_access_v1_file
+    title: "Part 7 Step 1a-b: скрипт file-access.py (чтение devices.txt)"
+    write_file:
+      path: ~/labs/devnet-src/python/file-access.py
+      content: |
+        file=open("devices.txt","r")
+        for item in file:
+            print(item)
+        file.close()
+  - id: cat_file_access_v1
+    title: "Part 7 Step 1b: содержимое file-access.py"
+    cmd: "cat file-access.py"
+  - id: run_file_access_v1
+    title: "Part 7 Step 1c: запуск file-access.py"
+    cmd: "python3 file-access.py"
+  - id: file_access_v2_file
+    title: "Part 7 Step 2a: метод strip() в file-access.py"
+    write_file:
+      path: ~/labs/devnet-src/python/file-access.py
+      content: |
+        file=open("devices.txt","r")
+        for item in file:
+           item=item.strip()
+           print(item)
+        file.close()
+  - id: cat_file_access_v2
+    title: "Part 7 Step 2a: содержимое file-access.py"
+    cmd: "cat file-access.py"
+  - id: run_file_access_v2
+    title: "Part 7 Step 2b: запуск file-access.py без пустых строк"
+    cmd: "python3 file-access.py"
+  - id: file_access_v3_file
+    title: "Part 7 Step 3a: копирование строк файла в список devices"
+    write_file:
+      path: ~/labs/devnet-src/python/file-access.py
+      content: |
+        devices=[]
+        file=open("devices.txt","r")
+        for item in file:
+           item=item.strip()
+           devices.append(item)
+        file.close()
+        print(devices)
+  - id: cat_file_access_v3
+    title: "Part 7 Step 3a: содержимое file-access.py"
+    cmd: "cat file-access.py"
+  - id: run_file_access_v3
+    title: "Part 7 Step 3b: запуск file-access.py, список devices"
+    cmd: "python3 file-access.py"
+  - id: file_access_input_file
+    title: "Part 7 Step 4 (Challenge): скрипт file-access-input.py (режим a, while True, exit)"
+    write_file:
+      path: ~/labs/devnet-src/python/file-access-input.py
+      content: |
+        file = open("devices.txt", "a")
+        while True:
+            newItem = input("Enter device name: ")
+            if newItem == "exit":
+                print("All done!")
+                break
+            file.write(newItem + "\n")
+        file.close()
+  - id: cat_file_access_input
+    title: "Part 7 Step 4 (Challenge): содержимое file-access-input.py"
+    cmd: "cat file-access-input.py"
+  - id: backup_devices
+    title: "Part 7 Step 4 (Challenge): резервная копия devices.txt перед изменением"
+    cmd: "cp devices.txt devices.txt.bak"
+  - id: run_file_access_input
+    title: "Part 7 Step 4 (Challenge): добавление двух устройств, выход по exit"
+    cmd: "python3 file-access-input.py"
+    timeout: 120
+    interact:
+      - expect: "Enter device name: "
+        send: "Cisco 1941 Router"
+      - expect: "Enter device name: "
+        send: "Cisco 2950 Catalyst Switch"
+      - expect: "Enter device name: "
+        send: "exit"
+  - id: check_devices_list
+    title: "Part 7 Step 4 (Challenge): проверка содержимого devices.txt скриптом file-access.py"
+    cmd: "python3 file-access.py"
+  - id: devices_tail_bytes
+    title: "Part 7 Step 4 (Challenge): последние байты исходного devices.txt (нет перевода строки)"
+    cmd: "tail -c 27 devices.txt.bak | od -c"
+  - id: fix_devices_newline
+    title: "Part 7 Step 4 (Challenge): восстановление devices.txt из копии, перевод строки в конце"
+    cmd: "cp devices.txt.bak devices.txt && echo >> devices.txt"
+  - id: run_file_access_input_2
+    title: "Part 7 Step 4 (Challenge): повторное добавление двух устройств"
+    cmd: "python3 file-access-input.py"
+    timeout: 120
+    interact:
+      - expect: "Enter device name: "
+        send: "Cisco 1941 Router"
+      - expect: "Enter device name: "
+        send: "Cisco 2950 Catalyst Switch"
+      - expect: "Enter device name: "
+        send: "exit"
+  - id: check_devices_list_2
+    title: "Part 7 Step 4 (Challenge): итоговая проверка списка устройств"
+    cmd: "python3 file-access.py"
