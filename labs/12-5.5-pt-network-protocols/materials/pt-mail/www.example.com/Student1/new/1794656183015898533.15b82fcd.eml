@@ -1,0 +1,9 @@
+Return-Path: <Student2@www.example.com>
+Received: from PC-B ([172.16.3.2]) by www.example.com with SMTP; Sat, 14 Nov 2026 11:36:23 -0000
+From: Student2 <Student2@www.example.com>
+To: Student1@www.example.com
+Subject: Email
+Message-ID: <pcb-email-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+How are you?

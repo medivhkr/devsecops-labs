@@ -1,0 +1,9 @@
+[Desktop Entry]
+X-SnapInstanceName=cisco-packet-tracer
+Type=Application
+Name=Cisco Packet Tracer
+Comment=Network simulation tool
+Exec=env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/cisco-packet-tracer_cisco-pacet-tracer.desktop /snap/bin/cisco-packet-tracer %f
+Icon=/snap/cisco-packet-tracer/current/meta/gui/icon.png
+Terminal=false
+Categories=Education;Network;

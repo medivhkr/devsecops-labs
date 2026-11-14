@@ -1,0 +1,105 @@
+{
+  "info": {
+    "name": "School Library API (DEVASC lab 4.5.5)",
+    "description": "Requests of the Postman tabs in lab 4.5.5 Part 3: GET /books, POST /loginViaBasic (Basic Auth), POST /books (API Key X-API-KEY, raw JSON body) and GET /books with the Query Params includeISBN and sortBy.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /loginViaBasic",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// In the lab the token is copied by hand from this response into the API Key",
+              "// Value of POST /books. Newman has no GUI: the token goes to {{token}} instead.",
+              "pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {"key": "username", "value": "cisco", "type": "string"},
+            {"key": "password", "value": "Cisco123!", "type": "string"}
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/loginViaBasic",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "loginViaBasic"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /books",
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {"key": "key", "value": "X-API-KEY", "type": "string"},
+            {"key": "value", "value": "{{token}}", "type": "string"},
+            {"key": "in", "value": "header", "type": "string"}
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 4,\n  \"title\": \"IPv6 Fundamentals\",\n  \"author\": \"Rick Graziani\",\n  \"isbn\": \"978 158144778\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /books (Params)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"],
+          "query": [
+            {"key": "includeISBN", "value": "true"},
+            {"key": "sortBy", "value": "author"}
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {"key": "token", "value": ""}
+  ]
+}

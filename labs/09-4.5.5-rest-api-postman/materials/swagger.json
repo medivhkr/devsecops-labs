@@ -1,0 +1,282 @@
+{
+    "swagger": "2.0",
+    "basePath": "/api/v1",
+    "info": {
+        "title": "School Library API",
+        "version": "1",
+        "description": "API access to the School Library - build your own apps using this API."
+    },
+    "produces": [
+        "application/json",
+        "application/xml",
+        "application/yaml"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "apikey": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-API-KEY"
+        }
+    },
+    "tags": [
+        {
+            "name": "/api/v1",
+            "description": "Default namespace"
+        }
+    ],
+    "paths": {
+        "/loginViaBasic": {
+            "post": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "post_login_via_basic",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "headers": {
+                            "Authorization: Basic": {
+                                "type": "string",
+                                "description": "BASE64 encoded username:password"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/loginViaJSON": {
+            "post": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "post_login_via_json",
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Credentials"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/books": {
+            "get": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "get_books",
+                "parameters": [
+                    {
+                        "name": "includeISBN",
+                        "in": "query",
+                        "type": "boolean",
+                        "description": "Include in the results the ISBN numbers. Default=false"
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "type": "string",
+                        "enum": [
+                            "id",
+                            "title",
+                            "author",
+                            "isbn"
+                        ],
+                        "description": "Sort results using the specified parameter. Default=id"
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "type": "string",
+                        "description": "Return only books by the given Author."
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "type": "integer",
+                        "description": "Replies are split into pages of 10 records. The RFC 5988 'Link' response header points to the next page; use this parameter to request a page. Pages are numbered from 0."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "post_books",
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "get_book",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "put_book",
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "/api/v1"
+                ],
+                "operationId": "delete_book",
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Book"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Book": {
+            "type": "object",
+            "required": [
+                "author",
+                "title"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "Id"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Book title",
+                    "minLength": 1,
+                    "maxLength": 200
+                },
+                "author": {
+                    "type": "string",
+                    "description": "Author",
+                    "minLength": 1,
+                    "maxLength": 200
+                }
+            }
+        },
+        "Credentials": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "Username",
+                    "minLength": 1,
+                    "maxLength": 32
+                },
+                "password": {
+                    "type": "string",
+                    "description": "Password",
+                    "minLength": 1,
+                    "maxLength": 200
+                }
+            }
+        }
+    }
+}
