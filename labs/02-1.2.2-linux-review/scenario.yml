@@ -236,7 +236,7 @@ steps:
     title: "Part 5 Step 3b: все процессы системы"
     cmd: "ps -e"
   - id: ps_e_more
-    title: "Part 5 Step 3c: постраничный вывод | more (Enter - строка, пробел - экран, Ctrl+C - выход)"
+    title: "Part 5 Step 3c: постраничный вывод | more (Enter - строка, пробел - экран, q - выход)"
     cmd: "ps -e | more"
     timeout: 120
     interact:
@@ -251,14 +251,10 @@ steps:
         delay: 0.5
         send: " "
         raw: true
+      # Выход клавишей q: more из util-linux 2.39 (Ubuntu 24.04) не реагирует на Ctrl+C
+      # в режиме приглашения --More-- при записи через псевдотерминал (проверено в CI).
       - expect: "--More--"
         timeout: 15
-        optional: true
-        delay: 0.5
-        sendcontrol: "c"
-      # если more после Ctrl+C снова показывает приглашение, выход клавишей q
-      - expect: "--More--"
-        timeout: 5
         optional: true
         delay: 0.5
         send: "q"

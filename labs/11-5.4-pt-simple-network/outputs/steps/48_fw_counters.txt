@@ -3,4 +3,4 @@ Chain OUTSIDE-DMZ (1 references)
 num   pkts bytes target     prot opt in     out     source               destination
 1        6   360 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
 t:80
-2       31  1956 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
+2       29  1836 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0

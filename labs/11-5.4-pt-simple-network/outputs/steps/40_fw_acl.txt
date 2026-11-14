@@ -10,7 +10,7 @@ e RELATED,ESTABLISHED /* stateful: return traffic */
 ide(100) -> dmz/outside: permit */
 3        0     0 ACCEPT     0    --  VLAN3  VLAN2   0.0.0.0/0            0.0.0.0/0            /* dmz
 (70) -> outside(0): permit */
-4       16   984 OUTSIDE-DMZ  0    --  VLAN2  *       0.0.0.0/0            0.0.0.0/0
+4       15   924 OUTSIDE-DMZ  0    --  VLAN2  *       0.0.0.0/0            0.0.0.0/0
 
 Chain OUTPUT (policy ACCEPT 7 packets, 600 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
@@ -20,4 +20,4 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   144 ACCEPT     1    --  *      *       0.0.0.0/0            192.168.2.3
 2        3   180 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
 t:80
-3       11   660 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
+3       10   600 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0

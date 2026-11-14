@@ -1,5 +1,5 @@
 devasc@labvm:~$ sudo ip netns exec PC-B traceroute -n -I 64.100.0.10
 traceroute to 64.100.0.10 (64.100.0.10), 30 hops max, 60 byte packets
- 1  172.16.3.1  0.036 ms  0.008 ms  0.006 ms
- 2  10.2.2.1  0.013 ms  0.008 ms  0.008 ms
- 3  64.100.0.10  0.013 ms  0.008 ms  0.008 ms
+ 1  172.16.3.1  0.042 ms  0.009 ms  0.006 ms
+ 2  10.2.2.1  0.013 ms  0.008 ms  0.007 ms
+ 3  64.100.0.10  0.013 ms  0.009 ms  0.008 ms

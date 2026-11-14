@@ -1,4 +1,4 @@
 devasc@labvm:~$ sudo ip netns exec DEVASC-Server ss -ltnp
 State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
 LISTEN     0          5                192.168.2.3:80                  0.0.0.0:*         users:(("py
-thon3",pid=4019,fd=3))
+thon3",pid=3987,fd=3))

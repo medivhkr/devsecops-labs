@@ -80,20 +80,20 @@ devasc@labvm:~$ sudo ip netns exec PC-B ip route add default via 172.16.3.1
 devasc@labvm:~$ sudo ip netns exec PC-A ip address show Fa0 && sudo ip netns exec PC-A ip route
 2: Fa0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 100
 0
-    link/ether 5a:3e:13:7a:6b:b4 brd ff:ff:ff:ff:ff:ff link-netns S2
+    link/ether 0e:33:f0:69:0e:5a brd ff:ff:ff:ff:ff:ff link-netns S2
     inet 192.168.1.2/24 scope global Fa0
        valid_lft forever preferred_lft forever
-    inet6 fe80::583e:13ff:fe7a:6bb4/64 scope link tentative
+    inet6 fe80::c33:f0ff:fe69:e5a/64 scope link tentative
        valid_lft forever preferred_lft forever
 default via 192.168.1.1 dev Fa0
 192.168.1.0/24 dev Fa0 proto kernel scope link src 192.168.1.2
 devasc@labvm:~$ sudo ip netns exec PC-B ip address show Fa0 && sudo ip netns exec PC-B ip route
 2: Fa0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 100
 0
-    link/ether 12:2f:1c:3d:d8:a4 brd ff:ff:ff:ff:ff:ff link-netns S3
+    link/ether 0e:6a:fc:4d:44:b5 brd ff:ff:ff:ff:ff:ff link-netns S3
     inet 172.16.3.2/24 scope global Fa0
        valid_lft forever preferred_lft forever
-    inet6 fe80::102f:1cff:fe3d:d8a4/64 scope link tentative
+    inet6 fe80::c6a:fcff:fe4d:44b5/64 scope link tentative
        valid_lft forever preferred_lft forever
 default via 172.16.3.1 dev Fa0
 172.16.3.0/24 dev Fa0 proto kernel scope link src 172.16.3.2
@@ -110,82 +110,82 @@ R3
 R1
 devasc@labvm:~$ sudo ip netns exec PC-A ping -c 4 192.168.1.1
 PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
-64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.070 ms
-64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.053 ms
-64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.054 ms
-64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.052 ms
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.075 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.058 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.040 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.054 ms
 
 --- 192.168.1.1 ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 3067ms
-rtt min/avg/max/mdev = 0.052/0.057/0.070/0.007 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3064ms
+rtt min/avg/max/mdev = 0.040/0.056/0.075/0.012 ms
 devasc@labvm:~$ sudo ip netns exec PC-B ping -c 4 172.16.3.1
 PING 172.16.3.1 (172.16.3.1) 56(84) bytes of data.
-64 bytes from 172.16.3.1: icmp_seq=1 ttl=64 time=0.064 ms
-64 bytes from 172.16.3.1: icmp_seq=2 ttl=64 time=0.047 ms
-64 bytes from 172.16.3.1: icmp_seq=3 ttl=64 time=0.038 ms
-64 bytes from 172.16.3.1: icmp_seq=4 ttl=64 time=0.050 ms
+64 bytes from 172.16.3.1: icmp_seq=1 ttl=64 time=0.063 ms
+64 bytes from 172.16.3.1: icmp_seq=2 ttl=64 time=0.051 ms
+64 bytes from 172.16.3.1: icmp_seq=3 ttl=64 time=0.047 ms
+64 bytes from 172.16.3.1: icmp_seq=4 ttl=64 time=0.048 ms
 
 --- 172.16.3.1 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3073ms
-rtt min/avg/max/mdev = 0.038/0.049/0.064/0.009 ms
+rtt min/avg/max/mdev = 0.047/0.052/0.063/0.006 ms
 devasc@labvm:~$ sudo ip netns exec PC-B ping -c 4 64.100.0.10
 PING 64.100.0.10 (64.100.0.10) 56(84) bytes of data.
-64 bytes from 64.100.0.10: icmp_seq=1 ttl=62 time=0.071 ms
-64 bytes from 64.100.0.10: icmp_seq=2 ttl=62 time=0.061 ms
-64 bytes from 64.100.0.10: icmp_seq=3 ttl=62 time=0.058 ms
+64 bytes from 64.100.0.10: icmp_seq=1 ttl=62 time=0.069 ms
+64 bytes from 64.100.0.10: icmp_seq=2 ttl=62 time=0.060 ms
+64 bytes from 64.100.0.10: icmp_seq=3 ttl=62 time=0.045 ms
 64 bytes from 64.100.0.10: icmp_seq=4 ttl=62 time=0.061 ms
 
 --- 64.100.0.10 ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 3072ms
-rtt min/avg/max/mdev = 0.058/0.062/0.071/0.005 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3073ms
+rtt min/avg/max/mdev = 0.045/0.058/0.069/0.008 ms
 devasc@labvm:~$ sudo ip netns exec PC-B ping -c 4 209.165.200.227
 PING 209.165.200.227 (209.165.200.227) 56(84) bytes of data.
-64 bytes from 209.165.200.227: icmp_seq=1 ttl=60 time=0.081 ms
-64 bytes from 209.165.200.227: icmp_seq=2 ttl=60 time=0.083 ms
-64 bytes from 209.165.200.227: icmp_seq=3 ttl=60 time=0.081 ms
-64 bytes from 209.165.200.227: icmp_seq=4 ttl=60 time=0.083 ms
+64 bytes from 209.165.200.227: icmp_seq=1 ttl=60 time=0.085 ms
+64 bytes from 209.165.200.227: icmp_seq=2 ttl=60 time=0.084 ms
+64 bytes from 209.165.200.227: icmp_seq=3 ttl=60 time=0.085 ms
+64 bytes from 209.165.200.227: icmp_seq=4 ttl=60 time=0.078 ms
 
 --- 209.165.200.227 ping statistics ---
-4 packets transmitted, 4 received, 0% packet loss, time 3073ms
-rtt min/avg/max/mdev = 0.081/0.082/0.083/0.001 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3072ms
+rtt min/avg/max/mdev = 0.078/0.083/0.085/0.003 ms
 devasc@labvm:~$ sudo ip netns exec PC-B traceroute -n -I 64.100.0.10
 traceroute to 64.100.0.10 (64.100.0.10), 30 hops max, 60 byte packets
- 1  172.16.3.1  0.036 ms  0.008 ms  0.006 ms
- 2  10.2.2.1  0.013 ms  0.008 ms  0.008 ms
- 3  64.100.0.10  0.013 ms  0.008 ms  0.008 ms
+ 1  172.16.3.1  0.042 ms  0.009 ms  0.006 ms
+ 2  10.2.2.1  0.013 ms  0.008 ms  0.007 ms
+ 3  64.100.0.10  0.013 ms  0.009 ms  0.008 ms
 devasc@labvm:~$ sudo ip netns exec PC-B traceroute -n -I 209.165.200.227
 traceroute to 209.165.200.227 (209.165.200.227), 30 hops max, 60 byte packets
- 1  172.16.3.1  0.031 ms  0.012 ms  0.008 ms
- 2  10.2.2.1  0.018 ms  0.011 ms  0.007 ms
- 3  10.1.1.2  0.016 ms  0.009 ms  0.008 ms
- 4  209.165.200.227  0.029 ms  0.013 ms  0.013 ms
- 5  209.165.200.227  0.025 ms  0.019 ms  0.019 ms
+ 1  172.16.3.1  0.038 ms  0.010 ms  0.006 ms
+ 2  10.2.2.1  0.012 ms  0.008 ms  0.007 ms
+ 3  10.1.1.2  0.016 ms  0.009 ms  0.009 ms
+ 4  209.165.200.227  0.030 ms  0.012 ms  0.013 ms
+ 5  209.165.200.227  0.024 ms  0.013 ms  0.013 ms
 devasc@labvm:~$ sudo ip netns exec DEVASC-Server ss -ltnp
 State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
 LISTEN     0          5                192.168.2.3:80                  0.0.0.0:*         users:(("py
-thon3",pid=4019,fd=3))
+thon3",pid=3987,fd=3))
 devasc@labvm:~$ ls -l /srv/DEVASC-Server/http/
 total 4
--rw-r--r-- 1 root root 143 Nov 14 11:03 index.html
+-rw-r--r-- 1 root root 143 Nov 14 11:11 index.html
 devasc@labvm:~$ ls -l /srv/DEVASC-Server/http/ && cat /srv/DEVASC-Server/http/index.html
 total 4
--rw-r--r-- 1 devasc devasc 119 Nov 14 11:04 index.html
+-rw-r--r-- 1 devasc devasc 119 Nov 14 11:12 index.html
 <html>
 <center><font size='+2' color='blue'>DevNet Associate</font></center>
 <hr>Welcome to the NetAcad DEVASC course!
 devasc@labvm:~$ sudo ip netns exec PC-B curl -i http://209.165.200.227
 HTTP/1.0 200 OK
 Server: SimpleHTTP/0.6 Python/3.12.3
-Date: Sat, 14 Nov 2026 11:04:00 GMT
+Date: Sat, 14 Nov 2026 11:12:14 GMT
 Content-type: text/html
 Content-Length: 119
-Last-Modified: Sat, 14 Nov 2026 11:04:00 GMT
+Last-Modified: Sat, 14 Nov 2026 11:12:14 GMT
 
 <html>
 <center><font size='+2' color='blue'>DevNet Associate</font></center>
 <hr>Welcome to the NetAcad DEVASC course!
 devasc@labvm:~$ sudo cat /var/log/DEVASC-Server-http.log
-172.16.3.2 - - [14/Nov/2026 11:04:00] "GET / HTTP/1.1" 200 -
+172.16.3.2 - - [14/Nov/2026 11:12:14] "GET / HTTP/1.1" 200 -
 devasc@labvm:~$ sudo ip netns exec FIREWALL ip -br address && sudo ip netns exec FIREWALL ip route
 lo               UNKNOWN        127.0.0.1/8
 VLAN1@if3        UP             192.168.1.1/24
@@ -196,7 +196,7 @@ default via 209.165.200.225 dev VLAN2
 192.168.2.0/24 dev VLAN3 proto kernel scope link src 192.168.2.1
 209.165.200.224/29 dev VLAN2 proto kernel scope link src 209.165.200.226
 devasc@labvm:~$ sudo ip netns exec FIREWALL iptables-save
-# Generated by iptables-save v1.8.10 (nf_tables) on Sat Nov 14 11:04:34 2026
+# Generated by iptables-save v1.8.10 (nf_tables) on Sat Nov 14 11:12:21 2026
 *filter
 :INPUT ACCEPT [4:336]
 :FORWARD DROP [0:0]
@@ -211,8 +211,8 @@ devasc@labvm:~$ sudo ip netns exec FIREWALL iptables-save
 -A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 80 -j ACCEPT
 -A OUTSIDE-DMZ -j DROP
 COMMIT
-# Completed on Sat Nov 14 11:04:34 2026
-# Generated by iptables-save v1.8.10 (nf_tables) on Sat Nov 14 11:04:34 2026
+# Completed on Sat Nov 14 11:12:21 2026
+# Generated by iptables-save v1.8.10 (nf_tables) on Sat Nov 14 11:12:21 2026
 *nat
 :PREROUTING ACCEPT [1:84]
 :INPUT ACCEPT [1:84]
@@ -225,7 +225,7 @@ COMMIT
 -A POSTROUTING -s 192.168.1.0/24 -o VLAN2 -m comment --comment "PAT inside -> outside interface" -j
 MASQUERADE
 COMMIT
-# Completed on Sat Nov 14 11:04:34 2026
+# Completed on Sat Nov 14 11:12:21 2026
 devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -L -n -v --line-numbers
 Chain INPUT (policy ACCEPT 4 packets, 336 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
@@ -238,7 +238,7 @@ e RELATED,ESTABLISHED /* stateful: return traffic */
 ide(100) -> dmz/outside: permit */
 3        0     0 ACCEPT     0    --  VLAN3  VLAN2   0.0.0.0/0            0.0.0.0/0            /* dmz
 (70) -> outside(0): permit */
-4       16   984 OUTSIDE-DMZ  0    --  VLAN2  *       0.0.0.0/0            0.0.0.0/0
+4       15   924 OUTSIDE-DMZ  0    --  VLAN2  *       0.0.0.0/0            0.0.0.0/0
 
 Chain OUTPUT (policy ACCEPT 7 packets, 600 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
@@ -248,11 +248,11 @@ num   pkts bytes target     prot opt in     out     source               destina
 1        2   144 ACCEPT     1    --  *      *       0.0.0.0/0            192.168.2.3
 2        3   180 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
 t:80
-3       11   660 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
+3       10   600 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
 devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -t nat -L -n -v --line-numbers
 Chain PREROUTING (policy ACCEPT 1 packets, 84 bytes)
 num   pkts bytes target     prot opt in     out     source               destination
-1       19  1164 DNAT       0    --  VLAN2  *       0.0.0.0/0            209.165.200.227      /* sta
+1       18  1104 DNAT       0    --  VLAN2  *       0.0.0.0/0            209.165.200.227      /* sta
 tic NAT 209.165.200.227 -> 192.168.2.3 */ to:192.168.2.3
 
 Chain INPUT (policy ACCEPT 1 packets, 84 bytes)
@@ -273,19 +273,19 @@ Chain OUTSIDE-DMZ (1 references)
 num   pkts bytes target     prot opt in     out     source               destination
 1        3   180 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
 t:80
-2       11   660 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
+2       10   600 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
 devasc@labvm:~$ sudo ip netns exec PC-B ping -c 4 209.165.200.227
 PING 209.165.200.227 (209.165.200.227) 56(84) bytes of data.
 
 --- 209.165.200.227 ping statistics ---
-4 packets transmitted, 0 received, 100% packet loss, time 3072ms
+4 packets transmitted, 0 received, 100% packet loss, time 3096ms
 devasc@labvm:~$ sudo ip netns exec PC-B curl -i http://209.165.200.227
 HTTP/1.0 200 OK
 Server: SimpleHTTP/0.6 Python/3.12.3
-Date: Sat, 14 Nov 2026 11:04:47 GMT
+Date: Sat, 14 Nov 2026 11:12:34 GMT
 Content-type: text/html
 Content-Length: 119
-Last-Modified: Sat, 14 Nov 2026 11:04:00 GMT
+Last-Modified: Sat, 14 Nov 2026 11:12:14 GMT
 
 <html>
 <center><font size='+2' color='blue'>DevNet Associate</font></center>
@@ -297,5 +297,5 @@ Chain OUTSIDE-DMZ (1 references)
 num   pkts bytes target     prot opt in     out     source               destination
 1        6   360 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
 t:80
-2       31  1956 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
+2       29  1836 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0
 devasc@labvm:~$

@@ -2,4 +2,4 @@ devasc@labvm:~$ sudo ip netns exec PC-B ping -c 4 209.165.200.227
 PING 209.165.200.227 (209.165.200.227) 56(84) bytes of data.
 
 --- 209.165.200.227 ping statistics ---
-4 packets transmitted, 0 received, 100% packet loss, time 3072ms
+4 packets transmitted, 0 received, 100% packet loss, time 3096ms

@@ -1,3 +1,3 @@
 devasc@labvm:~$ ls -l /srv/DEVASC-Server/http/
 total 4
--rw-r--r-- 1 root root 143 Nov 14 11:03 index.html
+-rw-r--r-- 1 root root 143 Nov 14 11:11 index.html
