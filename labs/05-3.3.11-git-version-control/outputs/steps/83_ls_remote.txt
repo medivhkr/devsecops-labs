@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git ls-remote origin
+5e3705033c2c5bda9a90c3990eb41d027cd1ed3c        refs/heads/master

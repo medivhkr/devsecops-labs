@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Added a third line in feature branch"
+[feature 908d3cd] Added a third line in feature branch
+ 1 file changed, 1 insertion(+)

@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Added additional line to file"
+[master ede0db5] Added additional line to file
+ 1 file changed, 1 insertion(+)

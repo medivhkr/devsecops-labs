@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git merge test
+Auto-merging DEVASC.txt
+CONFLICT (content): Merge conflict in DEVASC.txt
+Automatic merge failed; fix conflicts and then commit the result.

@@ -1,0 +1,4 @@
+devasc@labvm:~$ git config --list
+init.defaultbranch=master
+user.name=Adis Azamatov
+user.email=147084862+medivhkr@users.noreply.github.com

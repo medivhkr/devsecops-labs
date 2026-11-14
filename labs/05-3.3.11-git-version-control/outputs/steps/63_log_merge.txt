@@ -1,0 +1,37 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit b8f2067dfcf3f7bc278237759478ff8d78724a67 (HEAD -> master)
+Merge: 0609ecf 30ce942
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Manually merged from test branch
+
+commit 0609ecf457628fc4cca6c0c4b62cf38f838dfec7
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Changed Cisco to DevNet
+
+commit 30ce942eea20f615d551bdba939a38a7f443daad (test)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Change Cisco to NetAcad
+
+commit 908d3cdfb70d6e935d209064553dcaa56accd492
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:19 2026 +0000
+
+    Added a third line in feature branch
+
+commit ede0db5433103874befdffd7fb1aadaa263fc395
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes

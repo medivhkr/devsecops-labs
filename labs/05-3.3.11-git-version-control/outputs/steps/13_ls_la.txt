@@ -1,0 +1,6 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ ls -la
+total 16
+drwxr-xr-x 3 devasc devasc 4096 Nov 14 10:15 .
+drwxrwxr-x 3 devasc devasc 4096 Nov 14 10:15 ..
+drwxr-xr-x 7 devasc devasc 4096 Nov 14 10:15 .git
+-rw-r--r-- 1 devasc devasc   48 Nov 14 10:15 DEVASC.txt

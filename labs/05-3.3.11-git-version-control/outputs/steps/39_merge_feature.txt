@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git merge feature
+Updating ede0db5..908d3cd
+Fast-forward
+ DEVASC.txt | 1 +
+ 1 file changed, 1 insertion(+)

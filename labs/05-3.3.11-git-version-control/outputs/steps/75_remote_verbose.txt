@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git remote --verbose
+origin  git@github.com:medivhkr/devasc-study-team.git (fetch)
+origin  git@github.com:medivhkr/devasc-study-team.git (push)

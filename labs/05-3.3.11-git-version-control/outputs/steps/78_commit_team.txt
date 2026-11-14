@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git commit -m "Add DEVASC.txt file to de
+vasc-study-team"
+[master (root-commit) 5e37050] Add DEVASC.txt file to devasc-study-team
+ 1 file changed, 3 insertions(+)
+ create mode 100644 DEVASC.txt

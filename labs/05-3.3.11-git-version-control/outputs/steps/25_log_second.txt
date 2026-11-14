@@ -1,0 +1,12 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit ede0db5433103874befdffd7fb1aadaa263fc395 (HEAD -> master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes

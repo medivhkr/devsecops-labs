@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git checkout feature
+Switched to branch 'feature'

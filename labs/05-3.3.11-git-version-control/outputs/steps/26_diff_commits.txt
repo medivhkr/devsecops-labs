@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git diff HEAD~1 HEAD
+diff --git a/DEVASC.txt b/DEVASC.txt
+index 93cd3fb..085273f 100644
+--- a/DEVASC.txt
++++ b/DEVASC.txt
+@@ -1 +1,2 @@
+ I am on my way to passing the Cisco DEVASC exam
++I am beginning to understand Git!

@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Committing DEVASC.txt to begin tracking cha
+nges"
+[master (root-commit) b22adfc] Committing DEVASC.txt to begin tracking changes
+ 1 file changed, 1 insertion(+)
+ create mode 100644 DEVASC.txt

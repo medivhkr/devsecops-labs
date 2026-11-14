@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -a -m "Manually merged from test branch"
+[master b8f2067] Manually merged from test branch

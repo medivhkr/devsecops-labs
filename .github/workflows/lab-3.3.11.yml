@@ -1,15 +1,9 @@
 name: "Лаб. 3.3.11: Контроль версий Git"
 
+# Работа отправляет коммиты в отдельный репозиторий medivhkr/devasc-study-team.
+# Повторный запуск возможен только вручную и только после очистки этого репозитория,
+# иначе git push будет отклонён (история на GitHub уже содержит коммиты из первого прогона).
 on:
-  push:
-    branches: [main]
-    paths:
-      - "labs/05-3.3.11-git-version-control/scenario.yml"
-      - "labs/05-3.3.11-git-version-control/prepare.sh"
-      - "labs/05-3.3.11-git-version-control/src/**"
-      - "tools/labrun/**"
-      - "tools/csr1kv_emulator/**"
-      - "lab-env/**"
   workflow_dispatch:
 
 permissions:

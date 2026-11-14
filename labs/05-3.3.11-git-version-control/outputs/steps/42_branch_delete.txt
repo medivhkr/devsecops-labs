@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch -d feature
+Deleted branch feature (was 908d3cd).

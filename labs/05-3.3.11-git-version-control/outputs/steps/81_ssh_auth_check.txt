@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ ssh -T git@github.com
+Warning: Permanently added the ED25519 host key for IP address '140.82.114.4' to the list of known h
+osts.
+Hi medivhkr/devasc-study-team! You've successfully authenticated, but GitHub does not provide shell
+access.

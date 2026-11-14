@@ -1,0 +1,4 @@
+devasc@labvm:~$ grep PRETTY_NAME /etc/os-release && hostname && git --version
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+labvm
+git version 2.25.1

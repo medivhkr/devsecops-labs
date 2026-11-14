@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch feature
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   DEVASC.txt

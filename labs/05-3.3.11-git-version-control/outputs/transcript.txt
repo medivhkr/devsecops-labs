@@ -1,0 +1,353 @@
+devasc@labvm:~$ grep PRETTY_NAME /etc/os-release && hostname && git --version
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+labvm
+git version 2.25.1
+devasc@labvm:~$ ls
+labs
+devasc@labvm:~$ git config --global user.name "Adis Azamatov"
+devasc@labvm:~$ git config --global user.email 147084862+medivhkr@users.noreply.github.com
+devasc@labvm:~$ git config --list
+init.defaultbranch=master
+user.name=Adis Azamatov
+user.email=147084862+medivhkr@users.noreply.github.com
+devasc@labvm:~$ cd labs/devnet-src/
+devasc@labvm:~/labs/devnet-src$ mkdir git-intro
+devasc@labvm:~/labs/devnet-src$ cd git-intro
+devasc@labvm:~/labs/devnet-src/git-intro$ git init
+Initialized empty Git repository in /home/devasc/labs/devnet-src/git-intro/.git/
+devasc@labvm:~/labs/devnet-src/git-intro$ ls -a
+.  ..  .git
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+devasc@labvm:~/labs/devnet-src/git-intro$ echo "I am on my way to passing the Cisco DEVASC exam" > D
+EVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ ls -la
+total 16
+drwxr-xr-x 3 devasc devasc 4096 Nov 14 10:15 .
+drwxrwxr-x 3 devasc devasc 4096 Nov 14 10:15 ..
+drwxr-xr-x 7 devasc devasc 4096 Nov 14 10:15 .git
+-rw-r--r-- 1 devasc devasc   48 Nov 14 10:15 DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the Cisco DEVASC exam
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        DEVASC.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+devasc@labvm:~/labs/devnet-src/git-intro$ git add DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Committing DEVASC.txt to begin tracking cha
+nges"
+[master (root-commit) b22adfc] Committing DEVASC.txt to begin tracking changes
+ 1 file changed, 1 insertion(+)
+ create mode 100644 DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696 (HEAD -> master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes
+devasc@labvm:~/labs/devnet-src/git-intro$ echo "I am beginning to understand Git!" >> DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the Cisco DEVASC exam
+I am beginning to understand Git!
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   DEVASC.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+devasc@labvm:~/labs/devnet-src/git-intro$ git add DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Added additional line to file"
+[master ede0db5] Added additional line to file
+ 1 file changed, 1 insertion(+)
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit ede0db5433103874befdffd7fb1aadaa263fc395 (HEAD -> master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes
+devasc@labvm:~/labs/devnet-src/git-intro$ git diff HEAD~1 HEAD
+diff --git a/DEVASC.txt b/DEVASC.txt
+index 93cd3fb..085273f 100644
+--- a/DEVASC.txt
++++ b/DEVASC.txt
+@@ -1 +1,2 @@
+ I am on my way to passing the Cisco DEVASC exam
++I am beginning to understand Git!
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch feature
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+  feature
+* master
+devasc@labvm:~/labs/devnet-src/git-intro$ git checkout feature
+Switched to branch 'feature'
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+* feature
+  master
+devasc@labvm:~/labs/devnet-src/git-intro$ echo "This text was added originally while in the feature
+branch" >> DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the Cisco DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git add DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git status
+On branch feature
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -m "Added a third line in feature branch"
+[feature 908d3cd] Added a third line in feature branch
+ 1 file changed, 1 insertion(+)
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit 908d3cdfb70d6e935d209064553dcaa56accd492 (HEAD -> feature)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:19 2026 +0000
+
+    Added a third line in feature branch
+
+commit ede0db5433103874befdffd7fb1aadaa263fc395 (master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes
+devasc@labvm:~/labs/devnet-src/git-intro$ git checkout master
+Switched to branch 'master'
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+  feature
+* master
+devasc@labvm:~/labs/devnet-src/git-intro$ git merge feature
+Updating ede0db5..908d3cd
+Fast-forward
+ DEVASC.txt | 1 +
+ 1 file changed, 1 insertion(+)
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the Cisco DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+  feature
+* master
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch -d feature
+Deleted branch feature (was 908d3cd).
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+* master
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch test
+devasc@labvm:~/labs/devnet-src/git-intro$ git checkout test
+Switched to branch 'test'
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+  master
+* test
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the Cisco DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ sed -i 's/Cisco/NetAcad/' DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the NetAcad DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -a -m "Change Cisco to NetAcad"
+[test 30ce942] Change Cisco to NetAcad
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+devasc@labvm:~/labs/devnet-src/git-intro$ git checkout master
+Switched to branch 'master'
+devasc@labvm:~/labs/devnet-src/git-intro$ git branch
+* master
+  test
+devasc@labvm:~/labs/devnet-src/git-intro$ sed -i 's/Cisco/DevNet/' DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the DevNet DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -a -m "Changed Cisco to DevNet"
+[master 0609ecf] Changed Cisco to DevNet
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+devasc@labvm:~/labs/devnet-src/git-intro$ git merge test
+Auto-merging DEVASC.txt
+CONFLICT (content): Merge conflict in DEVASC.txt
+Automatic merge failed; fix conflicts and then commit the result.
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit 0609ecf457628fc4cca6c0c4b62cf38f838dfec7 (HEAD -> master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Changed Cisco to DevNet
+
+commit 908d3cdfb70d6e935d209064553dcaa56accd492
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:19 2026 +0000
+
+    Added a third line in feature branch
+
+commit ede0db5433103874befdffd7fb1aadaa263fc395
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+<<<<<<< HEAD
+I am on my way to passing the DevNet DEVASC exam
+=======
+I am on my way to passing the NetAcad DEVASC exam
+>>>>>>> test
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ cat DEVASC.txt
+I am on my way to passing the DevNet DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git add DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro$ git commit -a -m "Manually merged from test branch"
+[master b8f2067] Manually merged from test branch
+devasc@labvm:~/labs/devnet-src/git-intro$ git log
+commit b8f2067dfcf3f7bc278237759478ff8d78724a67 (HEAD -> master)
+Merge: 0609ecf 30ce942
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Manually merged from test branch
+
+commit 0609ecf457628fc4cca6c0c4b62cf38f838dfec7
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Changed Cisco to DevNet
+
+commit 30ce942eea20f615d551bdba939a38a7f443daad (test)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:20 2026 +0000
+
+    Change Cisco to NetAcad
+
+commit 908d3cdfb70d6e935d209064553dcaa56accd492
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:19 2026 +0000
+
+    Added a third line in feature branch
+
+commit ede0db5433103874befdffd7fb1aadaa263fc395
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Added additional line to file
+
+commit b22adfc8648834488bcfd4a01d0d23fa01bae696
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:18 2026 +0000
+
+    Committing DEVASC.txt to begin tracking changes
+devasc@labvm:~/labs/devnet-src/git-intro$ cd ~/labs/devnet-src/git-intro
+devasc@labvm:~/labs/devnet-src/git-intro$ mkdir devasc-study-team
+devasc@labvm:~/labs/devnet-src/git-intro$ cd devasc-study-team
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ cp ../DEVASC.txt .
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ ls
+DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ cat DEVASC.txt
+I am on my way to passing the DevNet DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git init
+Initialized empty Git repository in /home/devasc/labs/devnet-src/git-intro/devasc-study-team/.git/
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git config --list
+init.defaultbranch=master
+user.name=Adis Azamatov
+user.email=147084862+medivhkr@users.noreply.github.com
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git config --global user.name "Adis Azam
+atov"
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git config --global user.email 147084862
++medivhkr@users.noreply.github.com
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git remote add origin git@github.com:med
+ivhkr/devasc-study-team.git
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git remote --verbose
+origin  git@github.com:medivhkr/devasc-study-team.git (fetch)
+origin  git@github.com:medivhkr/devasc-study-team.git (push)
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git log
+fatal: your current branch 'master' does not have any commits yet
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git add DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git commit -m "Add DEVASC.txt file to de
+vasc-study-team"
+[master (root-commit) 5e37050] Add DEVASC.txt file to devasc-study-team
+ 1 file changed, 3 insertions(+)
+ create mode 100644 DEVASC.txt
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git log
+commit 5e3705033c2c5bda9a90c3990eb41d027cd1ed3c (HEAD -> master)
+Author: Adis Azamatov <147084862+medivhkr@users.noreply.github.com>
+Date:   Sat Nov 14 10:15:21 2026 +0000
+
+    Add DEVASC.txt file to devasc-study-team
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git status
+On branch master
+nothing to commit, working tree clean
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ ssh -T git@github.com
+Warning: Permanently added the ED25519 host key for IP address '140.82.114.4' to the list of known h
+osts.
+Hi medivhkr/devasc-study-team! You've successfully authenticated, but GitHub does not provide shell
+access.
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git push -u origin master
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 368 bytes | 368.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To github.com:medivhkr/devasc-study-team.git
+ * [new branch]      master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git ls-remote origin
+5e3705033c2c5bda9a90c3990eb41d027cd1ed3c        refs/heads/master
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ cd /tmp
+devasc@labvm:/tmp$ git clone git@github.com:medivhkr/devasc-study-team.git
+Cloning into 'devasc-study-team'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (3/3), done.
+devasc@labvm:/tmp$ ls devasc-study-team
+DEVASC.txt
+devasc@labvm:/tmp$ cat devasc-study-team/DEVASC.txt
+I am on my way to passing the DevNet DEVASC exam
+I am beginning to understand Git!
+This text was added originally while in the feature branch
+devasc@labvm:/tmp$

@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/git-intro/devasc-study-team$ git status
+On branch master
+nothing to commit, working tree clean
