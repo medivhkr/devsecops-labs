@@ -1,13 +1,13 @@
 {
   "name": "report-builder",
   "version": "1.0.0",
-  "description": "",
+  "description": "Сборка отчётов по лабораторным работам в DOCX и PDF по ГОСТ 7.32-2017",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Adis Azamatov",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {

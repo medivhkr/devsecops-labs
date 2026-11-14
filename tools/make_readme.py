@@ -59,7 +59,7 @@ def main():
     out.append("# Developer Security Operations: лабораторные работы\n")
     out.append("Кыргызский государственный технический университет им. И. Раззакова, Институт информационных технологий,")
     out.append("кафедра «Обеспечение безопасности информационных систем».\n")
-    out.append("Выполнил: студент группы БИС-2-23 **Азаматов А.А.** Курс: Cisco DevNet Associate v1.0. Бишкек, 2026.\n")
+    out.append("Выполнил: студент группы БИС-2-23 **Азаматов Адис**. Курс: Cisco DevNet Associate v1.0. Бишкек, 2026.\n")
     out.append("[![Проверки безопасности]({0}/actions/workflows/security.yml/badge.svg)]({0}/actions/workflows/security.yml)\n".format(GH))
     out.append("## Работы\n")
     for mod, name in MODULES:
