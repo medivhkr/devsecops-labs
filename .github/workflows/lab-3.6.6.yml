@@ -1,0 +1,24 @@
+name: "Лаб. 3.6.6: Форматы данных XML JSON YAML"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/08-3.6.6-parse-data-formats/scenario.yml"
+      - "labs/08-3.6.6-parse-data-formats/prepare.sh"
+      - "labs/08-3.6.6-parse-data-formats/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 08-3.6.6-parse-data-formats
+      env: container

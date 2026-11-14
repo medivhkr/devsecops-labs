@@ -18,6 +18,7 @@ permissions:
 jobs:
   lab:
     uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
     with:
       lab: 13-7.0.3-csr1000v-install
       env: container

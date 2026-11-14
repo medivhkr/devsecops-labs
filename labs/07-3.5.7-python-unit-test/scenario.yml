@@ -1,0 +1,240 @@
+lab: "3.5.7"
+title: "Create a Python Unit Test"
+shell_init:
+  # байткод не пишется: нет __pycache__ и нет риска устаревшего .pyc при быстрой перезаписи файла
+  - "export PYTHONDONTWRITEBYTECODE=1"
+collect:
+  - ~/labs/devnet-src/unittest
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env
+    title: "Part 1: стенд вместо ВМ DEVASC (ОС, имя хоста, версия Python)"
+    cmd: "head -n 2 /etc/os-release && hostname && python3 --version"
+
+  # ---------- Part 2: Explore Options in the unittest Framework ----------
+  - id: cd_devnet_src
+    title: "Part 2: переход в каталог ~/labs/devnet-src"
+    cmd: "cd labs/devnet-src"
+  - id: q1_q2_repl
+    title: "Part 2: вопросы 1 и 2, класс TestCase и префикс имён тестов (проверка в интерпретаторе)"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: ">>> "
+        send: "import unittest"
+        timeout: 60
+      - expect: ">>> "
+        send: "print(unittest.TestCase.__doc__)"
+        timeout: 60
+      - expect: ">>> "
+        send: "unittest.TestLoader.testMethodPrefix"
+        timeout: 60
+      - expect: ">>> "
+        send: "exit()"
+        timeout: 60
+  - id: unittest_help
+    title: "Part 2: вопрос 3, параметры командной строки python3 -m unittest -h"
+    cmd: "python3 -m unittest -h"
+    timeout: 120
+    expect_exit: 0
+
+  # ---------- Part 3: Test a Python Function with unittest ----------
+  - id: ls_unittest
+    title: "Part 3: исходные файлы каталога unittest"
+    cmd: "ls -l unittest"
+  - id: more_test_data
+    title: "Part 3 Step 1: просмотр test_data.py командой more (первый экран, выход по q)"
+    cmd: "more unittest/test_data.py"
+    timeout: 120
+    interact:
+      - expect: "--More--"
+        send: "q"
+        raw: true
+        timeout: 60
+  - id: cd_unittest
+    title: "Part 3 Step 2a: переход в каталог unittest"
+    cmd: "cd unittest"
+  - id: rjs_v1
+    title: "Part 3 Step 2b: функция json_search() в recursive_json_search.py (исходная версия)"
+    write_file:
+      path: ~/labs/devnet-src/unittest/recursive_json_search.py
+      content: |
+        # Fill the Python code in this file
+        from test_data import *
+        def json_search(key,input_object):
+            ret_val=[]
+            if isinstance(input_object, dict): # walk through a dictionary
+                for k, v in input_object.items(): # compare each key with the wanted key
+                    if k == key:
+                        temp={k:v}
+                        ret_val.append(temp)
+                    if isinstance(v, dict): # value is a nested dict: search it too
+                        json_search(key,v)
+                    elif isinstance(v, list): # value is a list
+                        for item in v:
+                            if not isinstance(item, (str,int)): # nested dict/list: recurse
+                                json_search(key,item)
+            else: # input is a list (some APIs wrap JSON objects in a list)
+                for val in input_object:
+                    if not isinstance(val, (str,int)):
+                        json_search(key,val)
+            return ret_val
+        print(json_search("issueSummary",data))
+  - id: cat_rjs_v1
+    title: "Part 3 Step 2b: содержимое recursive_json_search.py (21 строка)"
+    cmd: "cat -n recursive_json_search.py"
+  - id: run_rjs_v1
+    title: "Part 3 Step 2c: запуск скрипта, функция вернула пустой список"
+    cmd: "python3 recursive_json_search.py"
+    timeout: 120
+    expect_exit: 0
+  - id: grep_issue_summary
+    title: "Part 3 Step 2d: поиск issueSummary в test_data.py (grep вместо поиска в редакторе)"
+    cmd: "grep -n issueSummary test_data.py"
+  - id: test_file
+    title: "Part 3 Step 3b-3e: модульные тесты в test_json_search.py"
+    write_file:
+      path: ~/labs/devnet-src/unittest/test_json_search.py
+      content: |
+        # Fill the Python code in this file
+        import unittest
+        from recursive_json_search import *
+        from test_data import *
+
+
+        class json_search_test(unittest.TestCase):
+            '''unit tests for json_search() defined in `recursive_json_search.py`'''
+            def test_search_found(self):
+                '''existing key: the returned list must not be empty'''
+                self.assertTrue([]!=json_search(key1,data))
+            def test_search_not_found(self):
+                '''missing key: the returned list must be empty'''
+                self.assertTrue([]==json_search(key2,data))
+            def test_is_a_list(self):
+                '''the return value must always be a list'''
+                self.assertIsInstance(json_search(key1,data),list)
+
+        if __name__ == '__main__':
+            unittest.main()
+  - id: cat_test_file
+    title: "Part 3 Step 3: содержимое test_json_search.py (20 строк)"
+    cmd: "cat -n test_json_search.py"
+  - id: run_test_script
+    title: "Part 3 Step 4a: первый запуск тестов, результат .F. (не прошёл test_search_found)"
+    cmd: "python3 test_json_search.py"
+    timeout: 120
+    expect_exit: 1
+  - id: run_unittest_verbose
+    title: "Part 3 Step 4b: подробный вывод -v, тесты в алфавитном порядке"
+    cmd: "python3 -m unittest -v test_json_search"
+    timeout: 120
+    expect_exit: 1
+  - id: rjs_v2
+    title: "Part 3 Step 5a: ret_val=[] вынесен из функции (глобальная переменная)"
+    write_file:
+      path: ~/labs/devnet-src/unittest/recursive_json_search.py
+      content: |
+        # Fill the Python code in this file
+        from test_data import *
+        ret_val=[]
+        def json_search(key,input_object):
+            if isinstance(input_object, dict): # walk through a dictionary
+                for k, v in input_object.items(): # compare each key with the wanted key
+                    if k == key:
+                        temp={k:v}
+                        ret_val.append(temp)
+                    if isinstance(v, dict): # value is a nested dict: search it too
+                        json_search(key,v)
+                    elif isinstance(v, list): # value is a list
+                        for item in v:
+                            if not isinstance(item, (str,int)): # nested dict/list: recurse
+                                json_search(key,item)
+            else: # input is a list (some APIs wrap JSON objects in a list)
+                for val in input_object:
+                    if not isinstance(val, (str,int)):
+                        json_search(key,val)
+            return ret_val
+        print(json_search("issueSummary",data))
+  - id: cat_rjs_v2
+    title: "Part 3 Step 5a: содержимое recursive_json_search.py после первой правки"
+    cmd: "cat -n recursive_json_search.py"
+  - id: run_rjs_v2
+    title: "Part 3 Step 5b: запуск скрипта, ключ issueSummary найден"
+    cmd: "python3 recursive_json_search.py"
+    timeout: 120
+    expect_exit: 0
+  - id: run_unittest_2
+    title: "Part 3 Step 6a: повторный запуск тестов, результат ..F (не прошёл test_search_not_found)"
+    cmd: "python3 -m unittest test_json_search"
+    timeout: 120
+    expect_exit: 1
+  - id: grep_keys
+    title: "Part 3 Step 6b: значение key1 встречается в test_data.py дважды, значение key2 один раз"
+    cmd: "grep -n -F -e issueSummary -e 'XY&^$#*@!1234%^&' test_data.py"
+  - id: repl_global_ret_val
+    title: "Part 3 Step 7a: глобальный ret_val накапливает результаты (проверка в интерпретаторе)"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: ">>> "
+        send: "from recursive_json_search import *"
+        timeout: 60
+      - expect: ">>> "
+        send: "len(json_search(key1,data))"
+        timeout: 60
+      - expect: ">>> "
+        send: "len(json_search(key1,data))"
+        timeout: 60
+      - expect: ">>> "
+        send: "json_search(key2,data)"
+        timeout: 60
+      - expect: ">>> "
+        send: "exit()"
+        timeout: 60
+  - id: rjs_v3
+    title: "Part 3 Step 7b: внешняя функция json_search() и вложенная inner_function()"
+    write_file:
+      path: ~/labs/devnet-src/unittest/recursive_json_search.py
+      content: |
+        from test_data import *
+        def json_search(key,input_object):
+            """
+            Find every key:value pair whose key equals `key`; return them as a list of dicts
+            key : name of the key to look for (case sensitive)
+            input_object : parsed JSON (dict or list), here the data object from test_data.py
+            inner_function() does the actual recursive walk; the list is created anew per call
+            returns an empty list when the key is not present
+            """
+            ret_val=[]
+            def inner_function(key,input_object):
+                if isinstance(input_object, dict): # walk through a dictionary
+                    for k, v in input_object.items(): # compare each key with the wanted key
+                        if k == key:
+                            temp={k:v}
+                            ret_val.append(temp)
+                        if isinstance(v, dict): # value is a nested dict: search it too
+                            inner_function(key,v)
+                        elif isinstance(v, list):
+                            for item in v:
+                                if not isinstance(item, (str,int)): # nested dict/list: recurse
+                                    inner_function(key,item)
+                else: # input is a list (some APIs wrap JSON objects in a list)
+                    for val in input_object:
+                        if not isinstance(val, (str,int)):
+                            inner_function(key,val)
+            inner_function(key,input_object)
+            return ret_val
+        print(json_search("issueSummary",data))
+  - id: cat_rjs_v3
+    title: "Part 3 Step 7b: содержимое recursive_json_search.py после второй правки (29 строк)"
+    cmd: "cat -n recursive_json_search.py"
+  - id: run_discover
+    title: "Part 3 Step 7c: обнаружение тестов python3 -m unittest, все три теста пройдены"
+    cmd: "python3 -m unittest"
+    timeout: 120
+    expect_exit: 0
+  - id: run_discover_verbose
+    title: "Part 3 Step 7c (дополнительно): подробный вывод после исправления"
+    cmd: "python3 -m unittest -v"
+    timeout: 120
+    expect_exit: 0

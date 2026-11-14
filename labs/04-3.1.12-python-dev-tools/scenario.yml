@@ -1,0 +1,102 @@
+lab: "3.1.12"
+title: "Explore Python Development Tools"
+collect:
+  # requirements.txt и pyvenv.cfg обоих окружений (bin/lib/include/share labrun не копирует)
+  - ~/labs/devnet-src/python
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env
+    title: "Part 1 Step 1: стенд вместо ВМ DEVASC (ОС, пользователь, имя хоста)"
+    cmd: "cat /etc/os-release | head -4 && whoami && hostname"
+
+  # ---------- Part 2: Review the Python Installation ----------
+  - id: python_version
+    title: "Part 2 Step a: версия Python 3"
+    cmd: "python3 -V"
+  - id: which_python
+    title: "Part 2 Step b: расположение интерпретатора python3"
+    cmd: "which python3"
+  - id: pip_version_system
+    title: "Part 2 Step b: (дополнительно) версия системного pip"
+    cmd: "pip3 --version"
+
+  # ---------- Part 3: PIP and Python Virtual Environments ----------
+  - id: cd_python
+    title: "Part 3 Step 1a: переход в каталог labs/devnet-src/python"
+    cmd: "cd labs/devnet-src/python/"
+  - id: venv_devfun
+    title: "Part 3 Step 1b: создание виртуального окружения devfun"
+    cmd: "python3 -m venv devfun"
+    timeout: 180
+  - id: activate_devfun
+    title: "Part 3 Step 2a: активация devfun"
+    cmd: "source devfun/bin/activate"
+  - id: which_in_devfun
+    title: "Part 3 Step 2a: (дополнительно) python3 и pip3 берутся из devfun"
+    cmd: "which python3 pip3"
+  - id: freeze_devfun_empty
+    title: "Part 3 Step 2b: pip3 freeze в новом окружении"
+    cmd: "pip3 freeze"
+    timeout: 120
+  - id: install_requests
+    title: "Part 3 Step 2c: установка пакета requests в devfun"
+    cmd: "pip3 install requests"
+    timeout: 600
+  - id: freeze_devfun
+    title: "Part 3 Step 2d: pip3 freeze после установки"
+    cmd: "pip3 freeze"
+    timeout: 120
+  - id: list_devfun
+    title: "Part 3 Step 2d: (дополнительно) pip3 list показывает и pip/setuptools"
+    cmd: "pip3 list"
+    timeout: 120
+  - id: deactivate_devfun
+    title: "Part 3 Step 2e: выход из devfun"
+    cmd: "deactivate"
+  - id: system_freeze
+    title: "Part 3 Step 3a: пакеты системного Python"
+    cmd: "python3 -m pip freeze"
+    timeout: 120
+  - id: system_freeze_requests
+    title: "Part 3 Step 3b: версия requests в системном Python"
+    cmd: "python3 -m pip freeze | grep requests"
+    timeout: 120
+
+  # ---------- Part 4: Sharing Your Virtual Environment ----------
+  - id: reactivate_devfun
+    title: "Part 4 Step a: повторная активация devfun"
+    cmd: "source devfun/bin/activate"
+  - id: freeze_to_requirements
+    title: "Part 4 Step b: сохранение pip3 freeze в requirements.txt"
+    cmd: "pip3 freeze > requirements.txt"
+    timeout: 120
+  - id: deactivate_devfun_2
+    title: "Part 4 Step c: выход из devfun"
+    cmd: "deactivate"
+  - id: ls_python
+    title: "Part 4 Step c: requirements.txt в каталоге python"
+    cmd: "ls"
+  - id: cat_requirements
+    title: "Part 4 Step c: (дополнительно) содержимое requirements.txt"
+    cmd: "cat requirements.txt"
+  - id: venv_devnew
+    title: "Part 4 Step d: создание окружения devnew"
+    cmd: "python3 -m venv devnew"
+    timeout: 180
+  - id: activate_devnew
+    title: "Part 4 Step d: активация devnew"
+    cmd: "source devnew/bin/activate"
+  - id: install_requirements
+    title: "Part 4 Step e: установка пакетов из requirements.txt в devnew"
+    cmd: "pip3 install -r requirements.txt"
+    timeout: 600
+  - id: freeze_devnew
+    title: "Part 4 Step f: pip3 freeze в devnew"
+    cmd: "pip3 freeze"
+    timeout: 120
+  - id: deactivate_devnew
+    title: "Part 4 Step g: выход из devnew"
+    cmd: "deactivate"
+  - id: ls_final
+    title: "Part 4 Step g: (дополнительно) итоговое содержимое каталога python"
+    cmd: "ls"

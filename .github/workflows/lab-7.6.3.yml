@@ -18,6 +18,7 @@ permissions:
 jobs:
   lab:
     uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
     with:
       lab: 16-7.6.3-pyats-genie
       env: container

@@ -18,6 +18,7 @@ permissions:
 jobs:
   lab:
     uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
     with:
       lab: 15-7.4.8-ansible-apache
       env: vm

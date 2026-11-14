@@ -1,0 +1,24 @@
+name: "Лаб. 1.1.2: Лабораторная среда"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/01-1.1.2-lab-environment/scenario.yml"
+      - "labs/01-1.1.2-lab-environment/prepare.sh"
+      - "labs/01-1.1.2-lab-environment/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 01-1.1.2-lab-environment
+      env: container

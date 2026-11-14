@@ -18,6 +18,7 @@ permissions:
 jobs:
   lab:
     uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
     with:
       lab: 14-7.4.7-ansible-backup-config
       env: container

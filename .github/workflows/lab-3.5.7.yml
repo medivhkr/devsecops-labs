@@ -1,0 +1,24 @@
+name: "Лаб. 3.5.7: Модульные тесты Python"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/07-3.5.7-python-unit-test/scenario.yml"
+      - "labs/07-3.5.7-python-unit-test/prepare.sh"
+      - "labs/07-3.5.7-python-unit-test/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 07-3.5.7-python-unit-test
+      env: container

@@ -1,0 +1,186 @@
+lab: "3.6.6"
+title: "Parse Different Data Types with Python"
+# Любой шаг с ненулевым кодом возврата или тайм-аутом делает прогон CI неуспешным.
+strict: true
+collect:
+  - ~/labs/devnet-src/parsing
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env
+    title: "Part 1 Step 1: стенд вместо ВМ DEVASC (ОС, имя хоста, версия Python)"
+    cmd: "cat /etc/os-release | head -4 && hostname && python3 --version"
+    expect_exit: 0
+    timeout: 60
+  - id: pyyaml_version
+    title: "Part 1 Step 1: версия библиотеки PyYAML на стенде"
+    cmd: 'python3 -c "import yaml; print(yaml.__version__)"'
+    expect_exit: 0
+    timeout: 60
+
+  # ---------- Part 2: Parse XML in Python ----------
+  - id: cd_parsing
+    title: "Part 2 Step 1a: переход в каталог ~/labs/devnet-src/parsing"
+    cmd: "cd ~/labs/devnet-src/parsing"
+    expect_exit: 0
+    timeout: 60
+  - id: ls_parsing
+    title: "Part 2 Step 1a: файлы лабораторной (данные и заготовки скриптов)"
+    cmd: "ls -l"
+    expect_exit: 0
+    timeout: 60
+  - id: cat_xml
+    title: "Part 2 Step 1a: исходные данные myfile.xml (сообщение NETCONF edit-config)"
+    cmd: "cat myfile.xml"
+    expect_exit: 0
+    timeout: 60
+  - id: parsexml
+    title: "Part 2 Step 1b-e: скрипт parsexml.py (ElementTree, поиск по пространству имён)"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parsexml.py
+      content: |
+        import xml.etree.ElementTree as ET
+        import re
+
+        xml = ET.parse("myfile.xml")
+        root = xml.getroot()
+
+        ns = re.match('{.*}', root.tag).group(0)
+        editconf = root.find("{}edit-config".format(ns))
+        defop = editconf.find("{}default-operation".format(ns))
+        testop = editconf.find("{}test-option".format(ns))
+
+        print("The default-operation contains: {}".format(defop.text))
+        print("The test-option contains: {}".format(testop.text))
+  - id: run_parsexml
+    title: "Part 2 Step 2: запуск parsexml.py"
+    cmd: "python3 parsexml.py"
+    expect_exit: 0
+    timeout: 60
+
+  # ---------- Part 3: Parse JSON in Python ----------
+  - id: cat_json
+    title: "Part 3 Step 1a: исходные данные myfile.json (ответ на запрос токена)"
+    cmd: "cat myfile.json"
+    expect_exit: 0
+    timeout: 60
+  - id: parsejson_v1
+    title: "Part 3 Step 1b-d: parsejson.py, загрузка JSON и печать словаря"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parsejson.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.json','r') as json_file:
+            ourjson = json.load(json_file)
+        print(ourjson)
+  - id: run_parsejson_v1
+    title: "Part 3 Step 2a: запуск parsejson.py (данные JSON как словарь Python)"
+    cmd: "python3 parsejson.py"
+    expect_exit: 0
+    timeout: 60
+  - id: parsejson_v2
+    title: "Part 3 Step 2b: печать токена и времени до окончания его действия"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parsejson.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.json','r') as json_file:
+            ourjson = json.load(json_file)
+        print(ourjson)
+
+        print("The access token is: {}".format(ourjson['access_token']))
+        print("The token expires in {} seconds.".format(ourjson['expires_in']))
+  - id: run_parsejson_v2
+    title: "Part 3 Step 2c: повторный запуск parsejson.py"
+    cmd: "python3 parsejson.py"
+    expect_exit: 0
+    timeout: 60
+  - id: parsejson_v3
+    title: "Part 3 Step 3a: вывод разобранных данных в формате YAML"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parsejson.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.json','r') as json_file:
+            ourjson = json.load(json_file)
+        print(ourjson)
+
+        print("The access token is: {}".format(ourjson['access_token']))
+        print("The token expires in {} seconds.".format(ourjson['expires_in']))
+
+        print("\n\n---")
+        print(yaml.dump(ourjson))
+  - id: run_parsejson_v3
+    title: "Part 3 Step 3b: запуск parsejson.py (данные в формате YAML)"
+    cmd: "python3 parsejson.py"
+    expect_exit: 0
+    timeout: 60
+
+  # ---------- Part 4: Parse YAML in Python ----------
+  - id: cat_yaml
+    title: "Part 4 Step 1a: исходные данные myfile.yaml (те же данные токена в YAML)"
+    cmd: "cat myfile.yaml"
+    expect_exit: 0
+    timeout: 60
+  - id: parseyaml_v1
+    title: "Part 4 Step 1b-d: parseyaml.py, загрузка YAML и печать словаря"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parseyaml.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.yaml','r') as yaml_file:
+            ouryaml = yaml.safe_load(yaml_file)
+        print(ouryaml)
+  - id: run_parseyaml_v1
+    title: "Part 4 Step 2a: запуск parseyaml.py (данные YAML как словарь Python)"
+    cmd: "python3 parseyaml.py"
+    expect_exit: 0
+    timeout: 60
+  - id: parseyaml_v2
+    title: "Part 4 Step 2b: печать токена и времени до окончания его действия"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parseyaml.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.yaml','r') as yaml_file:
+            ouryaml = yaml.safe_load(yaml_file)
+        print(ouryaml)
+
+        print("The access token is {}".format(ouryaml['access_token']))
+        print("The token expires in {} seconds.".format(ouryaml['expires_in']))
+  - id: run_parseyaml_v2
+    title: "Part 4 Step 2c: повторный запуск parseyaml.py"
+    cmd: "python3 parseyaml.py"
+    expect_exit: 0
+    timeout: 60
+  - id: parseyaml_v3
+    title: "Part 4 Step 3a: вывод разобранных данных в формате JSON"
+    write_file:
+      path: ~/labs/devnet-src/parsing/parseyaml.py
+      content: |
+        import json
+        import yaml
+
+        with open('myfile.yaml','r') as yaml_file:
+            ouryaml = yaml.safe_load(yaml_file)
+        print(ouryaml)
+
+        print("The access token is {}".format(ouryaml['access_token']))
+        print("The token expires in {} seconds.".format(ouryaml['expires_in']))
+
+        print("\n\n")
+        print(json.dumps(ouryaml, indent=4))
+  - id: run_parseyaml_v3
+    title: "Part 4 Step 3b: запуск parseyaml.py (данные в формате JSON)"
+    cmd: "python3 parseyaml.py"
+    expect_exit: 0
+    timeout: 60

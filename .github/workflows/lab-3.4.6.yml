@@ -1,0 +1,24 @@
+name: "Лаб. 3.4.6: Классы Python"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/06-3.4.6-python-classes/scenario.yml"
+      - "labs/06-3.4.6-python-classes/prepare.sh"
+      - "labs/06-3.4.6-python-classes/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 06-3.4.6-python-classes
+      env: container

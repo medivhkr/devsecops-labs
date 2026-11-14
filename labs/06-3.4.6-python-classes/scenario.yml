@@ -1,0 +1,284 @@
+lab: "3.4.6"
+title: "Python Classes Review"
+collect:
+  - ~/labs/devnet-src/python
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env
+    title: "Part 1: стенд вместо ВМ DEVASC (ОС, имя хоста, версия Python)"
+    cmd: "head -n 4 /etc/os-release && hostname && python3 --version"
+
+  # ---------- Part 2: Review Functions, Methods, and Classes ----------
+  # В методичке здесь только псевдокод (намеренно не Python). Дополнительно выполняются
+  # исполняемые аналоги в интерпретаторе: ничего не сохраняется, как и в методичке.
+  - id: repl_function
+    title: "Part 2 Step 1: функция (дополнительно: исполняемый аналог псевдокода в интерпретаторе)"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: ">>> "
+        send: "def functionName():"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: '    print("functionName() is called directly by its name")'
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: ""
+        timeout: 30
+      - expect: ">>> "
+        send: "functionName()"
+        timeout: 30
+      - expect: ">>> "
+        send: "type(functionName)"
+        timeout: 30
+      - expect: ">>> "
+        send: "exit()"
+        timeout: 30
+  - id: repl_method
+    title: "Part 2 Step 2: метод (дополнительно: класс с тремя методами, вызов метода без объекта)"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: ">>> "
+        send: "class className:"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: "    def method1Name(self):"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: '        print("method1Name() is called through the object")'
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: "    def method2Name(self):"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: '        print("method2Name() is called through the object")'
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: "    def method3Name(self):"
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: '        print("method3Name() is called through the object")'
+        timeout: 30
+      - expect: "\\.\\.\\. "
+        send: ""
+        timeout: 30
+      - expect: ">>> "
+        send: "myClass = className()"
+        timeout: 30
+      - expect: ">>> "
+        send: "myClass.method1Name()"
+        timeout: 30
+      - expect: ">>> "
+        send: "myClass.method2Name()"
+        timeout: 30
+      - expect: ">>> "
+        send: "myClass.method3Name()"
+        timeout: 30
+      - expect: ">>> "
+        send: "type(myClass.method1Name)"
+        timeout: 30
+      - expect: ">>> "
+        send: "method1Name()"
+        timeout: 30
+      - expect: ">>> "
+        send: "exit()"
+        timeout: 30
+
+  # ---------- Part 3: Define a Function ----------
+  - id: cd_python
+    title: "Part 3a: переход в каталог ~/labs/devnet-src/python"
+    cmd: "cd ~/labs/devnet-src/python"
+  - id: mycity_def
+    title: "Part 3b: функция myCity(city) в файле myCity.py"
+    write_file:
+      path: ~/labs/devnet-src/python/myCity.py
+      content: |
+        def myCity(city):
+            print("I live in " + city + ".")
+  - id: mycity_calls
+    title: "Part 3c: три вызова myCity() с разными городами"
+    write_file:
+      path: ~/labs/devnet-src/python/myCity.py
+      content: |
+        def myCity(city):
+            print("I live in " + city + ".")
+
+        myCity("Austin")
+        myCity("Tokyo")
+        myCity("Salzburg")
+  - id: cat_mycity
+    title: "Part 3d: содержимое myCity.py"
+    cmd: "cat myCity.py"
+  - id: run_mycity
+    title: "Part 3d: запуск myCity.py"
+    cmd: "python3 myCity.py"
+    timeout: 60
+    expect_exit: 0
+
+  # ---------- Part 4: Define a Class with Methods ----------
+  - id: location_init
+    title: "Part 4 Step 1a-c: файл myLocation.py, класс Location и метод __init__()"
+    write_file:
+      path: ~/labs/devnet-src/python/myLocation.py
+      content: |
+        class Location:
+            def __init__(self, name, country):
+                self.name = name
+                self.country = country
+  - id: location_loc
+    title: "Part 4 Step 1d-f: объект loc, вывод его атрибутов и типа"
+    write_file:
+      path: ~/labs/devnet-src/python/myLocation.py
+      content: |
+        class Location:
+            def __init__(self, name, country):
+                self.name = name
+                self.country = country
+
+        loc = Location("Your_Name", "Your_Country")
+        print(loc.name)
+        print(loc.country)
+        print(type(loc))
+  - id: cat_location_1
+    title: "Part 4 Step 1g: содержимое myLocation.py"
+    cmd: "cat myLocation.py"
+  - id: run_location_1
+    title: "Part 4 Step 1g: запуск myLocation.py"
+    cmd: "python3 myLocation.py"
+    timeout: 60
+    expect_exit: 0
+  - id: location_method
+    title: "Part 4 Step 2a-d: удалены строки с loc, добавлен метод myLocation()"
+    write_file:
+      path: ~/labs/devnet-src/python/myLocation.py
+      content: |
+        class Location:
+            def __init__(self, name, country):
+                self.name = name
+                self.country = country
+
+            def myLocation(self):
+                print("Hi, my name is " + self.name + " and I live in " + self.country + ".")
+  - id: cat_location_2
+    title: "Part 4 Step 2e: содержимое myLocation.py"
+    cmd: "cat myLocation.py"
+  - id: run_location_2
+    title: "Part 4 Step 2e: запуск без создания объектов (вывода нет, ошибок нет)"
+    cmd: "python3 myLocation.py"
+    timeout: 60
+    expect_exit: 0
+  - id: location_loc1
+    title: "Part 4 Step 3a: объект loc1 и вызов loc1.myLocation()"
+    write_file:
+      path: ~/labs/devnet-src/python/myLocation.py
+      content: |
+        class Location:
+            def __init__(self, name, country):
+                self.name = name
+                self.country = country
+
+            def myLocation(self):
+                print("Hi, my name is " + self.name + " and I live in " + self.country + ".")
+
+        # first Location object
+        loc1 = Location("Tomas", "Portugal")
+        # call the myLocation() method of that object
+        loc1.myLocation()
+  - id: run_location_3
+    title: "Part 4 Step 3b: запуск с одним объектом"
+    cmd: "python3 myLocation.py"
+    timeout: 60
+    expect_exit: 0
+  - id: location_more
+    title: "Part 4 Step 3c: объекты loc2, loc3 и your_loc"
+    write_file:
+      path: ~/labs/devnet-src/python/myLocation.py
+      content: |
+        class Location:
+            def __init__(self, name, country):
+                self.name = name
+                self.country = country
+
+            def myLocation(self):
+                print("Hi, my name is " + self.name + " and I live in " + self.country + ".")
+
+        # first Location object
+        loc1 = Location("Tomas", "Portugal")
+        # call the myLocation() method of that object
+        loc1.myLocation()
+
+        loc2 = Location("Ying", "China")
+        loc3 = Location("Amare", "Kenya")
+        loc2.myLocation()
+        loc3.myLocation()
+        your_loc = Location("Your_Name", "Your_Country")
+        your_loc.myLocation()
+  - id: run_location_4
+    title: "Part 4 Step 3d: запуск с четырьмя объектами"
+    cmd: "python3 myLocation.py"
+    timeout: 60
+    expect_exit: 0
+  - id: cat_location_final
+    title: "Part 4 Step 4: итоговый скрипт myLocation.py"
+    cmd: "cat myLocation.py"
+
+  # ---------- Part 5: Review the circleClass.py Script ----------
+  # В методичке скрипт только разбирается. Дополнительно он сохраняется в файл и запускается.
+  - id: circle_file
+    title: "Part 5: скрипт circleClass.py из методички (дополнительно: сохранён в файл)"
+    write_file:
+      path: ~/labs/devnet-src/python/circleClass.py
+      content: |
+        # circleClass.py: given a radius, print the circumference of a circle
+        # formula: c = pi * 2 * radius
+
+        class Circle:
+
+            def __init__(self, radius):
+                self.radius = radius
+
+            def circumference(self):
+                pi = 3.14
+                circumferenceValue = pi * self.radius * 2
+                return circumferenceValue
+
+            def printCircumference(self):
+                myCircumference = self.circumference()
+                print ("Circumference of a circle with a radius of " + str(self.radius) + " is " + str(myCircumference))
+
+        # first Circle object and its circumference
+        circle1 = Circle(2)
+        circle1.printCircumference()
+
+        # two more Circle objects and their method calls
+        circle2 = Circle(5)
+        circle2.printCircumference()
+
+        circle3 = Circle(7)
+        circle3.printCircumference()
+  - id: cat_circle
+    title: "Part 5: содержимое circleClass.py"
+    cmd: "cat circleClass.py"
+  - id: run_circle
+    title: "Part 5: запуск circleClass.py (дополнительно)"
+    cmd: "python3 circleClass.py"
+    timeout: 60
+    expect_exit: 0
+  - id: repl_str
+    title: "Part 5: (дополнительно) зачем нужна str(): строка + число в интерпретаторе"
+    cmd: "python3"
+    timeout: 120
+    interact:
+      - expect: ">>> "
+        send: "radius = 2"
+        timeout: 30
+      - expect: ">>> "
+        send: '"Circumference of a circle with a radius of " + radius'
+        timeout: 30
+      - expect: ">>> "
+        send: '"Circumference of a circle with a radius of " + str(radius)'
+        timeout: 30
+      - expect: ">>> "
+        send: "exit()"
+        timeout: 30

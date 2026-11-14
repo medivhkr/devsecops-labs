@@ -1,0 +1,96 @@
+# VirtualBox, импорт DEVASC_VM.ova, GUI MATE, Packet Tracer, браузер и Webex в CI не выполняются
+# и не имитируются. Сценарий проверяет лабораторную ВМ, собранную lab-env/setup-labvm.sh
+# (контейнер ubuntu:20.04, пользователь devasc, имя хоста labvm). Соответствие частей: NOTES.md.
+lab: "1.1.2"
+title: "Install the Virtual Machine Lab Environment"
+collect:
+  - ~/lab-env/setup-labvm.sh
+  - /etc/os-release
+  - /etc/sudoers.d/devasc
+  - /tmp/venv-check/pyvenv.cfg
+steps:
+  # ---------- Part 1: Prepare a Computer for Virtualization ----------
+  - id: host_platform
+    title: "Part 1 Step 1: вместо VirtualBox контейнер на раннере GitHub Actions (ядро хоста, /.dockerenv)"
+    cmd: "uname -a && ls -l /.dockerenv"
+    timeout: 60
+    expect_exit: 0
+  - id: host_resources
+    title: "Part 1 Step 1: ресурсы хоста и требования методички (RAM от 4 ГБ, диск от 15 ГБ)"
+    cmd: "free -h && df -h /"
+    timeout: 60
+    expect_exit: 0
+  - id: setup_script
+    title: "Part 1 Step 2: вместо импорта DEVASC_VM.ova сценарий сборки ВМ lab-env/setup-labvm.sh"
+    cmd: "cat ~/lab-env/setup-labvm.sh"
+    timeout: 60
+    expect_exit: 0
+
+  # ---------- Part 2: Explore the DEVASC VM GUI (только терминал, пункты a, d, e) ----------
+  - id: os_release
+    title: "Part 2 Step a: ВМ запущена, версия ОС"
+    cmd: "cat /etc/os-release"
+    timeout: 60
+    expect_exit: 0
+  - id: user_host
+    title: "Part 2 Step a: вошедший пользователь и имя хоста"
+    cmd: "whoami && id && hostname"
+    timeout: 60
+    expect_exit: 0
+  - id: tool_versions
+    title: "Part 2 Step d: терминал, версии python3, pip3, git и ansible"
+    cmd: "python3 --version && pip3 --version && git --version && ansible --version"
+    timeout: 120
+    expect_exit: 0
+  - id: venv_create
+    title: "Part 2 Step d: создание виртуального окружения python3 -m venv"
+    cmd: "python3 -m venv /tmp/venv-check"
+    timeout: 180
+    expect_exit: 0
+  - id: venv_activate
+    title: "Part 2 Step d: активация окружения"
+    cmd: "source /tmp/venv-check/bin/activate"
+    timeout: 60
+    expect_exit: 0
+  - id: venv_check
+    title: "Part 2 Step d: python3 и pip3 берутся из окружения"
+    cmd: "which python3 pip3 && pip3 --version"
+    timeout: 60
+    expect_exit: 0
+  - id: venv_deactivate
+    title: "Part 2 Step d: выход из окружения"
+    cmd: "deactivate"
+    timeout: 60
+    expect_exit: 0
+  - id: home_layout
+    title: "Part 2 Step e: Places, домашний каталог и ~/labs/devnet-src"
+    cmd: "pwd && tree ~"
+    timeout: 60
+    expect_exit: 0
+
+  # ---------- Part 3: Create Lab Environment Accounts (Step 1 и Step 3 в CI не выполняются) ----------
+  - id: github_site
+    title: "Part 3 Step 2a: доступ в интернет, github.com отвечает"
+    cmd: "curl -sI https://github.com | head -1"
+    timeout: 60
+    expect_exit: 0
+  - id: github_api
+    title: "Part 3 Step 2: учётная запись GitHub medivhkr существует (публичный API)"
+    cmd: "curl -s https://api.github.com/users/medivhkr | grep -E '\"login\"|\"html_url\"'"
+    timeout: 60
+    expect_exit: 0
+  - id: github_profile
+    title: "Part 3 Step 2: страница профиля github.com/medivhkr"
+    cmd: "curl -sI https://github.com/medivhkr | head -1"
+    timeout: 60
+    expect_exit: 0
+  - id: sudo_list
+    title: "Part 3 Step 4: права sudo пользователя devasc (sudo shutdown -h now и sudo reboot не выполняются)"
+    cmd: "sudo -l"
+    timeout: 60
+    expect_exit: 0
+  - id: sudo_whoami
+    title: "Part 3 Step 4: команда от имени root через sudo"
+    cmd: "sudo whoami"
+    timeout: 60
+    expect_exit: 0
