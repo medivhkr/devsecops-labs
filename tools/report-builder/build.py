@@ -30,6 +30,9 @@ def select_lines(text, spec):
     out = []
     for part in str(spec).split(","):
         part = part.strip()
+        if part == "...":  # пропущенные строки протокола обозначаются многоточием
+            out.append("...")
+            continue
         if "-" in part:
             a, b = part.split("-", 1)
             a = int(a) if a else 1

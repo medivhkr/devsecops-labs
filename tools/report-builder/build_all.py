@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 
 
-def check_pdf(pdf, qa_dir=None, dpi=60):
+def check_pdf(pdf, qa_dir=None, dpi=80):
     import pymupdf
     doc = pymupdf.open(pdf)
     issues = []
