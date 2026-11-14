@@ -445,7 +445,7 @@ steps:
 
   # ---------- Part 7: Review Methods for File Access ----------
   - id: ls_python
-    title: "Part 7 Step 1: каталог python, файл devices.txt (есть в ВМ DEVASC)"
+    title: "Part 7 Step 1: каталог python и devices.txt (создан prepare.sh, как в ВМ DEVASC)"
     cmd: "ls -l"
   - id: file_access_v1_file
     title: "Part 7 Step 1a-b: скрипт file-access.py (чтение devices.txt)"
