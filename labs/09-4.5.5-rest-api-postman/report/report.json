@@ -1,0 +1,613 @@
+{
+ "lab_id": "4.5.5",
+ "title_ru_lines": [
+  "Изучение REST API с помощью",
+  "симулятора API и Postman"
+ ],
+ "blocks": [
+  {
+   "t": "label",
+   "label": "Цель работы:",
+   "text": "изучить документацию REST API симулятора School Library, выполнить запросы к API со страницы документации и из Postman (получение списка книг и токена, добавление и удаление книг) и добавить в библиотеку 100 книг программой на Python."
+  },
+  {
+   "t": "h1",
+   "text": "Задание"
+  },
+  {
+   "t": "numbered",
+   "items": [
+    "Запустить ВМ DEVASC.",
+    "Изучить документацию API с помощью симулятора API.",
+    "Выполнить вызовы API симулятора с помощью Postman.",
+    "Добавить 100 книг в симулятор API с помощью Python."
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Сверх методички ответ на второй контрольный вопрос проверен на стенде: программа запущена с новым диапазоном id, после чего подсчитано число книг в библиотеке. Коды ответов на запросы, которые не видны в выводе программ, сверены с журналом симулятора `school-library-sim.log`."
+  },
+  {
+   "t": "h1",
+   "text": "Оборудование и программное обеспечение"
+  },
+  {
+   "t": "p",
+   "text": "Состав стенда приведён в таблице {tab:env}."
+  },
+  {
+   "t": "table",
+   "id": "env",
+   "caption": "Состав лабораторного стенда",
+   "header": [
+    "Компонент",
+    "Версия / параметры",
+    "Назначение"
+   ],
+   "widths": [
+    3,
+    5,
+    4
+   ],
+   "rows": [
+    [
+     "Лабораторная ВМ (аналог DEVASC)",
+     "контейнер ubuntu:20.04 (Ubuntu 20.04.6 LTS), пользователь devasc, имя хоста labvm",
+     "рабочее место, с которого выполняются запросы к API"
+    ],
+    [
+     "Python",
+     "3.8.10 [GCC 9.4.0]",
+     "симулятор, программа add100RandomBooks.py, скрипт list_all_books.py"
+    ],
+    [
+     "Библиотеки requests и Faker",
+     "установлены скриптом prepare.sh, версии в протоколе не выводились; список `fake.` содержит 301 вариант",
+     "запросы HTTP из Python, генерация случайных книг"
+    ],
+    [
+     "curl",
+     "7.68.0, libcurl/7.68.0, OpenSSL/1.1.1f",
+     "запросы к API вместо кнопок Try it out и Execute"
+    ],
+    [
+     "jq",
+     "пакет Ubuntu 20.04 из lab-env/setup-labvm.sh, версия в протоколе не выводилась",
+     "просмотр swagger.json, чтение токена из token.json"
+    ],
+    [
+     "Симулятор School Library API",
+     "src/school_library_sim.py, заголовок Server: SchoolLibrarySim/1.0, адрес 127.0.0.1:80, имя library.demo.local",
+     "собственная совместимая реализация вместо симулятора из ВМ DEVASC"
+    ],
+    [
+     "Документация API",
+     "описание Swagger 2.0 (/api/v1/swagger.json, 8646 байт), страница /api/v1/docs, которая загружает swagger-ui-dist 3.52.5 с CDN jsDelivr",
+     "изучение API в части 2"
+    ],
+    [
+     "Newman",
+     "6.2.3, Node.js v20.20.2",
+     "выполнение запросов коллекции вместо приложения Postman"
+    ],
+    [
+     "Коллекция Postman",
+     "library.postman_collection.json, формат v2.1, четыре запроса",
+     "запросы вкладок Postman из части 3"
+    ],
+    [
+     "Учётная запись API",
+     "cisco / Cisco123!",
+     "получение токена через loginViaBasic, как в методичке"
+    ],
+    [
+     "Среда выполнения",
+     "GitHub Actions, прогон 14.11.2026 в 11:02 UTC, время в протоколах UTC",
+     "запуск сценария и запись протокола терминала"
+    ]
+   ],
+   "split_at": [
+    5
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Работа выполнялась без VirtualBox и ВМ DEVASC. Лабораторная ВМ развёрнута в GitHub Actions как контейнер Ubuntu 20.04; как и в ВМ DEVASC, в ней заведён пользователь devasc, задано имя хоста labvm и есть каталог `~/labs/devnet-src`, а конфигурация стенда хранится в репозитории (каталог lab-env и скрипт `prepare.sh` в каталоге работы). Симулятор School Library API, который в ВМ DEVASC доступен по имени library.demo.local, отдельно от ВМ не опубликован, поэтому для стенда по описанию из методички [1] написан совместимый симулятор на стандартной библиотеке Python, файл `src/school_library_sim.py`. Он обслуживает те же URL, содержит те же четыре начальные книги и поддерживает вход `loginViaBasic` с учётной записью cisco / Cisco123!, токен в заголовке X-API-KEY, параметры запроса GET /books, страницы по 10 книг с заголовком Link и ограничение частоты запросов, а по адресам `/api/v1/swagger.json` и `/api/v1/docs` отдаёт описание API и страницу Swagger UI. До начала записи протокола скрипт `prepare.sh` запустил симулятор на адресе 127.0.0.1, порт 80, и добавил в `/etc/hosts` строку `127.0.0.1 library.demo.local` (в ВМ DEVASC этому имени соответствует адрес 192.0.2.1). Тот же скрипт установил Node.js 20, Newman и библиотеки requests и Faker (в ВМ DEVASC библиотеки уже есть), скопировал программу `add100RandomBooks.py` в каталог `school-library` внутри `~/labs/devnet-src`, а коллекцию Postman в домашний каталог."
+  },
+  {
+   "t": "p",
+   "text": "Графического интерфейса на стенде нет, поэтому Chromium, Postman и VS Code не использовались. Страницы сайта и документации загружались командой curl, а то, что Swagger UI показывает на странице документации (список операций, значки замка, параметры, схему авторизации), выведено утилитой jq из файла `swagger.json`, по которому Swagger UI строит страницу. Кнопкам Try it out и Execute соответствуют те же HTTP-запросы в curl, окну Sign in соответствует запрос пароля командой `curl -u cisco`, а кнопке Authorize соответствует подстановка токена в заголовок X-API-KEY. Вместо Postman использовался Newman, официальная программа Postman для запуска коллекций из командной строки: запросы вкладок Postman из части 3 записаны в коллекцию `src/library.postman_collection.json`, и каждое нажатие Send заменено командой `newman run`. Программа `add100RandomBooks.py`, которая в ВМ DEVASC поставляется готовой, написана заново по описанию в методичке (`src/add100RandomBooks.py`) и просматривалась командами cat, grep и sed. Обновление страницы сайта после добавления книг заменено скриптом `list_all_books.py`, который загружает список книг так же, как JavaScript этой страницы."
+  },
+  {
+   "t": "h1",
+   "text": "Краткие теоретические сведения"
+  },
+  {
+   "t": "p",
+   "text": "REST (Representational State Transfer) — архитектурный стиль распределённых систем, который описал Р. Филдинг [2]. В REST API каждый ресурс адресуется своим URI, а действие над ним задаётся методом HTTP: GET получает представление ресурса, POST передаёт серверу данные для обработки, например для создания записи, PUT заменяет ресурс переданным представлением, DELETE удаляет его [3]. Результат сервер сообщает кодом состояния. Коды 2xx означают успешную обработку запроса, а коды 4xx сообщают об ошибке клиента, например 400 (неверный запрос), 401 (нужна аутентификация) или 404 (ресурс не найден) [3]. У симулятора School Library два вида ресурсов: список книг `/api/v1/books` и отдельная книга `/api/v1/books/{id}`. Данные передаются в формате JSON."
+  },
+  {
+   "t": "p",
+   "text": "Для описания REST API используется спецификация OpenAPI, которая раньше называлась Swagger Specification [1, 4]. Документ версии 2.0 (Swagger 2.0) содержит базовый путь API (`basePath`), пути (`paths`) с операциями для методов HTTP, параметры каждой операции с местом передачи (`query`, `header`, `path`, `formData` или `body`), описания ответов и схемы безопасности (`securityDefinitions`) [4]. Для схемы типа `apiKey` задаются имя ключа и место его передачи, заголовок или строка запроса, а поле `security` операции перечисляет схемы, которые к ней применяются [4]. По такому документу Swagger UI строит интерактивную страницу документации; параметр `docExpansion` со значением `list` раскрывает на ней только группы операций (теги), а сами операции остаются свёрнутыми [5]. После нажатия Try it out и Execute страница отправляет запрос и показывает команду curl, URL запроса, код, тело и заголовки ответа [1]."
+  },
+  {
+   "t": "p",
+   "text": "Вход через операцию `POST /loginViaBasic` выполняется по схеме базовой аутентификации HTTP (Basic) [6]. Клиент передаёт заголовок `Authorization` со словом Basic и строкой «имя:пароль», закодированной в Base64. Если заголовка нет или данные неверны, сервер отвечает кодом 401 и заголовком `WWW-Authenticate` с названием области защиты (realm), и браузер, получив такой ответ, показывает окно входа [3, 6]. Base64 не шифрует данные, поэтому RFC 7617 считает схему Basic безопасной только вместе с внешней защитой канала, например TLS [6]. После успешного входа симулятор выдаёт токен, который клиент передаёт в заголовке `X-API-KEY` при добавлении, изменении и удалении книг."
+  },
+  {
+   "t": "p",
+   "text": "REST API обычно отдаёт длинные списки по страницам. Адрес следующей страницы сервер может сообщить в заголовке ответа `Link` с отношением `rel=\"next\"`; формат этого заголовка задан в RFC 8288, который заменил упомянутый в описании симулятора RFC 5988 [7]. Чтобы клиенты не перегружали сервер, число запросов за интервал времени ограничивают. Сверх лимита сервер отвечает кодом 429 Too Many Requests и может указать в заголовке `Retry-After`, через сколько секунд повторить запрос [8]."
+  },
+  {
+   "t": "p",
+   "text": "Postman — приложение для отправки запросов к API и их хранения. Запросы объединяются в коллекции; коллекцию можно сохранить в файл JSON формата v2.1 и выполнить программой Newman, которая печатает результат каждого запроса и итоговую таблицу запуска [9]. На вкладке Authorization выбирается способ авторизации запроса: при Basic Auth Postman сам формирует заголовок `Authorization: Basic` из имени и пароля, при API Key добавляет пару из имени ключа (Key) и значения (Value) в заголовки или в строку запроса [10]. Значения, общие для нескольких запросов, хранятся в переменных и подставляются в запрос в виде `{{имя}}` [11]. Переменную коллекции можно задать из скрипта, который выполняется после получения ответа, методом `pm.collectionVariables.set` [12]."
+  },
+  {
+   "t": "p",
+   "text": "Массовое добавление книг выполняет программа на Python с библиотеками requests и Faker. Функция `requests.post()` отправляет запрос POST, а кортеж из имени и пароля в параметре `auth` равнозначен базовой аутентификации HTTP [13]. Дополнительные заголовки, например с токеном, передаются в параметре `headers`. Библиотека Faker генерирует правдоподобные случайные данные [14]: в работе используются методы `name()` (имя автора), `catch_phrase()` (название книги) и `isbn13()` (номер ISBN-13)."
+  },
+  {
+   "t": "h1",
+   "text": "Ход работы"
+  },
+  {
+   "t": "h2",
+   "text": "Запуск ВМ DEVASC"
+  },
+  {
+   "t": "p",
+   "text": "Часть 1 (запуск ВМ DEVASC в VirtualBox) заменена проверкой лабораторной ВМ, описанной в разделе 2 (рисунок {fig:env}). В контейнере установлена Ubuntu 20.04.6 LTS, имя хоста labvm, есть Python 3.8.10 и curl 7.68.0 с библиотекой OpenSSL 1.1.1f. Команда `pgrep -a` нашла процесс симулятора с номером 7176: интерпретатор `python3 -u` выполняет файл `/opt/school-library-sim/school_library_sim.py` с параметрами `--host 127.0.0.1 --port 80`. В первой строке журнала `school-library-sim.log` симулятор называет себя переписанной реализацией (re-implementation) и сообщает, что принимает запросы на http://127.0.0.1:80/, а документация находится по адресу /api/v1/docs."
+  },
+  {
+   "t": "terminal",
+   "id": "env",
+   "src": [
+    "steps/01_p1_env.txt",
+    "steps/02_p1_simulator.txt"
+   ],
+   "caption": "Версии ОС, Python, curl и процесс симулятора School Library API"
+  },
+  {
+   "t": "h2",
+   "text": "Изучение документации API с помощью симулятора API"
+  },
+  {
+   "t": "p",
+   "text": "Шаги 1 и 2 (запуск Chromium и переход на сайт library.demo.local) заменены командами в терминале (рисунок {fig:site}). Команда `getent hosts` показала, что имя library.demo.local указывает на адрес 127.0.0.1. Из главной страницы сайта командой `grep` выбраны строки с заголовком School Library, приветствием «Welcome to the School Library», пунктом меню Our Books и фразой «Click here for API docs». Слово here в ней оформлено как ссылка на `/api/v1/docs` с атрибутом `target=\"_blank\"`, поэтому документация открывается в новой вкладке, как описано в методичке [1]."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 3 загружена страница документации `/api/v1/docs` (рисунок {fig:site}). Симулятор отдаёт по этому адресу короткую HTML-страницу Swagger UI: стили и скрипт `swagger-ui-bundle.js` из пакета swagger-ui-dist 3.52.5 подключаются с CDN jsDelivr, а функция `SwaggerUIBundle` загружает описание API с адреса `/api/v1/swagger.json` и выводит его с параметром `docExpansion: \"list\"`. С этим значением Swagger UI показывает в браузере список операций под полосой /api/v1, а сами операции оставляет свёрнутыми [5], как на странице в методичке [1]. Браузера на стенде нет, скрипт страницы не выполнялся, поэтому описание API загружено командой `curl -o` в файл `swagger.json` размером 8646 байт (рисунок {fig:swagger}). Полный текст файла приведён в приложении А (листинг {lst:swagger})."
+  },
+  {
+   "t": "terminal",
+   "id": "site",
+   "src": [
+    "steps/03_p2s1_hosts.txt",
+    "steps/04_p2s2_site.txt",
+    "steps/05_p2s3_docs_page.txt"
+   ],
+   "caption": "Имя library.demo.local, строки главной страницы сайта и страница документации API"
+  },
+  {
+   "t": "p",
+   "text": "Команда `jq '.info, .basePath, .tags'` вывела название School Library API, версию 1, описание, базовый путь `/api/v1` и единственный тег `/api/v1` с описанием Default namespace (рисунок {fig:swagger}). Этому тегу на странице документации соответствует полоса /api/v1 с подписью Default namespace, под которой перечислены операции [1]; сворачивание списка щелчком по полосе (шаг 3b) относится только к интерфейсу страницы и на стенде не воспроизводилось. Следующая команда `jq` проверяет у каждой операции наличие поля `security`. Значение true получили POST /books, PUT /books/{id} и DELETE /books/{id}: Swagger UI отмечает эти операции значком замка, и без токена их не выполнить. Операции входа `loginViaBasic` и `loginViaJSON` и операции чтения GET /books и GET /books/{id} токена не требуют."
+  },
+  {
+   "t": "terminal",
+   "id": "swagger",
+   "src": [
+    "steps/06_p2s3_swagger_download.txt",
+    "steps/07_p2s3_swagger_info.txt",
+    "steps/08_p2s3_swagger_locks.txt"
+   ],
+   "caption": "Загрузка swagger.json, сведения об API и операции, для которых нужен токен"
+  },
+  {
+   "t": "p",
+   "text": "Описание операции GET /books (шаг 4) показано на рисунке {fig:getdoc}, строки с тегом и идентификатором операции `get_books` заменены на нём многоточием. Список `produces` соответствует полю Response content type: ответ может быть в формате `application/json`, `application/xml` или `application/yaml`. У операции четыре необязательных параметра строки запроса (`in: query`). Логический параметр `includeISBN` добавляет к книгам номера ISBN, `sortBy` задаёт сортировку по одному из полей `id`, `title`, `author` или `isbn`, `author` отбирает книги одного автора, а целочисленный `page` выбирает страницу ответа. В описании `page` сказано, что ответ делится на страницы по 10 записей, страницы нумеруются с 0, а ссылку на следующую страницу передаёт заголовок Link по RFC 5988. В разделе `responses` описан один код 200 (Success), и страница документации показывает его ещё до отправки запроса [1]."
+  },
+  {
+   "t": "p",
+   "text": "Нажатию Try it out и Execute для GET /books (шаг 5) соответствует запрос `curl -i`, который печатает и заголовки ответа (рисунок {fig:tryit}). Симулятор ответил кодом 200 OK и телом длиной 463 байта: массивом JSON из четырёх начальных книг с id от 0 до 3 (на рисунке ответ сокращён после первой книги). Заголовок `Access-Control-Allow-Origin: *` разрешает обращаться к API из скриптов страниц других сайтов, а заголовок `Server` содержит имя симулятора SchoolLibrarySim/1.0 и версию Python 3.8.10. Строка состояния начинается с HTTP/1.0: так по умолчанию отвечает модуль `http.server` стандартной библиотеки Python, на котором написан симулятор."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 6 выполнена команда curl в том виде, в каком методичка предлагает скопировать её со страницы документации [1]: запрос GET к `/api/v1/books` с заголовком `accept: application/json` (вторая команда на рисунке {fig:tryit}). Она вывела те же четыре книги без заголовков ответа; на рисунке этот вывод заменён многоточием. JSON выводится с отступом в четыре пробела, как в выводе curl в методичке. На шаге 7 к URL добавлен параметр `includeISBN=true`, и книги вернулись с полем `isbn`: 978-1578700714, 978-0471778646, 000-0000000123 и 000-0000001123. Адрес этого запроса (третья команда на рисунке {fig:tryit}) совпадает с Request URL из методички [1]."
+  },
+  {
+   "t": "terminal",
+   "id": "getdoc",
+   "src": [
+    "steps/09_p2s4_get_books_doc.txt",
+    "steps/09_p2s4_get_books_doc.txt"
+   ],
+   "lines": [
+    "1-6",
+    "12-50"
+   ],
+   "ellipsis_between": true,
+   "caption": "Описание операции GET /books: форматы ответа, параметры и код 200"
+  },
+  {
+   "t": "terminal",
+   "id": "tryit",
+   "src": [
+    "transcript.txt",
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "123-136",
+    "153",
+    "176-203"
+   ],
+   "ellipsis_between": true,
+   "caption": "Ответ на GET /books с заголовками, команда curl из документации и список книг с ISBN"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 8 начат с запроса POST /loginViaBasic без учётных данных (рисунок {fig:login}). Симулятор ответил кодом 401 Unauthorized, телом Unauthorized Access и заголовком `WWW-Authenticate: Basic realm=\"Authentication Required\"`; в ответ на такой заголовок браузер выводит окно Sign in, описанное в методичке [1, 6]. Окно заменено параметром `-u cisco` команды curl: в ответ на приглашение `Enter host password for user 'cisco':` был передан пароль Cisco123!, на экране он не отображался. Сервер вернул JSON с токеном `cisco|BXOPKO2E…`, ответ сохранён командой `tee` в файл `token.json`. В токене перед вертикальной чертой стоит имя пользователя, после неё идут 43 символа из латинских букв, цифр и знаков «-» и «_»."
+  },
+  {
+   "t": "p",
+   "text": "Окну Available authorizations, которое открывает кнопка Authorize, соответствует схема безопасности из описания API: по выводу `jq '.securityDefinitions'` схема apikey типа `apiKey` передаёт ключ в заголовке (`in: header`) с именем X-API-KEY. Это имя методичка предлагает запомнить для работы с Postman [1]. Токен прочитан из `token.json` командой `jq -r .token` в переменную оболочки `TOKEN` и выведен в виде готового заголовка `X-API-KEY: cisco|BXOPKO2E…`. Дальше этот заголовок передавался в запросах POST и DELETE, а на странице документации этому шагу соответствует смена значков замка после авторизации (шаг 8g)."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 9 двумя запросами POST /books с заголовками X-API-KEY и `Content-Type: application/json` добавлены книги IPv6 Fundamentals (id 4, автор Rick Graziani) и 31 Days Before Your CCNA Exam (id 5, автор Allan Johnson). На каждый запрос симулятор ответил добавленной книгой с полями id, title и author, а в его журнале `school-library-sim.log` оба запроса записаны с кодом 200."
+  },
+  {
+   "t": "p",
+   "text": "Методичка предлагает проверить добавление, обновив вкладку сайта School Library (шаг 9k), а затем повторить GET /books на странице документации (шаг 10). Страница сайта получает список книг тем же запросом GET /books, поэтому на стенде обе проверки выполнены одним запросом: в ответе шесть книг с id от 0 до 5, новые книги стоят в конце (рисунок {fig:list6})."
+  },
+  {
+   "t": "terminal",
+   "id": "login",
+   "src": [
+    "steps/13_p2s8_login_401.txt",
+    "steps/14_p2s8_login.txt",
+    "steps/15_p2s8_authorize_scheme.txt",
+    "steps/16_p2s8_authorize.txt",
+    "steps/17_p2s9_post_book4.txt",
+    "steps/18_p2s9_post_book5.txt"
+   ],
+   "caption": "Ответ 401 без учётных данных, получение токена, схема X-API-KEY и добавление книг с id 4 и 5"
+  },
+  {
+   "t": "terminal",
+   "id": "list6",
+   "src": "steps/19_p2s10_list_books.txt",
+   "caption": "Список книг после добавления книг с id 4 и 5"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 11 запрос GET /books/4 вернул одну книгу, IPv6 Fundamentals (рисунок {fig:delete}). В методичке путь записан как /books{id}, а в описании API он задан как `/books/{id}`, номер книги передаётся частью пути. На шаге 12 эта книга удалена запросом DELETE /books/4 с заголовком X-API-KEY, и в ответе симулятор вернул удалённую запись. После этого GET /books (шаг 13) вывел пять книг, книги с id 4 среди них нет."
+  },
+  {
+   "t": "terminal",
+   "id": "delete",
+   "src": [
+    "steps/20_p2s11_get_book4.txt",
+    "steps/21_p2s12_delete_book4.txt",
+    "steps/22_p2s13_list_books.txt"
+   ],
+   "caption": "Получение и удаление книги с id 4 и список книг после удаления"
+  },
+  {
+   "t": "h2",
+   "text": "Вызовы API симулятора с помощью Postman"
+  },
+  {
+   "t": "p",
+   "text": "Вместо приложения Postman (шаг 1) использовался Newman 6.2.3, работающий на Node.js v20.20.2 (рисунок {fig:newman_get}). В методичке запросы вводятся на несохранённых вкладках Postman, а на стенде они записаны в коллекцию `library.postman_collection.json` формата v2.1 (листинг {lst:collection}). В коллекции четыре запроса:"
+  },
+  {
+   "t": "bullets",
+   "items": [
+    "`GET /books` по адресу `http://library.demo.local/api/v1/books` без авторизации и тела (выполнялся на шагах 2 и 5)",
+    "`POST /loginViaBasic` с авторизацией типа `basic` (имя cisco, пароль Cisco123!), что соответствует типу Basic Auth на вкладке Authorization в шаге 3",
+    "`POST /books` с авторизацией типа `apikey` (ключ X-API-KEY, значение `{{token}}`, место передачи header) и телом в режиме raw на языке JSON, как на вкладках Authorization и Body в шаге 4",
+    "`GET /books (Params)` с параметрами `includeISBN=true` и `sortBy=author` в разделе `query`, что соответствует таблице Query Params на вкладке Params в шаге 6"
+   ]
+  },
+  {
+   "t": "p",
+   "text": "В Postman токен копируют из ответа шага 3 в поле Value запроса шага 4 вручную [1]. В коллекции это делает скрипт события test запроса POST /loginViaBasic (листинг {lst:collection}): вызов `pm.collectionVariables.set` записывает токен из ответа в переменную коллекции `token` [12], а запрос POST /books подставляет её как `{{token}}`. Значение, заданное скриптом, существует только во время запуска Newman, поэтому шаги 3 и 4 выполнены одним запуском. Каждое нажатие Send заменено командой `newman run` с параметром `--folder`, который выбирает запрос по имени, и параметром `--verbose`, при котором Newman печатает подробности каждого запроса, в том числе тело ответа [9]."
+  },
+  {
+   "t": "listing",
+   "id": "collection",
+   "caption": "Коллекция Postman library.postman_collection.json",
+   "code": "{\n  \"info\": {\n    \"name\": \"School Library API (DEVASC lab 4.5.5)\",\n    \"description\": \"Requests of the Postman tabs in lab 4.5.5 Part 3: GET /books, POST /loginViaBasic (Basic Auth), POST /books (API Key X-API-KEY, raw JSON body) and GET /books with the Query Params includeISBN and sortBy.\",\n    \"schema\": \"https://schema.getpostman.com/json/collection/v2.1.0/collection.json\"\n  },\n  \"item\": [\n    {\n      \"name\": \"GET /books\",\n      \"request\": {\n        \"method\": \"GET\",\n        \"header\": [],\n        \"url\": {\n          \"raw\": \"http://library.demo.local/api/v1/books\",\n          \"protocol\": \"http\",\n          \"host\": [\"library\", \"demo\", \"local\"],\n          \"path\": [\"api\", \"v1\", \"books\"]\n        }\n      },\n      \"response\": []\n    },\n    {\n      \"name\": \"POST /loginViaBasic\",\n      \"event\": [\n        {\n          \"listen\": \"test\",\n          \"script\": {\n            \"type\": \"text/javascript\",\n            \"exec\": [\n              \"// In the lab the token is copied by hand from this response into the API Key\",\n              \"// Value of POST /books. Newman has no GUI: the token goes to {{token}} instead.\",\n              \"pm.collectionVariables.set(\\\"token\\\", pm.response.json().token);\"\n            ]\n          }\n        }\n      ],\n      \"request\": {\n        \"auth\": {\n          \"type\": \"basic\",\n          \"basic\": [\n            {\"key\": \"username\", \"value\": \"cisco\", \"type\": \"string\"},\n            {\"key\": \"password\", \"value\": \"Cisco123!\", \"type\": \"string\"}\n          ]\n        },\n        \"method\": \"POST\",\n        \"header\": [],\n        \"url\": {\n          \"raw\": \"http://library.demo.local/api/v1/loginViaBasic\",\n          \"protocol\": \"http\",\n          \"host\": [\"library\", \"demo\", \"local\"],\n          \"path\": [\"api\", \"v1\", \"loginViaBasic\"]\n        }\n      },\n      \"response\": []\n    },\n    {\n      \"name\": \"POST /books\",\n      \"request\": {\n        \"auth\": {\n          \"type\": \"apikey\",\n          \"apikey\": [\n            {\"key\": \"key\", \"value\": \"X-API-KEY\", \"type\": \"string\"},\n            {\"key\": \"value\", \"value\": \"{{token}}\", \"type\": \"string\"},\n            {\"key\": \"in\", \"value\": \"header\", \"type\": \"string\"}\n          ]\n        },\n        \"method\": \"POST\",\n        \"header\": [],\n        \"body\": {\n          \"mode\": \"raw\",\n          \"raw\": \"{\\n  \\\"id\\\": 4,\\n  \\\"title\\\": \\\"IPv6 Fundamentals\\\",\\n  \\\"author\\\": \\\"Rick Graziani\\\",\\n  \\\"isbn\\\": \\\"978 158144778\\\"\\n}\",\n          \"options\": {\"raw\": {\"language\": \"json\"}}\n        },\n        \"url\": {\n          \"raw\": \"http://library.demo.local/api/v1/books\",\n          \"protocol\": \"http\",\n          \"host\": [\"library\", \"demo\", \"local\"],\n          \"path\": [\"api\", \"v1\", \"books\"]\n        }\n      },\n      \"response\": []\n    },\n    {\n      \"name\": \"GET /books (Params)\",\n      \"request\": {\n        \"method\": \"GET\",\n        \"header\": [],\n        \"url\": {\n          \"raw\": \"http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author\",\n          \"protocol\": \"http\",\n          \"host\": [\"library\", \"demo\", \"local\"],\n          \"path\": [\"api\", \"v1\", \"books\"],\n          \"query\": [\n            {\"key\": \"includeISBN\", \"value\": \"true\"},\n            {\"key\": \"sortBy\", \"value\": \"author\"}\n          ]\n        }\n      },\n      \"response\": []\n    }\n  ],\n  \"variable\": [\n    {\"key\": \"token\", \"value\": \"\"}\n  ]\n}",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "Запрос GET /books (шаг 2) получил ответ 200 OK за 12 мс (рисунок {fig:newman_get}). В той же строке Newman выводит объём запроса и ответа, 242 и 762 байта, и число заголовков: 7 в запросе и 5 в ответе. Поля этой строки Newman разделяет знаком ★. Тело ответа, 577 байт JSON, содержит пять книг, тот же список, что в конце части 2. Время отдельных этапов запроса и итоговая таблица запуска на рисунке заменены многоточием."
+  },
+  {
+   "t": "p",
+   "text": "Шаги 3 и 4 выполнены одной командой с двумя параметрами `--folder` (рисунок {fig:newman_post}). На запрос POST /loginViaBasic симулятор ответил кодом 200 и выдал токен `cisco|syy1R8qv…`, не такой, как в части 2: каждый вход создаёт новый токен. Запрос POST /books отправил тело raw размером 101 байт с полями id, title, author и isbn и получил ответ 200 OK с книгой id 4. Без заголовка X-API-KEY симулятор ответил бы кодом 400, а с неверным токеном ответил бы кодом 401, так что ответ 200 подтверждает, что токен из переменной коллекции попал в запрос. Поля isbn в ответе нет, хотя симулятор его сохранил: это видно по ответу на шаге 6. Заголовок Content-Type в коллекции не задан, а симулятор разбирает тело только с типом `application/json` и в противном случае ответил бы кодом 400; значит, Newman добавил этот заголовок сам, по языку JSON, выбранному для тела raw."
+  },
+  {
+   "t": "terminal",
+   "id": "newman_get",
+   "src": [
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "321-323",
+    "433-469"
+   ],
+   "ellipsis_between": true,
+   "append": "...",
+   "caption": "Версии Node.js и Newman, запрос GET /books из коллекции"
+  },
+  {
+   "t": "p",
+   "text": "Итоговая таблица запуска со входом и добавлением книги (рисунок {fig:newman_post}) приведена в начале рисунка {fig:newman_get2}: одна итерация, два выполненных запроса и один тестовый скрипт (запись токена в переменную), сбоев нет. Проверок (assertions) в коллекции нет, поэтому их счётчик равен нулю. Весь запуск занял 69 мс, а среднее время ответа составило 7 мс. Повторный GET /books (шаг 5) вернул 679 байт JSON, и книга IPv6 Fundamentals с id 4 снова есть в списке, перед книгой id 5. Симулятор хранит книги в порядке добавления, но каждую страницу ответа сортирует по полю id (по умолчанию `sortBy=id`), поэтому книга 4, добавленная после книги 5, выводится раньше неё."
+  },
+  {
+   "t": "terminal",
+   "id": "newman_post",
+   "src": "steps/26_p3s3_s4_newman_login_post.txt",
+   "lines": "1-38",
+   "caption": "Запросы POST /loginViaBasic и POST /books в одном запуске Newman"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 6 запрос с параметрами `includeISBN=true` и `sortBy=author` сначала выполнен командой curl, как Try it out на странице документации, а затем из коллекции (рисунок {fig:newman_params}). Newman отправил его на тот же адрес, что и Request URL в методичке [1]. Тело ответа curl совпало с телом, которое вывел Newman: книги упорядочены по автору, от Allan Johnson до Stef Maruch Aahz Maruch, и у всех, кроме книги id 5, добавленной в части 2 без ISBN, есть поле isbn. У книги 4 номер 978 158144778 из тела запроса шага 4; в методичке на этом шаге у неё напечатан номер 978 1587144778, хотя в шаге 4 вводится 978 158144778 [1]. Всего за четыре запуска Newman выполнено пять запросов, на каждый получен ответ 200 OK, а в итоговых таблицах в столбце failed стоят нули."
+  },
+  {
+   "t": "terminal",
+   "id": "newman_get2",
+   "src": [
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "537-568",
+    "590-600"
+   ],
+   "ellipsis_between": true,
+   "append": "...",
+   "caption": "Итоговая таблица запуска с запросом POST /books и повторный запрос GET /books"
+  },
+  {
+   "t": "terminal",
+   "id": "newman_params",
+   "src": [
+    "steps/29_p3s6_newman_params.txt",
+    "steps/29_p3s6_newman_params.txt"
+   ],
+   "lines": [
+    "1",
+    "6-47"
+   ],
+   "ellipsis_between": true,
+   "append": "...",
+   "caption": "Запрос GET /books с параметрами includeISBN и sortBy из коллекции"
+  },
+  {
+   "t": "p",
+   "text": "С точки зрения DevSecOps токен, который выдаёт `POST /loginViaBasic`, равнозначен ключу API: с ним в заголовке X-API-KEY любой клиент может добавлять, изменять и удалять книги, пока симулятор не перезапущен, потому что срока действия у токена нет. Запросы шли по HTTP без TLS, поэтому пароль, закодированный в Base64 в заголовке Authorization, и токен передавались открытым текстом. На стенде этот трафик не выходил за пределы интерфейса loopback, но в сети его прочитал бы любой, у кого есть доступ к каналу, поэтому настоящий API должен работать только по HTTPS [6, 15]. Токены из частей 2 и 3 выводились на экран (рисунки {fig:login} и {fig:newman_post}), а первый из них сохранён ещё и в файл `token.json`; в отчёте их можно показать только потому, что токены симулятора перестали действовать вместе с контейнером стенда. Пароль записан открытым текстом в коллекции (листинг {lst:collection}) и в программе из части 4 (листинг {lst:script}): для учебной учётной записи это допустимо, но коллекции и файлы окружения Postman с настоящими паролями и токенами нельзя хранить в git, даже когда переменная `token`, как здесь, пуста и заполняется только во время запуска Newman. Такие значения держат в Postman Vault или другом хранилище секретов и передают Newman при запуске параметром `--env-var` или файлом окружения, исключённым из репозитория, а программе на Python их передают через переменные окружения [9, 11, 16]."
+  },
+  {
+   "t": "h2",
+   "text": "Добавление 100 книг в симулятор API с помощью Python"
+  },
+  {
+   "t": "p",
+   "text": "Вместо VS Code (шаг 1) каталог `~/labs/devnet-src/school-library` просматривался в терминале: команда `ls -l` показала в нём один файл `add100RandomBooks.py` размером 1313 байт (рисунок {fig:repl}). Текст программы, выведенный на шаге 2 командой `cat`, приведён в листинге {lst:script}. Первая строка (shebang) задаёт интерпретатор Python 3, за ней импортируются модули requests и json и класс Faker из пакета faker."
+  },
+  {
+   "t": "listing",
+   "id": "script",
+   "caption": "Программа add100RandomBooks.py",
+   "code": "#!/usr/bin/env python3\nimport requests\nimport json\nfrom faker import Faker\n\nAPIHOST = \"http://library.demo.local\"\nLOGIN = \"cisco\"\nPASSWORD = \"Cisco123!\"\n\ndef getAuthToken():\n    authCreds = (LOGIN, PASSWORD)\n    r = requests.post(\n        f\"{APIHOST}/api/v1/loginViaBasic\",\n        auth = authCreds\n    )\n    if r.status_code == 200:\n        return r.json()[\"token\"]\n    raise Exception(f\"Status code {r.status_code} and text {r.text}, while trying to authenticate.\")\n\ndef addBook(book, apiKey):\n    r = requests.post(\n        f\"{APIHOST}/api/v1/books\",\n        headers = {\n            \"Content-type\": \"application/json\",\n            \"X-API-Key\": apiKey\n        },\n        data = json.dumps(book)\n    )\n    if r.status_code == 200:\n        print(f\"Book {book} added.\")\n    else:\n        raise Exception(f\"Error code {r.status_code} and text {r.text}, while trying to add book {book}.\")\n\n# Main part: get the API key (token) once\napiKey = getAuthToken()\n\n# Generate 100 random books with faker and add them through the API\nfake = Faker()\nfor i in range(4, 104):\n    fakeTitle = fake.catch_phrase()\n    fakeAuthor = fake.name()\n    fakeISBN = fake.isbn13()\n    book = {\"id\": i, \"title\": fakeTitle, \"author\": fakeAuthor, \"isbn\": fakeISBN}\n    # add the new random \"fake\" book using the API\n    addBook(book, apiKey)",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "На шаге 2d в интерпретаторе Python командой `fake = Faker()` создан объект `fake`, а после ввода `fake.` двойное нажатие Tab вывело список его методов и атрибутов. Сначала интерпретатор спросил `Display all 301 possibilities? (y or n)`: вариантов 301, а не 252, как в методичке [1], так как на стенде установлена другая версия Faker. На рисунке {fig:repl} из списка оставлены начало, конец и строки с методами `name()`, `catch_phrase()` и `isbn13()`, которые используются дальше. Оставшийся после списка ввод `fake.` сброшен сочетанием клавиш Ctrl+C, и интерпретатор вывел KeyboardInterrupt."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 3a команда `print('My name is {}.'.format(fake.name()))` вывела `My name is Lindsay Castillo.` Команда из ответа на вопрос шага 3b (раздел 5) напечатала имя, название книги и номер ISBN. Цикл `for i in range(10):` с вызовом `print(fake.name())` вывел десять разных имён, после чего интерпретатор закрыт командой `quit()`."
+  },
+  {
+   "t": "terminal",
+   "id": "repl",
+   "src": [
+    "transcript.txt",
+    "transcript.txt",
+    "transcript.txt",
+    "transcript.txt",
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "742-744",
+    "792-800",
+    "812",
+    "819",
+    "922",
+    "950-972"
+   ],
+   "ellipsis_between": true,
+   "caption": "Каталог school-library и работа с библиотекой Faker в интерпретаторе Python"
+  },
+  {
+   "t": "p",
+   "text": "Шаги 4–7 разбирают программу по частям, которые на стенде выводились командами `grep -n` и `sed -n`; их вывод совпадает со строками листинга {lst:script}. Переменные `APIHOST`, `LOGIN` и `PASSWORD` (строки 6–8) задают адрес сервера и учётные данные. Функция `getAuthToken()` (строки 10–18) отправляет запрос POST на адрес `/api/v1/loginViaBasic`, собранный f-строкой из `APIHOST`, с кортежем `(LOGIN, PASSWORD)` в параметре `auth`, то есть с базовой аутентификацией [13]. При коде 200 функция возвращает поле token из ответа JSON, при любом другом коде вызывает исключение с кодом и текстом ответа."
+  },
+  {
+   "t": "p",
+   "text": "Функция `addBook(book, apiKey)` (строки 20–32) отправляет на адрес `/api/v1/books` словарь книги, преобразованный в строку JSON функцией `json.dumps`, с заголовками `Content-type: application/json` и `X-API-Key`. Имена заголовков HTTP не зависят от регистра [3], поэтому `X-API-Key` в программе и `X-API-KEY` в документации обозначают один заголовок. При коде 200 функция печатает строку `Book {...} added.`, иначе вызывает исключение. Основная часть программы (строки 34–45) один раз получает токен в переменную `apiKey`, создаёт объект Faker и в цикле `for i in range(4, 104)` сто раз собирает словарь с ключами id, title, author и isbn из номера `i` и значений `catch_phrase()`, `name()` и `isbn13()` и передаёт его в `addBook()`. Словарь соответствует модели Book из описания API (листинг {lst:swagger}, шаг 7d): в модели обязательны только title и author, ключа isbn в ней нет, но симулятор сохраняет его вместе с книгой. Диапазон взят из текста методички, а в примечании для преподавателей сказано, что в копии программы из ВМ DEVASC может стоять `range(4, 105)`, при котором добавляется 101 книга [1]."
+  },
+  {
+   "t": "p",
+   "text": "Программа запущена на шаге 8a и напечатала 100 строк `Book {...} added.` с id от 4 до 103 (рисунок {fig:run}, середина вывода заменена многоточием). По журналу симулятора вход `loginViaBasic` и все 100 запросов POST /books выполнены в течение одной секунды, в 11:03:27, и завершились кодом 200. Книги с id 4 и 5 к этому моменту уже были в библиотеке. Если книга с таким id существует, симулятор заменяет её поля и тоже отвечает кодом 200, поэтому программа напечатала added и для них, а книги 4 и 5 получили случайные названия Inverse eco-centric function и Reverse-engineered responsive interface. Чтобы сохранить эти книги, методичка предлагает диапазон `range(6, 106)` [1]."
+  },
+  {
+   "t": "terminal",
+   "id": "run",
+   "src": [
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "1017-1021",
+    "1210-1245"
+   ],
+   "ellipsis_between": true,
+   "caption": "Запуск add100RandomBooks.py (начало и конец вывода) и список книг, загруженный скриптом list_all_books.py"
+  },
+  {
+   "t": "p",
+   "text": "Скрипт `list_all_books.py` (листинг {lst:listall}) заменил обновление страницы сайта (шаг 8b). Он читает книги так же, как JavaScript главной страницы симулятора: запрашивает `/api/v1/books` и переходит по адресу из заголовка `Link` с `rel=\"next\"`, пока такой заголовок есть, а на ответ 429 ждёт столько секунд, сколько указано в `Retry-After`, и повторяет запрос. Скрипт загрузил 11 страниц, десять по 10 книг и последнюю, page=10, с четырьмя (рисунок {fig:run}). Всего в библиотеке 104 книги с id от 0 до 103: четыре начальные и 100 книг, записанных программой."
+  },
+  {
+   "t": "listing",
+   "id": "listall",
+   "caption": "Скрипт list_all_books.py",
+   "code": "#!/usr/bin/env python3\n\"\"\"Read every book of the School Library the same way the web page does.\n\nThe page http://library.demo.local/ starts with GET /api/v1/books and follows the\n'Link: <...>; rel=\"next\"' response header page by page (10 books per page). When the\nAPI answers 429 Too Many Requests it waits Retry-After seconds and repeats the call.\n\"\"\"\nimport time\n\nimport requests\n\nurl = \"http://library.demo.local/api/v1/books\"\nbooks = []\nwhile url:\n    r = requests.get(url, headers={\"accept\": \"application/json\"}, timeout=10)\n    if r.status_code == 429:\n        wait = int(r.headers[\"Retry-After\"])\n        print(f\"GET {url} -> 429 {r.json()['error']} Loading in {wait} seconds ...\")\n        time.sleep(wait)\n        continue\n    r.raise_for_status()\n    page = r.json()\n    books += page\n    print(f\"GET {url} -> {r.status_code}, {len(page)} books\")\n    url = r.links.get(\"next\", {}).get(\"url\")\n\nprint()\nprint(f\"{'Book ID':<8} {'Title':<42} Author\")\nshown = books if len(books) <= 10 else books[:6] + [None] + books[-3:]\nfor book in shown:\n    if book is None:\n        print(\"...\")\n    else:\n        print(f\"{book['id']:<8} {book['title'][:42]:<42} {book['author']}\")\nids = sorted(book[\"id\"] for book in books)\nprint(f\"Total books: {len(books)} (id {ids[0]}..{ids[-1]})\")",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "Дважды симулятор ответил кодом 429 с сообщением Too many requests: на странице 3 с ожиданием 2 с и на странице 9 с ожиданием 10 с. Ограничение в симуляторе действует только на GET /books. Время делится на окна по 10 с, начало каждого окна кратно 10 с; в окне проходят шесть таких запросов, остальные получают 429, а `Retry-After` содержит число секунд до конца окна. По журналу симулятора в окне с 11:03:20 до 11:03:30 уже были три запроса GET /books из части 3, поэтому без ожидания прошли только страницы 0–2. В следующем окне, с 11:03:30, прошли страницы 3–8, а страница 9 стала седьмым запросом и получила ответ 429 с ожиданием до 11:03:40. В частях 2 и 3 сценарий выдерживал перед каждым GET /books паузу 2 с, и ответов 429 там не было."
+  },
+  {
+   "t": "p",
+   "text": "Примечание методички о параметре page проверено запросом `GET /books?page=1` с ключом `-i` (рисунок {fig:page1}). Ответ содержит книги с id от 10 до 19 и заголовок `Link` с адресом страницы `page=2` и отношением `rel=\"next\"`. Страницы нумеруются с 0: без параметра page возвращаются книги 0–9, а последняя страница при 104 книгах имеет номер 10. Методичка советует вводить на странице документации номера страниц от 2 до 10 [1], но с учётом нумерации с нуля остальные книги находятся на страницах 1–10."
+  },
+  {
+   "t": "terminal",
+   "id": "page1",
+   "src": [
+    "steps/40_p4s8_note_page.txt",
+    "steps/40_p4s8_note_page.txt"
+   ],
+   "lines": [
+    "1-16",
+    "57-62"
+   ],
+   "ellipsis_between": true,
+   "caption": "Вторая страница списка книг (page=1) с заголовком Link"
+  },
+  {
+   "t": "h1",
+   "text": "Ответы на контрольные вопросы"
+  },
+  {
+   "t": "p",
+   "text": "В методичке два вопроса, оба в части 4: на шаге 3b и в конце шага 8. Оба ответа проверены на стенде."
+  },
+  {
+   "t": "p",
+   "text": "1. Какой командой с тремя методами Faker, выделенными на шаге 2d, напечатать фразу с вымышленными именем автора, названием книги и номером ISBN, как в примере методички?"
+  },
+  {
+   "t": "p",
+   "text": "Значения трёх методов подставляются в шаблон строки методом `format()`, а строка печатается функцией `print()` (рисунок {fig:answer1}). На стенде команда напечатала фразу с именем Mrs. Kaitlin Peterson, названием книги Centralized incremental function и номером ISBN 978-0-290-32557-1. При каждом вызове значения другие, так как Faker генерирует их случайно."
+  },
+  {
+   "t": "terminal",
+   "id": "answer1",
+   "src": "transcript.txt",
+   "lines": "955-958",
+   "title": "devasc@labvm: ~/labs/devnet-src/school-library",
+   "caption": "Проверка ответа на первый вопрос: команда с методами Faker и её вывод"
+  },
+  {
+   "t": "p",
+   "text": "2. Как добавить ещё 100 книг?"
+  },
+  {
+   "t": "p",
+   "text": "Нужно изменить диапазон цикла так, чтобы новые id не совпадали с занятыми. После запуска с `range(4, 104)` заняты id 0–103, поэтому подходит `range(104, 204)`, как и в ответе методички [1]. Для копии программы из ВМ DEVASC с `range(4, 105)` цикл следует начать с 105, `range(105, 205)`, иначе симулятор без ошибки заменит книгу 104. Если же программа запускалась с диапазоном `range(6, 106)`, который методичка предлагает для сохранения книг 4 и 5, подходит `range(106, 206)`."
+  },
+  {
+   "t": "p",
+   "text": "Ответ проверен на стенде (рисунок {fig:more_run}). Командой `sed` из `add100RandomBooks.py` создана копия `add100MoreBooks.py`, в которой изменена только строка 39 с заголовком цикла (листинг {lst:more}). Последние три строки её вывода сообщают о добавлении книг с id 201–203. Скрипт `list_all_books.py` загрузил 21 страницу, двадцать по 10 книг и последнюю с четырьмя, трижды получив ответ 429 и выждав указанное время, и насчитал 204 книги с id от 0 до 203."
+  },
+  {
+   "t": "listing",
+   "id": "more",
+   "caption": "Основная часть программы add100MoreBooks.py (строки 34–45)",
+   "code": "# Main part: get the API key (token) once\napiKey = getAuthToken()\n\n# Generate 100 random books with faker and add them through the API\nfake = Faker()\nfor i in range(104, 204):\n    fakeTitle = fake.catch_phrase()\n    fakeAuthor = fake.name()\n    fakeISBN = fake.isbn13()\n    book = {\"id\": i, \"title\": fakeTitle, \"author\": fakeAuthor, \"isbn\": fakeISBN}\n    # add the new random \"fake\" book using the API\n    addBook(book, apiKey)",
+   "font_size": 9
+  },
+  {
+   "t": "terminal",
+   "id": "more_run",
+   "src": [
+    "transcript.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "1308-1344",
+    "1357"
+   ],
+   "ellipsis_between": true,
+   "caption": "Проверка ответа на второй вопрос: ещё 100 книг и итоговое число книг"
+  },
+  {
+   "t": "h1",
+   "text": "Выводы",
+   "num": false
+  },
+  {
+   "t": "p",
+   "text": "Изучено описание REST API симулятора School Library в формате Swagger 2.0, по которому строится страница документации Swagger UI: базовый путь `/api/v1`, семь операций, из них три (POST /books, PUT /books/{id} и DELETE /books/{id}) требуют токен в заголовке X-API-KEY, а GET /books принимает параметры includeISBN, sortBy, author и page. Запросы curl, заменившие кнопки Try it out и Execute, вернули список из четырёх начальных книг с кодом 200 и номера ISBN по параметру includeISBN=true. Вход `loginViaBasic` без учётных данных дал код 401 с заголовком WWW-Authenticate, а с учётной записью cisco вернул токен из имени пользователя и 43 случайных символов. С этим токеном добавлены книги с id 4 и 5 и удалена книга 4, после чего в библиотеке осталось пять книг."
+  },
+  {
+   "t": "p",
+   "text": "Запросы вкладок Postman записаны в коллекцию из четырёх элементов и выполнены программой Newman 6.2.3 за четыре запуска. Все пять выполненных запросов (GET /books дважды) получили ответ 200 OK, в итоговых таблицах failed равен 0, а запуск со входом и добавлением книги содержал два запроса и один тестовый скрипт и занял 69 мс. Токен из ответа POST /loginViaBasic попал в заголовок X-API-KEY запроса POST /books через переменную коллекции, книга IPv6 Fundamentals вернулась в список с ISBN 978 158144778, а параметры includeISBN=true и sortBy=author дали список, отсортированный по автору."
+  },
+  {
+   "t": "p",
+   "text": "Программа `add100RandomBooks.py` отправила 100 запросов POST /books, все с кодом 200, причём книги с id 4 и 5 были перезаписаны случайными данными без ошибки. Скрипт `list_all_books.py`, который читает список по заголовку Link, насчитал 104 книги на 11 страницах и дважды получил ответ 429 из-за ограничения частоты. Ответ на второй вопрос методички проверен: с диапазоном `range(104, 204)` добавлено ещё 100 книг, всего их стало 204 на 21 странице."
+  },
+  {
+   "t": "p",
+   "text": "Вместо ВМ DEVASC использовался контейнер Ubuntu 20.04 с совместимым симулятором School Library API, страницы в браузере Chromium были заменены командами curl и jq, а приложение Postman заменено программой Newman с коллекцией запросов. Пароль и токены на стенде передавались по HTTP без шифрования, токены выводились на экран, а пароль записан открытым текстом в коллекции и в программе; для настоящего API нужны HTTPS и хранение секретов вне репозитория."
+  },
+  {
+   "t": "sources",
+   "items": [
+    "Lab - Explore REST APIs with API Simulator and Postman : лабораторная работа 4.5.5 // DevNet Associate v1.0 / Cisco Networking Academy. – 2020.",
+    "Fielding R. T. Architectural Styles and the Design of Network-based Software Architectures : doctoral dissertation / R. T. Fielding. – Irvine : University of California, 2000. – URL: https://ics.uci.edu/~fielding/pubs/dissertation/top.htm (дата обращения: 14.11.2026).",
+    "Fielding R. HTTP Semantics : RFC 9110 / R. Fielding, M. Nottingham, J. Reschke. – 2022. – URL: https://www.rfc-editor.org/rfc/rfc9110 (дата обращения: 14.11.2026).",
+    "OpenAPI Specification. Version 2.0 // Swagger : [сайт]. – URL: https://swagger.io/specification/v2/ (дата обращения: 14.11.2026).",
+    "Configuration // Swagger UI : [сайт]. – URL: https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md (дата обращения: 14.11.2026).",
+    "Reschke J. The 'Basic' HTTP Authentication Scheme : RFC 7617 / J. Reschke. – 2015. – URL: https://www.rfc-editor.org/rfc/rfc7617 (дата обращения: 14.11.2026).",
+    "Nottingham M. Web Linking : RFC 8288 / M. Nottingham. – 2017. – URL: https://www.rfc-editor.org/rfc/rfc8288 (дата обращения: 14.11.2026).",
+    "Nottingham M. Additional HTTP Status Codes : RFC 6585 / M. Nottingham, R. Fielding. – 2012. – URL: https://www.rfc-editor.org/rfc/rfc6585 (дата обращения: 14.11.2026).",
+    "Newman // postmanlabs/newman : [сайт]. – URL: https://github.com/postmanlabs/newman (дата обращения: 14.11.2026).",
+    "Authorization types supported by Postman // Postman Docs : [сайт]. – URL: https://learning.postman.com/docs/sending-requests/authorization/authorization-types/ (дата обращения: 14.11.2026).",
+    "Store and reuse values using variables // Postman Docs : [сайт]. – URL: https://learning.postman.com/docs/sending-requests/variables/variables/ (дата обращения: 14.11.2026).",
+    "Reference variables in Postman scripts // Postman Docs : [сайт]. – URL: https://learning.postman.com/docs/tests-and-scripts/write-scripts/postman-sandbox-reference/pm-variables/ (дата обращения: 14.11.2026).",
+    "Authentication // Requests: HTTP for Humans : [сайт]. – URL: https://requests.readthedocs.io/en/latest/user/authentication/ (дата обращения: 14.11.2026).",
+    "Faker documentation : [сайт]. – URL: https://faker.readthedocs.io/en/master/ (дата обращения: 14.11.2026).",
+    "REST Security Cheat Sheet // OWASP Cheat Sheet Series : [сайт]. – URL: https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html (дата обращения: 14.11.2026).",
+    "Secrets Management Cheat Sheet // OWASP Cheat Sheet Series : [сайт]. – URL: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html (дата обращения: 14.11.2026)."
+   ]
+  },
+  {
+   "t": "appendix",
+   "letter": "А",
+   "title": "Описание API симулятора в формате Swagger 2.0"
+  },
+  {
+   "t": "listing",
+   "id": "swagger",
+   "caption": "Файл swagger.json, загруженный с адреса /api/v1/swagger.json",
+   "code": "{\n    \"swagger\": \"2.0\",\n    \"basePath\": \"/api/v1\",\n    \"info\": {\n        \"title\": \"School Library API\",\n        \"version\": \"1\",\n        \"description\": \"API access to the School Library - build your own apps using this API.\"\n    },\n    \"produces\": [\n        \"application/json\",\n        \"application/xml\",\n        \"application/yaml\"\n    ],\n    \"consumes\": [\n        \"application/json\"\n    ],\n    \"securityDefinitions\": {\n        \"apikey\": {\n            \"type\": \"apiKey\",\n            \"in\": \"header\",\n            \"name\": \"X-API-KEY\"\n        }\n    },\n    \"tags\": [\n        {\n            \"name\": \"/api/v1\",\n            \"description\": \"Default namespace\"\n        }\n    ],\n    \"paths\": {\n        \"/loginViaBasic\": {\n            \"post\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"post_login_via_basic\",\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\",\n                        \"headers\": {\n                            \"Authorization: Basic\": {\n                                \"type\": \"string\",\n                                \"description\": \"BASE64 encoded username:password\"\n                            }\n                        }\n                    }\n                }\n            }\n        },\n        \"/loginViaJSON\": {\n            \"post\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"post_login_via_json\",\n                \"parameters\": [\n                    {\n                        \"name\": \"payload\",\n                        \"in\": \"body\",\n                        \"required\": true,\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Credentials\"\n                        }\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\"\n                    }\n                }\n            }\n        },\n        \"/books\": {\n            \"get\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"get_books\",\n                \"parameters\": [\n                    {\n                        \"name\": \"includeISBN\",\n                        \"in\": \"query\",\n                        \"type\": \"boolean\",\n                        \"description\": \"Include in the results the ISBN numbers. Default=false\"\n                    },\n                    {\n                        \"name\": \"sortBy\",\n                        \"in\": \"query\",\n                        \"type\": \"string\",\n                        \"enum\": [\n                            \"id\",\n                            \"title\",\n                            \"author\",\n                            \"isbn\"\n                        ],\n                        \"description\": \"Sort results using the specified parameter. Default=id\"\n                    },\n                    {\n                        \"name\": \"author\",\n                        \"in\": \"query\",\n                        \"type\": \"string\",\n                        \"description\": \"Return only books by the given Author.\"\n                    },\n                    {\n                        \"name\": \"page\",\n                        \"in\": \"query\",\n                        \"type\": \"integer\",\n                        \"description\": \"Replies are split into pages of 10 records. The RFC 5988 'Link' response header points to the next page; use this parameter to request a page. Pages are numbered from 0.\"\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\"\n                    }\n                }\n            },\n            \"post\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"post_books\",\n                \"security\": [\n                    {\n                        \"apikey\": []\n                    }\n                ],\n                \"parameters\": [\n                    {\n                        \"name\": \"payload\",\n                        \"in\": \"body\",\n                        \"required\": true,\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\",\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                }\n            }\n        },\n        \"/books/{id}\": {\n            \"get\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"get_book\",\n                \"parameters\": [\n                    {\n                        \"name\": \"id\",\n                        \"in\": \"path\",\n                        \"required\": true,\n                        \"type\": \"integer\"\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\",\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                }\n            },\n            \"put\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"put_book\",\n                \"security\": [\n                    {\n                        \"apikey\": []\n                    }\n                ],\n                \"parameters\": [\n                    {\n                        \"name\": \"id\",\n                        \"in\": \"path\",\n                        \"required\": true,\n                        \"type\": \"integer\"\n                    },\n                    {\n                        \"name\": \"payload\",\n                        \"in\": \"body\",\n                        \"required\": true,\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\",\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                }\n            },\n            \"delete\": {\n                \"tags\": [\n                    \"/api/v1\"\n                ],\n                \"operationId\": \"delete_book\",\n                \"security\": [\n                    {\n                        \"apikey\": []\n                    }\n                ],\n                \"parameters\": [\n                    {\n                        \"name\": \"id\",\n                        \"in\": \"path\",\n                        \"required\": true,\n                        \"type\": \"integer\"\n                    }\n                ],\n                \"responses\": {\n                    \"200\": {\n                        \"description\": \"Success\",\n                        \"schema\": {\n                            \"$ref\": \"#/definitions/Book\"\n                        }\n                    }\n                }\n            }\n        }\n    },\n    \"definitions\": {\n        \"Book\": {\n            \"type\": \"object\",\n            \"required\": [\n                \"author\",\n                \"title\"\n            ],\n            \"properties\": {\n                \"id\": {\n                    \"type\": \"integer\",\n                    \"description\": \"Id\"\n                },\n                \"title\": {\n                    \"type\": \"string\",\n                    \"description\": \"Book title\",\n                    \"minLength\": 1,\n                    \"maxLength\": 200\n                },\n                \"author\": {\n                    \"type\": \"string\",\n                    \"description\": \"Author\",\n                    \"minLength\": 1,\n                    \"maxLength\": 200\n                }\n            }\n        },\n        \"Credentials\": {\n            \"type\": \"object\",\n            \"required\": [\n                \"password\",\n                \"username\"\n            ],\n            \"properties\": {\n                \"username\": {\n                    \"type\": \"string\",\n                    \"description\": \"Username\",\n                    \"minLength\": 1,\n                    \"maxLength\": 32\n                },\n                \"password\": {\n                    \"type\": \"string\",\n                    \"description\": \"Password\",\n                    \"minLength\": 1,\n                    \"maxLength\": 200\n                }\n            }\n        }\n    }\n}",
+   "font_size": 8
+  }
+ ]
+}

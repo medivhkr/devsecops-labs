@@ -1,0 +1,501 @@
+{
+ "lab_id": "7.4.7",
+ "title_ru_lines": [
+  "Использование Ansible для резервного",
+  "копирования и настройки устройства"
+ ],
+ "blocks": [
+  {
+   "t": "label",
+   "label": "Цель работы:",
+   "text": "изучить основы использования Ansible для автоматизации простых задач управления сетевым устройством: настроить Ansible в ВМ DEVASC, создать резервную копию конфигурации маршрутизатора CSR1000v и настроить на нём IPv6-адресацию."
+  },
+  {
+   "t": "h1",
+   "text": "Задание"
+  },
+  {
+   "t": "numbered",
+   "items": [
+    "Запустить ВМ DEVASC и ВМ CSR1000v.",
+    "Настроить Ansible.",
+    "Создать резервную копию конфигурации с помощью Ansible.",
+    "Настроить устройство с помощью Ansible."
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Сверх методички плейбук настройки IPv6 запущен повторно для проверки идемпотентности, а после настройки снята новая резервная копия конфигурации. В дополнительной части пароль устройства перенесён из inventory-файла в файл переменных хоста и зашифрован с помощью Ansible Vault."
+  },
+  {
+   "t": "h1",
+   "text": "Оборудование и программное обеспечение"
+  },
+  {
+   "t": "p",
+   "text": "Состав стенда приведён в таблице {tab:env}."
+  },
+  {
+   "t": "table",
+   "id": "env",
+   "caption": "Состав лабораторного стенда",
+   "header": [
+    "Компонент",
+    "Версия / параметры",
+    "Назначение"
+   ],
+   "widths": [
+    3,
+    5,
+    4
+   ],
+   "font_size": 11,
+   "rows": [
+    [
+     "Лабораторная ВМ (аналог DEVASC)",
+     "контейнер ubuntu:20.04, пользователь devasc, имя хоста labvm",
+     "управляющий узел Ansible"
+    ],
+    [
+     "Ansible",
+     "2.9.6, исполняемый файл /usr/bin/ansible",
+     "запуск плейбуков, модули ios_command, ios_config и copy"
+    ],
+    [
+     "Python",
+     "3.8.10 [GCC 9.4.0], интерпретатор /usr/bin/python3",
+     "среда выполнения Ansible"
+    ],
+    [
+     "Ansible Vault",
+     "ansible-vault из состава Ansible 2.9.6, формат 1.1, шифр AES256",
+     "шифрование пароля устройства"
+    ],
+    [
+     "Маршрутизатор CSR1kv",
+     "эмулятор CLI Cisco IOS XE 16.9.5, адрес 192.168.56.101, интерфейс GigabitEthernet1",
+     "управляемое устройство"
+    ],
+    [
+     "Учётная запись маршрутизатора",
+     "cisco / cisco123! (привилегия 15)",
+     "вход Ansible по SSH"
+    ],
+    [
+     "Среда выполнения",
+     "GitHub Actions, 14.11.2026, время в протоколах UTC",
+     "запуск сценария и запись протокола"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Образ CSR1000v выдаётся только преподавателем (шаг 1 работы 7.0.3), поэтому вместо ВМ CSR1000v использовался тот же программный эмулятор командной строки IOS XE, что и в работе 7.0.3 (каталог `tools/csr1kv_emulator` репозитория). Эмулятор написан на Python с библиотекой paramiko, хранит конфигурацию устройства в памяти (изменения, внесённые плейбуком, сразу видны в выводе show-команд) и записывает каждую полученную команду в журнал `/tmp/csr1kv.log`, который после прогона сохранён вместе с файлами работы (приложение А, листинг {lst:fulllog}). Ansible подключался к нему по SSH на адрес 192.168.56.101 так же, как к реальному маршрутизатору. Управляющим узлом Ansible был контейнер Ubuntu 20.04 (пользователь devasc, имя хоста labvm), в котором выполнялось задание GitHub Actions. В этом же контейнере скрипт `lab-env/start-csr1kv.sh` назначил интерфейсу lo адрес 192.168.56.101 и запустил эмулятор на порту 22. Перед началом работы скрипт `prepare.sh` создал в `~/labs/devnet-src/ansible` подкаталоги `ansible-csr1000v` и `ansible-apache` с пустым файлом `hosts` и файлом `ansible.cfg` из одной строки комментария, как в ВМ DEVASC."
+  },
+  {
+   "t": "h1",
+   "text": "Краткие теоретические сведения"
+  },
+  {
+   "t": "p",
+   "text": "Ansible — система автоматизации управления конфигурациями. Изначально она создавалась для серверов Linux: модули Python копируются на сервер и выполняются там [1]. Большинство сетевых устройств не может запускать Python, поэтому сетевые модули выполняются на управляющем узле, где запущен `ansible-playbook`, а с устройством чаще всего обмениваются командами CLI по SSH [2]. Способ подключения задаётся переменной `ansible_connection` или параметром `connection` сценария. Вместо варианта `local`, который используется в методичке, документация Ansible с версии 2.6 рекомендует постоянные подключения, например `network_cli` [2]."
+  },
+  {
+   "t": "p",
+   "text": "Список управляемых устройств хранится в inventory-файле. В формате INI строка начинается с имени хоста, которое служит псевдонимом в плейбуках, и может содержать переменные подключения: `ansible_host` (адрес), `ansible_user` и `ansible_password` (учётные данные) [3]. Переменные хоста можно хранить и отдельно, в файле `host_vars/<имя хоста>.yml` рядом с inventory-файлом или плейбуком [3]. Ansible ищет файл конфигурации в таком порядке и берёт настройки из первого найденного: файл из переменной окружения `ANSIBLE_CONFIG`, `ansible.cfg` в текущем каталоге, `~/.ansible.cfg`, `/etc/ansible/ansible.cfg` [4]."
+  },
+  {
+   "t": "p",
+   "text": "Плейбук — YAML-файл со списком сценариев (plays). Сценарий связывает группу хостов со списком задач, задачи выполняются по порядку, и каждая вызывает один модуль с параметрами [5]. Результат задачи можно сохранить в переменную с помощью `register` и использовать в следующих задачах. Модули Ansible должны быть идемпотентными: если нужное состояние уже достигнуто, повторный запуск ничего не меняет [5]. В разделе PLAY RECAP для каждого хоста выводятся счётчики: ok показывает число успешно выполненных задач, changed показывает, сколько из них внесли изменения, а failed считает задачи, завершившиеся ошибкой."
+  },
+  {
+   "t": "p",
+   "text": "Для устройств Cisco IOS в Ansible 2.9 есть модули ios_command и ios_config. Модуль ios_command отправляет на устройство команды и возвращает их вывод в списке `stdout`, по одному элементу на команду; команды режима конфигурации он не выполняет [6]. Модуль ios_config работает с разделами конфигурации: параметр `parents` задаёт родительский раздел, например `interface GigabitEthernet1`, а `lines` задаёт команды внутри раздела. По умолчанию модуль получает с устройства текущую running-config, сравнивает с ней строки из `lines` и отправляет только недостающие, поэтому команды в плейбуке нужно писать так, как они выглядят в running-config [7]."
+  },
+  {
+   "t": "p",
+   "text": "В работе интерфейсу маршрутизатора назначаются два IPv6-адреса. Адрес 2001:DB8:ACAD:1::1/64 взят из префикса 2001:DB8::/32, зарезервированного для использования в документации [8]. Адрес FE80::1:1 относится к локальным адресам канала (link-local, префикс FE80::/10): такой адрес обязан иметь каждый интерфейс с IPv6, а маршрутизаторы не передают пакеты с ним в другие каналы [9]. В IOS локальный адрес канала можно задать вручную командой `ipv6 address` с параметром `link-local`, как сделано в плейбуке работы."
+  },
+  {
+   "t": "p",
+   "text": "Ansible Vault — встроенное средство Ansible для шифрования файлов и отдельных значений переменных [10]. Для шифрования строки служит команда `ansible-vault encrypt_string`, которая выводит результат как YAML-переменную с тегом `!vault`; её можно вставить в файл переменных. Зашифрованное значение начинается с заголовка, где указаны формат `$ANSIBLE_VAULT` версии 1.1 и шифр AES256: ключ шифрования и ключ HMAC выводятся из пароля хранилища и соли функцией PBKDF2 (SHA-256, 10 000 итераций), а данные шифруются AES-256 в режиме CTR. При запуске плейбука пароль хранилища вводится по запросу (`--ask-vault-pass`) или читается из файла (`--vault-password-file`) [10]."
+  },
+  {
+   "t": "h1",
+   "text": "Ход работы"
+  },
+  {
+   "t": "h2",
+   "text": "Запуск ВМ DEVASC и ВМ CSR1000v"
+  },
+  {
+   "t": "p",
+   "text": "В части 1 методичка предлагает запустить ВМ DEVASC и ВМ CSR1000v, подготовленные в работах 1.1.2 и 7.0.3. На стенде их заменяют контейнер labvm и эмулятор CSR1kv (раздел 2), которые запускаются до начала сценария прогона, так что отдельных команд в этой части не было. По журналу эмулятор начал принимать подключения в 10:00:03 UTC, примерно за 5 с до первой команды работы. Запись 10:00:04 об ошибке чтения баннера SSH оставила проверка порта в скрипте запуска: скрипт открывает TCP-соединение с портом 22 и сразу закрывает его, не начиная обмена по SSH."
+  },
+  {
+   "t": "h2",
+   "text": "Настройка Ansible"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 1 предлагает открыть каталог `~/labs/devnet-src/ansible` в редакторе VS Code. Графического интерфейса на стенде нет, поэтому файлы, которые по методичке создаются в VS Code, записывал в каталог `ansible-csr1000v` сценарий прогона. В протоколе терминала запись файлов не видна, их текст взят из методички без изменений и приведён в листингах. Команды выполнялись в терминале пользователя devasc, первой из них был переход в каталог `~/labs/devnet-src/ansible/ansible-csr1000v`."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 2 заполнен inventory-файл `hosts` (листинг {lst:hosts}). После комментария в нём записана одна строка: псевдоним CSR1kv и три переменные с именем пользователя, паролем и адресом маршрутизатора. В плейбуках устройство указывается по псевдониму, а при подключении Ansible берёт из этой строки адрес и учётные данные [3]."
+  },
+  {
+   "t": "listing",
+   "id": "hosts",
+   "caption": "Inventory-файл hosts",
+   "code": "# Enter the hosts or devices for Ansible playbooks\nCSR1kv ansible_user=cisco ansible_password=cisco123! ansible_host=192.168.56.101",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "Затем, по шагу 3, выполнен переход на уровень выше, в каталог `ansible`, и запущена команда `ansible` без аргументов (рисунок {fig:usage}). Ansible вывел список параметров и сообщение об ошибке: не задан обязательный аргумент `pattern` (шаблон хостов), код возврата 2. Параметр `--version`, на который обращает внимание методичка, стоит в начале списка; ниже в том же списке есть `-i INVENTORY` и `--vault-password-file`; второй из них понадобился в дополнительной части работы. Команда `ansible --version` показала версию 2.9.6, ту же, что в методичке, и файл конфигурации по умолчанию `/etc/ansible/ansible.cfg`. Ansible работает на Python 3.8.10 (в методичке 3.8.2), исполняемый файл находится в `/usr/bin/ansible`."
+  },
+  {
+   "t": "terminal",
+   "id": "usage",
+   "src": [
+    "steps/03_cd_up.txt",
+    "steps/04_ansible_usage.txt",
+    "steps/05_ansible_version_global.txt"
+   ],
+   "caption": "Справка команды ansible и вывод ansible --version"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 4 системный файл конфигурации выведен командой `cat /etc/ansible/ansible.cfg | more` (рисунок {fig:defcfg}). Комментарий в его начале описывает порядок поиска конфигурации: переменная `ANSIBLE_CONFIG`, `ansible.cfg` в текущем каталоге, `.ansible.cfg` в домашнем каталоге, `/etc/ansible/ansible.cfg`. Все параметры секции `[defaults]` на первой странице закомментированы, в том числе `#inventory` со значением `/etc/ansible/hosts`, и действуют встроенные значения. Ниже описан сбор фактов: по умолчанию сценарий собирает сведения об узле, а отключает его параметр `gather_facts` со значением `false`, который задан в обоих плейбуках работы. Просмотр завершён клавишей q на первой странице (49 строк файла, на рисунок вошли первые 36). Строки `#host_key_checking` и `#retry_files_enabled`, выделенные в методичке, находятся дальше и в протокол не попали."
+  },
+  {
+   "t": "terminal",
+   "id": "defcfg",
+   "src": "steps/06_default_cfg.txt",
+   "lines": "1-37",
+   "caption": "Начало системного файла /etc/ansible/ansible.cfg"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 5: выполнен переход в каталог `ansible-csr1000v`, и команда `ansible --version` запущена ещё раз (рисунок {fig:verlocal}). Теперь в строке `config file` указан файл `ansible.cfg` из каталога `ansible-csr1000v`: файл в текущем каталоге нашёлся раньше системного [4]. Сам файл на этот момент содержал только комментарий `# Add to this file for the Ansible lab`."
+  },
+  {
+   "t": "terminal",
+   "id": "verlocal",
+   "src": [
+    "steps/07_cd_csr.txt",
+    "steps/08_ansible_version_local.txt",
+    "steps/09_cat_cfg_placeholder.txt"
+   ],
+   "caption": "Вывод ansible --version в каталоге ansible-csr1000v и исходный ansible.cfg"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 6 комментарий заменён настройками из методички (листинг {lst:cfg}). Все четыре параметра записаны в секцию `[defaults]`."
+  },
+  {
+   "t": "listing",
+   "id": "cfg",
+   "caption": "Файл ansible.cfg в каталоге ansible-csr1000v",
+   "code": "# config file for ansible-csr1000v\n[defaults]\n# Use local hosts file in this folder\ninventory=./hosts\nhost_key_checking = False # Don't worry about RSA Fingerprints\nretry_files_enabled = False # Do not create them\ndeprecation_warnings = False # Do not show warnings"
+  },
+  {
+   "t": "p",
+   "text": "Параметр `inventory=./hosts` указывает на файл `hosts` рядом с `ansible.cfg`: Ansible, как правило, отсчитывает относительные пути из файла конфигурации от каталога, где этот файл лежит [4]. Комментарий к нему вынесен на отдельную строку, потому что Ansible принял бы текст после пути за часть имени файла [1]. Остальные параметры действуют так:"
+  },
+  {
+   "t": "bullets",
+   "items": [
+    "`host_key_checking` со значением False отключает проверку SSH-ключа устройства; по умолчанию проверка включена [4] (в методичке ошибочно сказано обратное), и в рабочей сети её не отключают",
+    "`retry_files_enabled` со значением False запрещает создавать файлы `.retry` со списком хостов, на которых плейбук завершился ошибкой; в Ansible 2.9 это значение по умолчанию [4]",
+    "`deprecation_warnings` со значением False скрывает предупреждения об устаревших возможностях Ansible, которые по умолчанию выводятся [4]"
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Шаг 7 методички только подводит итог настройки, команд в нём нет. Для проверки оба файла выведены командой `cat ansible.cfg hosts` (рисунок {fig:catcfg}). Теперь Ansible берёт настройки из `ansible.cfg` в каталоге работы, а список устройств — из соседнего файла `hosts`, поэтому параметр `-i` при запуске плейбуков не нужен."
+  },
+  {
+   "t": "terminal",
+   "id": "catcfg",
+   "src": "steps/11_cat_cfg.txt",
+   "caption": "Файлы ansible.cfg и hosts после настройки"
+  },
+  {
+   "t": "h2",
+   "text": "Резервное копирование конфигурации с помощью Ansible"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 в каталоге `ansible-csr1000v` создан плейбук `backup_cisco_router_playbook.yaml` (листинг {lst:backup}). Отступы в YAML задают вложенность элементов, поэтому текст перенесён из методички без изменений."
+  },
+  {
+   "t": "listing",
+   "id": "backup",
+   "caption": "Плейбук backup_cisco_router_playbook.yaml",
+   "code": "---\n- name: AUTOMATIC BACKUP OF RUNNING-CONFIG\n  hosts: CSR1kv\n  gather_facts: false\n  connection: local\n  tasks:\n   - name: DISPLAYING THE RUNNING-CONFIG\n     ios_command:\n       commands:\n         - show running-config\n     register: config\n   - name: SAVE OUTPUT TO ./backups/\n     copy:\n       content: \"{{ config.stdout[0] }}\"\n       dest: \"backups/show_run_{{ inventory_hostname }}.txt\""
+  },
+  {
+   "t": "p",
+   "text": "На шаге 2 плейбук разобран по строкам. Файл начинается с маркера документа YAML `---` и содержит один сценарий AUTOMATIC BACKUP OF RUNNING-CONFIG с двумя задачами. Строка `hosts: CSR1kv` ссылается на псевдоним из inventory, откуда берутся адрес и учётные данные. Параметр `gather_facts: false` отключает сбор фактов, рассчитанный на серверы, где Ansible выполняет свои модули на Python; маршрутизатор Python не запускает [2]."
+  },
+  {
+   "t": "p",
+   "text": "Параметр `connection: local` означает, что модули выполняются на самой лабораторной ВМ; сетевые модули Ansible всегда работают на управляющем узле [2]. Методичка поясняет, что SSH при этом не используется, но к маршрутизатору модули ios_command и ios_config всё равно подключаются по SSH с учётными данными из inventory. В журнале эмулятора (приложение А) пять SSH-сессий пользователя cisco, по одной на каждый успешный запуск плейбука в этой работе."
+  },
+  {
+   "t": "p",
+   "text": "Первая задача DISPLAYING THE RUNNING-CONFIG выполняет `show running-config` модулем ios_command и сохраняет результат в переменной `config` (параметр `register`) [6]. Вторая задача SAVE OUTPUT TO ./backups/ модулем copy записывает первый элемент списка `config.stdout` в каталог `backups`, а имя файла задаёт шаблон `show_run_{{ inventory_hostname }}.txt`. Переменная `inventory_hostname` содержит имя хоста из inventory, так что файл получает имя `show_run_CSR1kv.txt`."
+  },
+  {
+   "t": "p",
+   "text": "Перед запуском плейбука (шаг 3) выполнена команда `ping 192.168.56.101`: после двух ответов она остановлена нажатием Ctrl+C, потерь нет (рисунок {fig:runbackup}). Адрес 192.168.56.101 назначен интерфейсу lo того же контейнера, и на эхо-запросы отвечает ядро Linux, а не сам эмулятор: отсюда TTL 64 и время ответа около 0,02 мс (в методичке TTL 63 и около 0,9 мс). Затем создан каталог `backups` и запущен плейбук; параметр `-i` в команде `ansible-playbook` не указывался. Задача чтения конфигурации завершилась со статусом ok, задача сохранения со статусом changed, так как файл создавался впервые. Итог PLAY RECAP: ok=2 changed=1 unreachable=0 failed=0, как и указано в методичке."
+  },
+  {
+   "t": "terminal",
+   "id": "runbackup",
+   "src": [
+    "steps/13_ping1.txt",
+    "steps/14_mkdir_backups.txt",
+    "steps/15_run_backup.txt"
+   ],
+   "caption": "Проверка связи с CSR1kv и запуск плейбука резервного копирования"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 4 командой `ls -l` проверено, что в каталоге `backups` появился файл `show_run_CSR1kv.txt` размером 1938 байт (рисунок {fig:backuphead}). Файл начинается так же, как вывод `show running-config` на маршрутизаторе: строка `Building configuration...`, размер конфигурации 1877 байт, время последнего изменения, `version 16.9` и `hostname CSR1kv`. У маршрутизатора в методичке конфигурация занимает 4004 байта, running-config эмулятора заметно короче. Время последнего изменения 10:00:03 UTC совпадает с запуском эмулятора: с этого момента конфигурацию никто не менял."
+  },
+  {
+   "t": "terminal",
+   "id": "backuphead",
+   "src": [
+    "steps/16_ls_backups.txt",
+    "steps/17_cat_backup.txt"
+   ],
+   "lines": [
+    null,
+    "1-16"
+   ],
+   "caption": "Файл резервной копии в каталоге backups и начало его содержимого"
+  },
+  {
+   "t": "p",
+   "text": "Фрагмент той же копии с разделом интерфейса GigabitEthernet1 показан на рисунке {fig:ifbefore}. У интерфейса описание VBox, адрес IPv4 он получает по DHCP (`ip address dhcp`), IPv6-адресов нет. Ниже включён SSH версии 2 (`ip ssh version 2`), по которому подключается Ansible."
+  },
+  {
+   "t": "terminal",
+   "id": "ifbefore",
+   "src": "steps/17_cat_backup.txt",
+   "lines": "101-116",
+   "title": "devasc@labvm: ~/labs/devnet-src/ansible/ansible-csr1000v",
+   "caption": "Раздел интерфейса GigabitEthernet1 и настройки SSH в первой резервной копии"
+  },
+  {
+   "t": "h2",
+   "text": "Настройка устройства с помощью Ansible"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 1: inventory-файл выведен ещё раз командой `cat hosts` (рисунок {fig:cathosts}). С части 2 он не менялся, и второй плейбук использует его вместе с тем же `ansible.cfg`."
+  },
+  {
+   "t": "terminal",
+   "id": "cathosts",
+   "src": "steps/18_cat_hosts.txt",
+   "caption": "Inventory-файл перед настройкой IPv6"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 2 создан плейбук `cisco_router_ipv6_config_playbook.yaml` (листинг {lst:ipv6}). В нём один сценарий CONFIGURE IPv6 ADDRESSING из трёх задач."
+  },
+  {
+   "t": "listing",
+   "id": "ipv6",
+   "caption": "Плейбук cisco_router_ipv6_config_playbook.yaml",
+   "code": "---\n- name: CONFIGURE IPv6 ADDRESSING\n  hosts: CSR1kv\n  gather_facts: false\n  connection: local\n  tasks:\n   - name: SET IPv6 ADDRESS\n     ios_config:\n       parents: \"interface GigabitEthernet1\"\n       lines:\n         - description IPv6 ADDRESS\n         - ipv6 address 2001:DB8:ACAD:1::1/64\n         - ipv6 address FE80::1:1 link-local\n   - name: SHOW IPv6 INTERFACE BRIEF\n     ios_command:\n       commands:\n         - show ipv6 interface brief\n     register: output\n   - name: SAVE OUTPUT ./ios_configurations/\n     copy:\n       content: \"{{ output.stdout[0] }}\"\n       dest: \"ios_configurations/IPv6_output_{{ inventory_hostname }}.txt\""
+  },
+  {
+   "t": "p",
+   "text": "На шаге 3 разобрано, чем этот плейбук отличается от первого. Новая задача SET IPv6 ADDRESS вызывает модуль ios_config [7]: параметр `parents: \"interface GigabitEthernet1\"` выбирает раздел интерфейса, а в `lines` перечислены три команды для него (описание IPv6 ADDRESS, глобальный адрес 2001:DB8:ACAD:1::1/64 и локальный адрес канала FE80::1:1). Задача SHOW IPv6 INTERFACE BRIEF выполняет `show ipv6 interface brief` модулем ios_command и сохраняет вывод в переменной `output`. Последняя задача записывает этот вывод в файл `IPv6_output_CSR1kv.txt` в каталоге `ios_configurations`."
+  },
+  {
+   "t": "p",
+   "text": "Шаг 4 начался с повторной проверки связи (два ответа из двух) и создания каталога `ios_configurations`, после чего плейбук запущен с ключом `-v`: в этом режиме Ansible печатает путь к используемому файлу конфигурации и результат каждой задачи в формате JSON (рисунок {fig:runipv6}). Задача SET IPv6 ADDRESS получила статус changed, в списке `commands` перечислены отправленные команды: `interface GigabitEthernet1` и три строки из плейбука. Вторая задача вернула вывод `show ipv6 interface brief`: интерфейс GigabitEthernet1 в состоянии [up/up] с адресами FE80::1:1 и 2001:DB8:ACAD:1::1. Третья задача создала файл размером 67 байт с правами 0644 (в методичке 0664) и тоже получила статус changed; контрольная сумма SHA-1 этого файла (60784fba…) совпала со значением в методичке. В самой методичке эта задача показана со статусом ok, что не сходится с приведённым там же итогом changed=2. На стенде итог PLAY RECAP: ok=3 changed=2 failed=0."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 5 содержимое файла `IPv6_output_CSR1kv.txt` выведено командой `cat` (рисунок {fig:ipv6file}). В файле три строки вывода `show ipv6 interface brief`, такие же, как в методичке."
+  },
+  {
+   "t": "terminal",
+   "id": "runipv6",
+   "src": [
+    "steps/20_ping2.txt",
+    "steps/21_mkdir_iosconf.txt",
+    "steps/22_run_ipv6.txt"
+   ],
+   "caption": "Проверка связи с CSR1kv и запуск плейбука настройки IPv6 с ключом -v"
+  },
+  {
+   "t": "terminal",
+   "id": "ipv6file",
+   "src": "steps/23_cat_ipv6_output.txt",
+   "caption": "Содержимое файла IPv6_output_CSR1kv.txt"
+  },
+  {
+   "t": "p",
+   "text": "Сверх методички плейбук настройки IPv6 запущен второй раз, уже без ключа `-v` (рисунок {fig:runagain}). Методичка только предупреждает, что при повторном запуске счётчики могут отличаться. Все три задачи завершились со статусом ok, итог ok=3 changed=0: конфигурация маршрутизатора и файл с выводом не изменились."
+  },
+  {
+   "t": "terminal",
+   "id": "runagain",
+   "src": "steps/24_run_ipv6_again.txt",
+   "caption": "Повторный запуск плейбука настройки IPv6"
+  },
+  {
+   "t": "p",
+   "text": "Команды, которые маршрутизатор получил при первом и повторном запуске, записаны в журнале эмулятора (листинг {lst:log}). В сессии 10:01:06, при первом запуске, модуль ios_config сначала запросил `show running-config`, затем выполнил `configure terminal`, `interface GigabitEthernet1`, три строки из плейбука и `end`. В сессии 10:01:15, при повторном запуске, после `show running-config` режим настройки не открывался: все строки уже были в конфигурации. Обе задачи с модулями ios в каждом запуске выполнились в одной SSH-сессии. В начале сессии Ansible отключает постраничный вывод (`terminal length 0`) и задаёт ширину строки (`terminal width 512`, затем `terminal width 0`), а перед каждой задачей с модулем ios_command или ios_config выполняет `show version`."
+  },
+  {
+   "t": "listing",
+   "id": "log",
+   "caption": "Фрагмент журнала эмулятора CSR1kv при первом и повторном запуске плейбука настройки IPv6",
+   "code": "2026-11-14 10:01:06,553 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:06,694 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:06,795 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:06,896 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:07,201 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:07,304 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:07,407 csr1kv [192.168.56.101 cisco] exec: configure terminal\n2026-11-14 10:01:07,508 csr1kv [192.168.56.101 cisco] config: interface GigabitEthernet1\n2026-11-14 10:01:07,610 csr1kv [192.168.56.101 cisco] config-if: description IPv6 ADDRESS\n2026-11-14 10:01:07,711 csr1kv [192.168.56.101 cisco] config-if: ipv6 address 2001:DB8:ACAD:1::1/64\n2026-11-14 10:01:07,813 csr1kv [192.168.56.101 cisco] config-if: ipv6 address FE80::1:1 link-local\n2026-11-14 10:01:07,914 csr1kv [192.168.56.101 cisco] config-if: end\n2026-11-14 10:01:08,341 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:08,443 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief\n2026-11-14 10:01:09,067 csr1kv session closed: 192.168.56.101\n2026-11-14 10:01:15,528 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:15,670 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:15,771 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:15,872 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:16,181 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:16,284 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:16,718 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:16,820 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief\n2026-11-14 10:01:17,443 csr1kv session closed: 192.168.56.101",
+   "font_size": 7.5
+  },
+  {
+   "t": "p",
+   "text": "Затем, тоже сверх методички, плейбук резервного копирования запущен ещё раз, а раздел интерфейса в новой копии выведен командой `grep -n -A8` (рисунок {fig:backupafter}). Задача сохранения получила статус changed, так как конфигурация изменилась. В разделе `interface GigabitEthernet1` описание VBox заменено на IPv6 ADDRESS, появились строки `ipv6 address FE80::1:1 link-local` и `ipv6 address 2001:DB8:ACAD:1::1/64`, получение адреса IPv4 по DHCP осталось. Размер конфигурации по данным маршрутизатора вырос с 1877 до 1965 байт, а в строке `Last configuration change` указаны время 10:01:07, когда в журнале эмулятора записаны команды настройки, и пользователь cisco. Полный текст новой копии приведён в приложении Б (листинг {lst:full})."
+  },
+  {
+   "t": "terminal",
+   "id": "backupafter",
+   "src": "steps/25_backup_after.txt",
+   "caption": "Повторное резервное копирование и раздел интерфейса в новой копии"
+  },
+  {
+   "t": "h2",
+   "text": "Дополнительно: хранение пароля в Ansible Vault"
+  },
+  {
+   "t": "p",
+   "text": "В inventory-файле из методички пароль маршрутизатора записан открытым текстом и выводится на экран вместе с файлом (рисунки {fig:catcfg} и {fig:cathosts}). Документация Ansible указывает, что переменную `ansible_password` нельзя хранить открытым текстом, и предлагает использовать для неё Vault [3]. В этой части пароль перенесён в файл переменных хоста в виде значения, зашифрованного Ansible Vault, после чего плейбук резервного копирования запущен без пароля хранилища и с ним."
+  },
+  {
+   "t": "p",
+   "text": "Сначала командой `openssl rand -base64 24` создан файл `~/.vault_pass` со случайным паролем хранилища, права доступа к нему установлены в 600, то есть чтение и запись только для владельца (рисунок {fig:vaultprep}). Размер файла 33 байта: 32 символа base64 и перевод строки. Файл лежит в домашнем каталоге, вне каталога проекта, и в собранные после прогона файлы не попал. Затем создан каталог `host_vars`, и командой `ansible-vault encrypt_string` пароль cisco123! зашифрован как значение переменной `ansible_password`. Вывод этой команды сразу перенаправлен в файл `host_vars/CSR1kv.yml`, поэтому на экране ничего не появилось."
+  },
+  {
+   "t": "terminal",
+   "id": "vaultprep",
+   "src": [
+    "steps/26_vault_pass_file.txt",
+    "steps/27_vault_encrypt.txt"
+   ],
+   "caption": "Создание файла пароля хранилища и шифрование пароля устройства"
+  },
+  {
+   "t": "p",
+   "text": "Полученный файл приведён в листинге {lst:vaultfile}. Значение помечено тегом `!vault`; заголовок `$ANSIBLE_VAULT;1.1;AES256` задаёт версию формата и шифр, а пять строк шестнадцатеричных данных содержат соль, HMAC и шифротекст [10]. Подключать файл в плейбуке не требуется: каталог `host_vars` лежит рядом с inventory-файлом и плейбуком, и Ansible сам загружает из него переменные хоста CSR1kv [3]."
+  },
+  {
+   "t": "listing",
+   "id": "vaultfile",
+   "caption": "Файл host_vars/CSR1kv.yml с зашифрованным паролем",
+   "code": "ansible_password: !vault |\n          $ANSIBLE_VAULT;1.1;AES256\n          36316435323832393133613635303731343239636138613931373939343262383365343665393136\n          3139353639386232323839623361623163633865326236650a613864646130316536396438306466\n          31303962393332373539623835386434653963383462353565396337323133306261613165343939\n          6164656331373066320a393566353366373632646430633337316661666235386437373733336334\n          3730",
+   "font_size": 8
+  },
+  {
+   "t": "p",
+   "text": "Из inventory-файла переменная `ansible_password` удалена, вместо неё добавлен комментарий о том, где теперь хранится пароль (листинг {lst:hosts2}). После правки оба файла выведены командой `cat hosts host_vars/CSR1kv.yml`, и листинги приведены по этому выводу."
+  },
+  {
+   "t": "listing",
+   "id": "hosts2",
+   "caption": "Inventory-файл hosts без пароля",
+   "code": "# Enter the hosts or devices for Ansible playbooks\n# Пароль перенесён в host_vars/CSR1kv.yml (зашифрован Ansible Vault)\nCSR1kv ansible_user=cisco ansible_host=192.168.56.101",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "Без пароля хранилища плейбук резервного копирования остановился на первой задаче с ошибкой «Attempting to decrypt but no vault secrets found», итог ok=0 changed=0 failed=1, код возврата 2 (рисунок {fig:vaultfail}). Расшифровать `ansible_password` было нечем, и к маршрутизатору Ansible не подключался: в журнале эмулятора (приложение А) между сессиями 10:01:20 и 10:01:38 других подключений нет."
+  },
+  {
+   "t": "terminal",
+   "id": "vaultfail",
+   "src": "steps/30_vault_run_nopass.txt",
+   "caption": "Запуск плейбука без пароля хранилища"
+  },
+  {
+   "t": "p",
+   "text": "С параметром `--vault-password-file ~/.vault_pass` плейбук выполнился без ошибок, итог ok=2 changed=0 failed=0 (рисунок {fig:vaultok}). Задача сохранения на этот раз получила статус ok: конфигурация не менялась с предыдущего резервного копирования, и модуль copy не стал перезаписывать файл с тем же содержимым."
+  },
+  {
+   "t": "terminal",
+   "id": "vaultok",
+   "src": "steps/31_vault_run_ok.txt",
+   "caption": "Запуск плейбука с файлом пароля хранилища"
+  },
+  {
+   "t": "p",
+   "text": "Пароль cisco123! передавался команде `encrypt_string` аргументом, поэтому он остаётся в истории команд оболочки и виден в протоколе терминала (рисунок {fig:vaultprep}). Для учебного стенда это допустимо, а в рабочей среде строку лучше вводить с клавиатуры: с параметром `--stdin-name` команда читает её со стандартного ввода до нажатия Ctrl+D [10]. В резервной копии конфигурации пароль пользователя cisco записан только в виде хеша типа 9 (строка `username cisco privilege 15 secret 9` в приложении Б)."
+  },
+  {
+   "t": "h1",
+   "text": "Выводы",
+   "num": false
+  },
+  {
+   "t": "p",
+   "text": "Ansible 2.9.6 настроен для работы из каталога `ansible-csr1000v`. Вывод `ansible --version` подтвердил, что настройки берутся из локального `ansible.cfg`, а не из системного `/etc/ansible/ansible.cfg`; параметр `inventory=./hosts` указывает на inventory-файл в том же каталоге. Маршрутизатор CSR1kv описан в inventory псевдонимом с адресом 192.168.56.101 и учётными данными для подключения по SSH."
+  },
+  {
+   "t": "p",
+   "text": "Плейбук резервного копирования сохранил текущую конфигурацию маршрутизатора в файл `show_run_CSR1kv.txt` размером 1938 байт (ok=2 changed=1). Второй плейбук с модулем ios_config назначил интерфейсу GigabitEthernet1 адреса 2001:DB8:ACAD:1::1/64 и FE80::1:1 и сохранил вывод `show ipv6 interface brief` в файл (ok=3 changed=2). Повторный запуск закончился с changed=0: по журналу эмулятора видно, что ios_config сравнил строки плейбука с running-config и в режим настройки не входил. Новая резервная копия содержит обе строки `ipv6 address` в разделе интерфейса."
+  },
+  {
+   "t": "p",
+   "text": "В дополнительной части пароль устройства убран из inventory и хранится в файле `host_vars/CSR1kv.yml` в виде значения, зашифрованного Ansible Vault (AES256). Без пароля хранилища плейбук останавливается до подключения к маршрутизатору (failed=1), а с файлом пароля хранилища выполняется без ошибок (ok=2 failed=0)."
+  },
+  {
+   "t": "sources",
+   "items": [
+    "Lab - Use Ansible to Back Up and Configure a Device : лабораторная работа 7.4.7 // DevNet Associate v1.0 / Cisco Networking Academy. – 2020. – 11 с.",
+    "How Network Automation is Different // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/network/getting_started/network_differences.html (дата обращения: 14.11.2026).",
+    "How to build your inventory // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/user_guide/intro_inventory.html (дата обращения: 14.11.2026).",
+    "Ansible Configuration Settings // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/reference_appendices/config.html (дата обращения: 14.11.2026).",
+    "Intro to Playbooks // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/user_guide/playbooks_intro.html (дата обращения: 14.11.2026).",
+    "ios_command – Run commands on remote devices running Cisco IOS // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/modules/ios_command_module.html (дата обращения: 14.11.2026).",
+    "ios_config – Manage Cisco IOS configuration sections // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/modules/ios_config_module.html (дата обращения: 14.11.2026).",
+    "Huston G. IPv6 Address Prefix Reserved for Documentation : RFC 3849 / G. Huston, A. Lord, P. Smith. – 2004. – URL: https://www.rfc-editor.org/rfc/rfc3849 (дата обращения: 14.11.2026).",
+    "Hinden R. IP Version 6 Addressing Architecture : RFC 4291 / R. Hinden, S. Deering. – 2006. – URL: https://www.rfc-editor.org/rfc/rfc4291 (дата обращения: 14.11.2026).",
+    "Ansible Vault // Ansible Documentation. Ansible 2.9 : [сайт]. – URL: https://docs.ansible.com/projects/ansible/2.9/user_guide/vault.html (дата обращения: 14.11.2026)."
+   ]
+  },
+  {
+   "t": "appendix",
+   "letter": "А",
+   "title": "Журнал эмулятора CSR1kv"
+  },
+  {
+   "t": "listing",
+   "id": "fulllog",
+   "caption": "Файл /tmp/csr1kv.log, собранный после прогона",
+   "code": "2026-11-14 10:00:03,825 csr1kv CSR1kv emulator listening on 192.168.56.101:22\n2026-11-14 10:00:04,755 csr1kv SSH negotiation failed from 192.168.56.101: Error reading SSH protocol banner\n2026-11-14 10:00:45,179 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:00:45,320 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:00:45,421 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:00:45,522 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:00:45,824 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:00:45,926 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:00:46,553 csr1kv session closed: 192.168.56.101\n2026-11-14 10:01:06,553 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:06,694 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:06,795 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:06,896 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:07,201 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:07,304 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:07,407 csr1kv [192.168.56.101 cisco] exec: configure terminal\n2026-11-14 10:01:07,508 csr1kv [192.168.56.101 cisco] config: interface GigabitEthernet1\n2026-11-14 10:01:07,610 csr1kv [192.168.56.101 cisco] config-if: description IPv6 ADDRESS\n2026-11-14 10:01:07,711 csr1kv [192.168.56.101 cisco] config-if: ipv6 address 2001:DB8:ACAD:1::1/64\n2026-11-14 10:01:07,813 csr1kv [192.168.56.101 cisco] config-if: ipv6 address FE80::1:1 link-local\n2026-11-14 10:01:07,914 csr1kv [192.168.56.101 cisco] config-if: end\n2026-11-14 10:01:08,341 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:08,443 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief\n2026-11-14 10:01:09,067 csr1kv session closed: 192.168.56.101\n2026-11-14 10:01:15,528 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:15,670 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:15,771 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:15,872 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:16,181 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:16,284 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:16,718 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:16,820 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief\n2026-11-14 10:01:17,443 csr1kv session closed: 192.168.56.101\n2026-11-14 10:01:20,820 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:20,961 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:21,062 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:21,163 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:21,471 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:21,573 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:22,209 csr1kv session closed: 192.168.56.101\n2026-11-14 10:01:38,371 csr1kv session opened: cisco from 192.168.56.101\n2026-11-14 10:01:38,512 csr1kv [192.168.56.101 cisco] exec: terminal length 0\n2026-11-14 10:01:38,613 csr1kv [192.168.56.101 cisco] exec: terminal width 512\n2026-11-14 10:01:38,714 csr1kv [192.168.56.101 cisco] exec: terminal width 0\n2026-11-14 10:01:39,016 csr1kv [192.168.56.101 cisco] exec: show version\n2026-11-14 10:01:39,118 csr1kv [192.168.56.101 cisco] exec: show running-config\n2026-11-14 10:01:39,776 csr1kv session closed: 192.168.56.101",
+   "font_size": 7
+  },
+  {
+   "t": "appendix",
+   "letter": "Б",
+   "title": "Резервная копия конфигурации маршрутизатора CSR1kv"
+  },
+  {
+   "t": "listing",
+   "id": "full",
+   "caption": "Файл backups/show_run_CSR1kv.txt после настройки IPv6",
+   "code": "Building configuration...\n\nCurrent configuration : 1965 bytes\n!\n! Last configuration change at 10:01:07 UTC Sat Nov 14 2026 by cisco\n!\nversion 16.9\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nplatform qfp utilization monitor load 80\nno platform punt-keepalive disable-kernel-core\nplatform console virtual\n!\nhostname CSR1kv\n!\nboot-start-marker\nboot-end-marker\n!\n!\nno logging console\n!\nno aaa new-model\n!\n!\n!\n!\n!\n!\n!\nip domain name example.netacad.com\n!\n!\n!\nlogin on-success log\n!\n!\n!\n!\n!\n!\n!\nsubscriber templating\n! \n! \n! \n! \n!\nmultilink bundle-name authenticated\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\nlicense udi pid CSR1000V sn 9K8P1OFYE3D\nno license smart enable\ndiagnostic bootup level minimal\n!\nspanning-tree extend system-id\n!\nnetconf-yang\n!\nrestconf\n!\nusername cisco privilege 15 secret 9 $9$ra5lx8jinrzmGU$1DcVNixo5dnTpSplMcEJ19UogJ1swBoiCk9hz//whVE\n!\nredundancy\n!\n!\n!\n!\n!\n!\n! \n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n! \n! \n!\n!\ninterface GigabitEthernet1\n description IPv6 ADDRESS\n ip address dhcp\n negotiation auto\n ipv6 address FE80::1:1 link-local\n ipv6 address 2001:DB8:ACAD:1::1/64\n no mop enabled\n no mop sysid\n!\nip forward-protocol nd\nip http server\nip http authentication local\nip http secure-server\nip route 0.0.0.0 0.0.0.0 GigabitEthernet1 dhcp\n!\nip ssh rsa keypair-name ssh-key\nip ssh version 2\nip scp server enable\n!\n!\n!\n!\n!\ncontrol-plane\n!\n!\n!\n!\n!\nbanner motd ^C\n*                                           *\n**                                         **\n***                                       ***\n***  Cisco Networking Academy             ***\n***                                       ***\n***  This software is provided for        ***\n***   Educational Purposes                ***\n***    Only in Networking Academies       ***\n***                                       ***\n**                                         **\n*                                           *\n^C\n!\nline con 0\n exec-timeout 0 0\n logging synchronous\n stopbits 1\nline vty 0 4\n login local\n transport input ssh\n!\n!\n!\n!\n!\n!\nend",
+   "font_size": 7.5
+  }
+ ]
+}

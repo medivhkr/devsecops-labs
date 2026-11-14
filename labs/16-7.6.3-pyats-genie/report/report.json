@@ -1,0 +1,558 @@
+{
+ "lab_id": "7.6.3",
+ "title_ru_lines": [
+  "Автоматизированное тестирование",
+  "с использованием pyATS и Genie"
+ ],
+ "blocks": [
+  {
+   "t": "label",
+   "label": "Цель работы:",
+   "text": "изучить основы автоматизированного тестирования сетевых устройств с помощью pyATS и Genie: установить их в виртуальное окружение Python, запустить пример тестового задания, разобрать вывод команд маршрутизатора CSR1kv в структурированный вид и сравнить два состояния его конфигурации."
+  },
+  {
+   "t": "h1",
+   "text": "Задание"
+  },
+  {
+   "t": "numbered",
+   "items": [
+    "Запустить ВМ DEVASC.",
+    "Создать виртуальное окружение Python.",
+    "Использовать библиотеку тестирования pyATS.",
+    "Использовать Genie для разбора вывода команд IOS.",
+    "Использовать Genie для сравнения конфигураций.",
+    "Завершить работу и изучить дополнительные материалы."
+   ]
+  },
+  {
+   "t": "h1",
+   "text": "Оборудование и программное обеспечение"
+  },
+  {
+   "t": "p",
+   "text": "Состав стенда приведён в таблице {tab:env}."
+  },
+  {
+   "t": "table",
+   "id": "env",
+   "caption": "Состав лабораторного стенда",
+   "header": [
+    "Компонент",
+    "Версия / параметры",
+    "Назначение"
+   ],
+   "widths": [
+    3,
+    4,
+    4
+   ],
+   "rows": [
+    [
+     "Лабораторная ВМ (аналог DEVASC)",
+     "Ubuntu 20.04 focal (x86_64), пользователь devasc, имя хоста labvm",
+     "рабочее место, на котором выполнялась работа"
+    ],
+    [
+     "Python",
+     "3.8.10 (64 бит), интерпретатор /usr/bin/python3",
+     "базовый интерпретатор виртуального окружения"
+    ],
+    [
+     "Виртуальное окружение csr1kv",
+     "~/labs/devnet-src/pyats/csr1kv, pip 25.0.1 (обновлён с 20.0.2)",
+     "изолированная установка pyATS"
+    ],
+    [
+     "pyATS и Genie",
+     "24.9 (пакеты pyats, genie, genie.libs.parser и другие из того же набора)",
+     "запуск тестов, разбор и сравнение вывода команд"
+    ],
+    [
+     "Unicon",
+     "24.9 (unicon, unicon.plugins)",
+     "подключение к маршрутизатору по SSH"
+    ],
+    [
+     "Примеры pyATS",
+     "репозиторий CiscoTestAutomation/examples, каталог basic",
+     "тестовый скрипт и job-файл для части 3"
+    ],
+    [
+     "Маршрутизатор CSR1kv",
+     "эмулятор CLI Cisco IOS XE 16.9.5, адрес 192.168.56.101, интерфейс GigabitEthernet1",
+     "устройство, вывод команд которого разбирает Genie"
+    ],
+    [
+     "Учётная запись маршрутизатора",
+     "cisco / cisco123!, вход сразу в привилегированный режим",
+     "вход по SSH, как в методичке"
+    ],
+    [
+     "Среда выполнения",
+     "GitHub Actions, контейнер ubuntu:20.04",
+     "запуск сценария и запись протокола"
+    ]
+   ],
+   "split_at": [
+    7
+   ]
+  },
+  {
+   "t": "p",
+   "text": "Работа выполнялась на том же стенде, что и работа 7.0.3. Лабораторная ВМ, в которую устанавливались pyATS и Genie, — контейнер Ubuntu 20.04 с именем хоста labvm и пользователем devasc, запущенный заданием GitHub Actions. Вместо ВМ CSR1000v, образ которой выдаёт только преподаватель (шаг 1 работы 7.0.3), в этом же контейнере работал эмулятор CLI IOS XE на Python и paramiko из каталога `tools/csr1kv_emulator`. Скрипты в каталоге `lab-env` репозитория готовят контейнер, добавляют адрес 192.168.56.101 на интерфейс lo и запускают эмулятор, который принимает на этом адресе SSH-подключения. Окна консоли CSR1kv, как в VirtualBox, на стенде нет, поэтому команды на маршрутизаторе вводились в SSH-сессии из лабораторной ВМ. Genie подключался к эмулятору по SSH так же, как к реальному устройству."
+  },
+  {
+   "t": "p",
+   "text": "Эмулятор выполняет команды, нужные в этой работе: `show ip interface brief`, `show version`, `show ipv6 interface`, настройку IPv6-адресов интерфейса и служебные команды, которые Unicon отправляет после входа. В эмуляторе заданы серийный номер 9K8P1OFYE3D и MAC-адрес 0800.2773.d79f интерфейса GigabitEthernet1, как у маршрутизатора из методички (из этого MAC-адреса получается link-local адрес FE80::A00:27FF:FE73:D79F, показанный в методичке). Поэтому серийный номер и link-local адрес в выводе на стенде совпадают с методичкой. По образцу методички эмулятор показывает для адреса 192.168.56.101 метод DHCP, хотя DHCP-сервера на стенде нет."
+  },
+  {
+   "t": "h1",
+   "text": "Краткие теоретические сведения"
+  },
+  {
+   "t": "p",
+   "text": "pyATS — разработанная Cisco экосистема для сквозного автоматизированного тестирования на Python [1, 2]. Её основные части: инфраструктура тестовых скриптов AEtest, среда выполнения Easypy и описание стенда (testbed), где перечислены устройства и способы подключения к ним [2]. Тестовый скрипт можно запустить как обычную программу на Python. Несколько скриптов можно объединить в job-файл и запустить командой `pyats run job`. В этом случае Easypy выполняет каждый скрипт как отдельную задачу, собирает журналы в архив и выводит сводный отчёт [1]."
+  },
+  {
+   "t": "p",
+   "text": "Скрипт AEtest состоит из разделов: общей подготовки CommonSetup, тестовых случаев Testcase и общей очистки CommonCleanup [2]. Подготовка и очистка необязательны, а тестовых случаев может быть сколько угодно, в том числе ни одного. Разделы делятся на секции: в подготовке и очистке это подсекции с декоратором `@aetest.subsection`, а в тестовом случае секции с декораторами `@aetest.setup`, `@aetest.test` и `@aetest.cleanup` [1]. Каждая секция получает результат (Passed, Failed, Errored, Skipped и др.), из результатов секций складывается итог раздела, а из итогов разделов результат всего скрипта [2]."
+  },
+  {
+   "t": "p",
+   "text": "Genie — набор инструментов (SDK) pyATS для автоматизации тестирования сетей [3]. Его парсеры превращают текстовый вывод show-команд в структурированные данные (словари Python), которые можно сохранить или вывести в формате JSON. Модели Conf и Ops описывают конфигурацию и рабочее состояние функций устройства, например OSPF и BGP, независимо от платформы, а из готовых триггеров и верификаций собираются тесты [1, 3]. Многие возможности Genie доступны из командной строки без программирования: `genie parse` разбирает вывод команды на устройстве, а `genie diff` сравнивает два сохранённых снимка [3]."
+  },
+  {
+   "t": "p",
+   "text": "Testbed-файл записывается в формате YAML: для каждого устройства в нём указываются тип и ОС, параметры подключения (протокол, адрес, порт) и учётные данные [2]. Пароли можно не хранить открытым текстом. Строка `%ENC{...}` содержит значение, закодированное ключом из конфигурации pyATS, а `%ASK{}` означает, что значение будет запрошено у пользователя при запуске [2, 4]. Само подключение выполняет библиотека Unicon: она открывает сеанс SSH или Telnet, отслеживает режимы командной строки устройства и распознаёт отвергнутые команды, а поддержка конкретных платформ, в том числе IOS XE, вынесена в подключаемые модули [5]."
+  },
+  {
+   "t": "p",
+   "text": "Виртуальное окружение Python создаётся модулем venv. Это каталог с собственными подкаталогами bin и lib и файлом `pyvenv.cfg`, в котором ключ home указывает на установку Python, из которой окружение создано [6]. Пакеты, установленные в окружение, не попадают в системный Python. Сценарий `bin/activate` добавляет каталог bin окружения в начало переменной PATH, и перед приглашением появляется имя окружения в скобках; команда `deactivate` возвращает исходные настройки оболочки [6]."
+  },
+  {
+   "t": "p",
+   "text": "Каждый интерфейс с включённым IPv6 имеет link-local адрес из сети FE80::/10. Идентификатор интерфейса в нём может строиться из MAC-адреса по методу EUI-64 или задаваться вручную [1, 7]. Кроме того, для каждого своего одноадресного адреса узел вступает в группу solicited-node FF02::1:FFxx:xxxx, последние 24 бита которой совпадают с младшими 24 битами одноадресного адреса [7]. Поэтому при смене link-local адреса меняется и список групп, в которые входит интерфейс."
+  },
+  {
+   "t": "h1",
+   "text": "Ход работы"
+  },
+  {
+   "t": "h2",
+   "text": "Запуск ВМ DEVASC"
+  },
+  {
+   "t": "p",
+   "text": "Роль ВМ DEVASC выполнял контейнер, описанный в разделе 2. Перед началом сценария скрипт `prepare.sh` от имени root запустил эмулятор CSR1kv (скрипт `lab-env/start-csr1kv.sh`) и сделал пользователя devasc владельцем каталога `~/labs` вместе с подкаталогом `devnet-src`. Судя по журналу `/tmp/csr1kv.log`, эмулятор начал принимать подключения на 192.168.56.101:22 в 10:00:17 (здесь и далее время UTC), примерно за пять секунд до первой команды работы. Все команды в протоколе выполнялись от имени devasc."
+  },
+  {
+   "t": "h2",
+   "text": "Создание виртуального окружения Python"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 1 (открыть терминал ярлыком на рабочем столе) на стенде не выполнялся: рабочего стола в контейнере нет. Команды из сценария `scenario.yml` вводил в интерактивную оболочку bash пользователя devasc инструмент `tools/labrun`, он же записал протокол. Псевдотерминал имеет ширину 100 символов, поэтому длинные строки на рисунках перенесены так, как их перенёс бы терминал такой ширины."
+  },
+  {
+   "t": "p",
+   "text": "Команды части 2 и их вывод показаны на рисунке {fig:venv}. На шаге 2 в домашнем каталоге был создан каталог `labs/devnet-src/pyats` (команды `mkdir` и `cd` объединены через `&&`), и в нём командой `python3 -m venv csr1kv` создано виртуальное окружение csr1kv. Команда `ls -l` на шаге 3 показала в каталоге окружения подкаталоги bin, include, lib и share, символическую ссылку lib64 на lib и файл `pyvenv.cfg` размером 70 байт."
+  },
+  {
+   "t": "p",
+   "text": "Файл `pyvenv.cfg` содержит три параметра: `home = /usr/bin` (каталог базового интерпретатора), `include-system-site-packages = false` (системные пакеты в окружении не видны) и `version = 3.8.10`. В методичке указаны версия 3.8.2 и размер файла 69 байт, а на стенде установлен Python 3.8.10 из пакетов Ubuntu 20.04, поэтому файл на байт длиннее. В `/usr/bin` находятся интерпретаторы python3 и python3.8, утилиты python3-config и python3.8-config и два сценария python-argcomplete."
+  },
+  {
+   "t": "p",
+   "text": "В подкаталоге bin окружения лежат сценарии активации для разных оболочек (activate, activate.csh, activate.fish, Activate.ps1), обёртки pip, pip3, pip3.8, easy_install и easy_install-3.8 и две символические ссылки: python указывает на python3, а python3 на `/usr/bin/python3`. Отдельной копии интерпретатора, о которой говорится в шаге 3а методички, в окружении нет."
+  },
+  {
+   "t": "terminal",
+   "id": "venv",
+   "src": [
+    "steps/01_mkdir_pyats.txt",
+    "steps/02_venv.txt",
+    "steps/03_cd_venv.txt",
+    "steps/04_ls_venv.txt",
+    "steps/05_pyvenv_cfg.txt",
+    "steps/06_ls_usr_bin_python.txt",
+    "steps/07_ls_bin.txt",
+    "steps/08_activate.txt"
+   ],
+   "caption": "Создание, просмотр и активация виртуального окружения csr1kv"
+  },
+  {
+   "t": "h2",
+   "text": "Использование библиотеки тестирования pyATS"
+  },
+  {
+   "t": "p",
+   "text": "После команды `source bin/activate` приглашение начинается с префикса (csr1kv), это видно в первой строке рисунка {fig:pip}. Перед установкой pyATS был обновлён pip. В окружение попал pip 20.0.2 из состава Ubuntu 20.04, выпущенный в январе 2020 года, и командой `pip3 install --upgrade pip` он был заменён версией 25.0.1; в методичке этого шага нет. Затем командой `pip3 install pyats[full]` был установлен pyATS с полным набором дополнительных пакетов. Обе команды показаны на рисунке {fig:pip}, вывод установки pyATS сокращён до начала и конца."
+  },
+  {
+   "t": "terminal",
+   "id": "pip",
+   "src": [
+    "transcript.txt",
+    "steps/10_pip_install_pyats.txt"
+   ],
+   "lines": [
+    "37-49",
+    "477-497"
+   ],
+   "ellipsis_between": true,
+   "caption": "Обновление pip и установка pyATS (начало и конец вывода)"
+  },
+  {
+   "t": "p",
+   "text": "Менеджер пакетов pip выбрал выпуск pyats 24.9 в сборке cp38, самый новый из подходящих для Python 3.8; в методичке устанавливалась версия 20.4. Всего было установлено 117 пакетов, среди них genie, unicon, unicon.plugins и genie.libs.parser той же версии 24.9, paramiko 3.5.1 и cryptography 47.0.0. Пять пакетов (backports.ssl, backports.ssl-match-hostname, tftpy, pyftpdlib и f5-icontrol-rest) pip собрал из исходных архивов. Установка заняла около 51 с; ошибок, о возможности которых предупреждает методичка, не было."
+  },
+  {
+   "t": "p",
+   "text": "Установленные версии дополнительно проверены командой `pyats version check`, которой в методичке нет (рисунок {fig:version}). Команда сообщила версию pyATS 24.9 и Python 3.8.10 (64 бит) и вывела таблицу из 31 пакета, у всех пакетов версия 24.9."
+  },
+  {
+   "t": "terminal",
+   "id": "version",
+   "src": "steps/11_pyats_version.txt",
+   "caption": "Версии установленных пакетов pyATS"
+  },
+  {
+   "t": "p",
+   "text": "Со второй по шестую строку рисунка {fig:version} занимает предупреждение CryptographyDeprecationWarning: Python 3.8 больше не поддерживается разработчиками языка, и следующий выпуск библиотеки cryptography уберёт его поддержку. Срок поддержки Python 3.8 закончился 7 октября 2024 года [8], поэтому для постоянной работы окружение лучше создавать на поддерживаемой версии Python. Это предупреждение выводилось при каждом из 11 запусков pyats и genie, на остальных рисунках его строки опущены."
+  },
+  {
+   "t": "p",
+   "text": "Работоспособность pyATS проверена командой `pyats --help` (шаг 2, верхняя часть рисунка {fig:help_clone}). В справке 15 команд: по сравнению с методичкой добавились clean, develop, migrate и undevelop, остальные совпадают."
+  },
+  {
+   "t": "terminal",
+   "id": "help_clone",
+   "src": [
+    "steps/12_pyats_help.txt",
+    "steps/13_git_clone.txt"
+   ],
+   "lines": [
+    "1,7-30",
+    "1-9"
+   ],
+   "caption": "Справка pyats и клонирование репозитория с примерами"
+  },
+  {
+   "t": "p",
+   "text": "Затем командой `git clone` (шаг 3, нижняя часть рисунка {fig:help_clone}) был склонирован репозиторий с примерами CiscoTestAutomation/examples [9]. Git получил 1519 объектов объёмом 1,20 МиБ (в методичке их было 658, с тех пор репозиторий заметно вырос). После клонирования в каталоге окружения появился подкаталог examples (рисунок {fig:examples}), а в нём 21 подкаталог с примерами, в том числе basic, и файлы `LICENSE` и `README.md`."
+  },
+  {
+   "t": "terminal",
+   "id": "examples",
+   "src": [
+    "steps/14_ls_after_clone.txt",
+    "steps/15_ls_examples.txt"
+   ],
+   "caption": "Содержимое каталога окружения после клонирования и каталога examples"
+  },
+  {
+   "t": "p",
+   "text": "В каталоге basic лежат job-файл `basic_example_job.py` (534 байта), скрипт `basic_example_script.py` (4510 байт) и подкаталог results, которого в методичке нет. Оба файла немного больше, чем в методичке (510 и 4475 байт). Содержимое каталога и job-файла показано на рисунке {fig:job}, а текст скрипта, выведенный командой `cat` на шаге 4, приведён в приложении А (листинг {lst:script})."
+  },
+  {
+   "t": "terminal",
+   "id": "job",
+   "src": [
+    "transcript.txt",
+    "steps/18_cat_job.txt"
+   ],
+   "lines": [
+    "659-664",
+    "1-20"
+   ],
+   "ellipsis_between": true,
+   "caption": "Каталог examples/basic и job-файл basic_example_job.py"
+  },
+  {
+   "t": "p",
+   "text": "Скрипт импортирует модуль aetest и состоит из четырёх разделов, каждый из которых оформлен классом. В общей подготовке common_setup две подсекции, sample_subsection_1 и sample_subsection_2. Тестовый случай tc_one содержит секцию подготовки prepare_testcase, тесты simple_test_1 и simple_test_2 и секцию очистки clean_testcase; tc_two устроен так же, но без секции подготовки. Общая очистка common_cleanup выполняет подсекцию clean_everything. Секции только пишут сообщения в журнал, но тест simple_test_1 в tc_two вызывает `self.failed('This is an intentional failure')`: провал заложен в пример намеренно, о чём сказано и в методичке."
+  },
+  {
+   "t": "p",
+   "text": "По сравнению с методичкой изменился и конец скрипта: вместо одного вызова `aetest.main()` теперь стоят `result = aetest.main()` и `aetest.exit_cli_code(result)`, так что при прямом запуске скрипта результат тестов передаётся в код завершения процесса. Job-файл на рисунке {fig:job} начинается строкой документации с меткой <PYATS_JOBFILE>, которой в методичке нет. Его функция `main()` находит скрипт примера рядом с job-файлом и запускает его вызовом `run(testscript=testscript)` из модуля pyats.easypy."
+  },
+  {
+   "t": "p",
+   "text": "Job-файл был запущен на шаге 5 командой `pyats run job examples/basic/basic_example_job.py` (рисунок {fig:run}). Easypy создал каталог запуска в `~/.pyats/runinfo` и выполнил скрипт как задачу Task-1 с тестовым движком pyats.aetest. Общая подготовка и tc_one прошли, а в tc_two тест simple_test_1 получил результат FAILED с причиной «This is an intentional failure». Остальные секции tc_two прошли, но тестовый случай в целом получил FAILED, так как провала одной секции достаточно для провала всего случая."
+  },
+  {
+   "t": "terminal",
+   "id": "run",
+   "src": [
+    "steps/19_pyats_run_job.txt",
+    "transcript.txt",
+    "./steps/19_pyats_run_job.txt"
+   ],
+   "lines": [
+    "1-2,8-10",
+    "860-863",
+    "103-118"
+   ],
+   "ellipsis_between": true,
+   "caption": "Фрагменты вывода pyats run job: запуск задачи Task-1 и провал теста в tc_two"
+  },
+  {
+   "t": "p",
+   "text": "Итоговый отчёт Easypy показан на рисунке {fig:run_stats}. В нём указаны пользователь devasc, хост labvm с Ubuntu 20.04 focal, Python 3.8.10 и путь к zip-архиву с журналами задания в каталоге `~/.pyats/archive`. Из четырёх разделов скрипта прошли три (75,00 %), из десяти секций девять (90,00 %); счётчики по разделам совпадают с методичкой. Задание выполнялось около 1,2 с (поле Elapsed time показывает 0:00:02), а команда из-за проваленного теста завершилась с кодом 1. Письмо с отчётом не отправлено, потому что не настроен SMTP-сервер; такое же сообщение приведено в методичке."
+  },
+  {
+   "t": "terminal",
+   "id": "run_stats",
+   "src": "steps/19_pyats_run_job.txt",
+   "lines": "166-208",
+   "title": "devasc@labvm: ~/labs/devnet-src/pyats/csr1kv",
+   "caption": "Отчёт Easypy: сведения о запуске и итоговая статистика"
+  },
+  {
+   "t": "h2",
+   "text": "Разбор вывода команд IOS с помощью Genie"
+  },
+  {
+   "t": "p",
+   "text": "Справка `genie --help` (рисунок {fig:genie_help}) перечисляет девять подкоманд: create, develop, diff, dnac, learn, parse, run, shell и undevelop; по сравнению с методичкой добавились develop и undevelop. У `genie create` три подкоманды: parser и trigger создают заготовки парсера и триггера по шаблону, а testbed формирует testbed-файл."
+  },
+  {
+   "t": "terminal",
+   "id": "genie_help",
+   "src": [
+    "steps/20_genie_help.txt",
+    "steps/21_genie_create_help.txt"
+   ],
+   "lines": [
+    "1,7-24",
+    "1,7-19"
+   ],
+   "caption": "Справка команд genie и genie create"
+  },
+  {
+   "t": "p",
+   "text": "Testbed-файл (шаг 1) создан командой `genie create testbed interactive` с ключами `--encode-password` и `--output yaml/testbed.yml` (рисунок {fig:testbed}). На три вопроса о том, одинаковы ли у всех устройств имя пользователя, пароль и пароль enable, дан ответ n. Затем введены имя устройства CSR1kv, адрес 192.168.56.101, пользователь cisco, пароль cisco123!, пустой пароль enable, протокол `ssh -o KexAlgorithms=diffie-hellman-group14-sha1` и ОС iosxe, а на вопрос о других устройствах дан ответ n. Пароль при вводе не отображается, поэтому строка Default Password в протоколе пустая, хотя в методичке пароль показан. Каталог yaml был создан автоматически."
+  },
+  {
+   "t": "terminal",
+   "id": "testbed",
+   "src": "steps/22_genie_create_testbed.txt",
+   "lines": "1-2,8-22",
+   "caption": "Создание testbed-файла в интерактивном режиме"
+  },
+  {
+   "t": "p",
+   "text": "Содержимое полученного файла (вывод `cat yaml/testbed.yml`) приведено в листинге {lst:testbed}. Для устройства CSR1kv задано подключение cli по SSH с параметром KexAlgorithms, тип и ОС iosxe. Пароль cisco123! записан как `%ENC{w5PDosOUw5fDosKQwpbCmMKH}`, а пароль enable как `%ASK{}`, поэтому genie запрашивает его при каждом подключении."
+  },
+  {
+   "t": "listing",
+   "id": "testbed",
+   "caption": "Testbed-файл yaml/testbed.yml",
+   "code": "devices:\n  CSR1kv:\n    connections:\n      cli:\n        ip: 192.168.56.101\n        protocol: ssh -o KexAlgorithms=diffie-hellman-group14-sha1\n    credentials:\n      default:\n        password: '%ENC{w5PDosOUw5fDosKQwpbCmMKH}'\n        username: cisco\n      enable:\n        password: '%ASK{}'\n    os: iosxe\n    type: iosxe"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 2 начинается с запуска ВМ CSR1000v; на стенде вместо неё работал эмулятор, запущенный ещё до начала работы (часть 1). Адрес маршрутизатора проверен командой `show ip interface brief`, которая выполнялась в SSH-сессии из лабораторной ВМ с тем же параметром KexAlgorithms (верхняя часть рисунка {fig:show_ip}). Ключ хоста был ещё неизвестен, поэтому клиент показал отпечаток RSA-ключа (SHA256:KKbeoW+y...) и после ответа yes добавил его в список известных хостов. После входа сразу открылся привилегированный режим с приглашением `CSR1kv#`, и команда enable из методички не понадобилась; баннер маршрутизатора на рисунке пропущен. В выводе у интерфейса GigabitEthernet1 адрес 192.168.56.101, метод DHCP и состояние up/up."
+  },
+  {
+   "t": "terminal",
+   "id": "show_ip",
+   "src": [
+    "steps/24_router_show_ip.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "1-7",
+    "1197-1203,1209-1227"
+   ],
+   "ellipsis_between": true,
+   "caption": "Вывод show ip interface brief на маршрутизаторе и результат genie parse"
+  },
+  {
+   "t": "p",
+   "text": "Затем та же команда выполнена через Genie: `genie parse \"show ip interface brief\" --testbed-file yaml/testbed.yml --devices CSR1kv` (нижняя часть рисунка {fig:show_ip}). Перед подключением pyATS предупредил, что декодирует строку `%ENC` общим ключом по умолчанию, затем запросил пароль enable, на что был отправлен пустой ответ. Предупреждение UNICON-WARNING об отсутствии IP-адреса или порта у подключения cli есть и в методичке, при этом подключение по адресу 192.168.56.101 выполнилось: журнал эмулятора записал вход пользователя cisco в 10:02:44. Результат напечатан в формате JSON: в объекте interface для GigabitEthernet1 каждая колонка текстовой таблицы стала отдельным полем (interface_is_ok, ip_address, method, protocol, status)."
+  },
+  {
+   "t": "p",
+   "text": "В методичке сказано, что пароль в testbed-файле зашифрован. На деле pyATS по умолчанию кодирует его общим ключом и сам предупреждает об этом сообщением «THIS IS A SHARED KEY AND IS NOT SECURE», а в документации pyATS сказано, что секретные строки по умолчанию криптографически не защищены [4]. Поэтому закодированная строка пароля в testbed-файле совпала символ в символ со строкой из методички 2020 года, и пароль из неё восстановит командой `pyats secret decode` любой, у кого pyATS работает без собственного ключа. Исправление подсказывает сам pyATS: создать ключ командой `pyats secret keygen`, записать его в раздел [secrets] файла `pyats.conf` и перекодировать пароль, а для настоящего шифрования перевести секретные строки на шифрование Fernet [4]."
+  },
+  {
+   "t": "p",
+   "text": "Параметр `KexAlgorithms=diffie-hellman-group14-sha1` методичка задаёт потому, что такой обмен ключами ожидает маршрутизатор с IOS XE 16.9. С этим параметром клиенту SSH доступен только один метод: обмен ключами Диффи — Хеллмана в группе 14 с хешем SHA-1. RFC 9142 относит все методы обмена ключами на основе SHA-1 к устаревшим и делает обязательным для реализации diffie-hellman-group14-sha256 [10], так что при работе с современными устройствами этот параметр нужно убрать."
+  },
+  {
+   "t": "p",
+   "text": "Вывод `show version` на шаге 3 разобран так же (рисунок {fig:parse_ver}). Служебные сообщения перед JSON те же, что на рисунке {fig:show_ip}, поэтому они пропущены вместе с блоком disks. Парсер извлёк из текста версию IOS XE (version 16.9.5, version_short 16.9, xe_version 16.09.05), модель и серийный номер шасси (CSR1000V, 9K8P1OFYE3D), имя устройства CSR1kv, образ bootflash:packages.conf, уровень лицензии ax, регистр конфигурации 0x2102 и время работы 2 minutes: эмулятор был запущен в 10:00:17, а команда выполнена в 10:02:53. По сравнению с методичкой в структуре есть новые поля copyright_years, label, location и xe_version, которые добавлены в более новой версии парсера."
+  },
+  {
+   "t": "terminal",
+   "id": "parse_ver",
+   "src": [
+    "steps/26_genie_parse_version.txt",
+    "transcript.txt",
+    "./steps/26_genie_parse_version.txt"
+   ],
+   "lines": [
+    "1-2",
+    "1242-1249",
+    "33-64"
+   ],
+   "ellipsis_between": true,
+   "caption": "Разбор вывода show version командой genie parse (фрагменты)"
+  },
+  {
+   "t": "h2",
+   "text": "Сравнение конфигураций с помощью Genie"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 в SSH-сессии с маршрутизатором на интерфейсе GigabitEthernet1 был настроен адрес 2001:db8:acad:56::101/64 (команда `ipv6 address` в режиме конфигурации интерфейса), а на шаге 2 командой `genie parse \"show ipv6 interface gig 1\"` с параметром `--output verify-ipv6-1` сделан первый снимок (рисунок {fig:snap1}). С параметром `--output` результат разбора записывается в файлы, а на экран выводится только сводка Genie Parse Summary с их именами. Баннер маршрутизатора на рисунке пропущен."
+  },
+  {
+   "t": "terminal",
+   "id": "snap1",
+   "src": [
+    "steps/27_router_add_ipv6.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "1-3",
+    "1309-1317,1323-1347"
+   ],
+   "ellipsis_between": true,
+   "caption": "Добавление IPv6-адреса и первый снимок verify-ipv6-1"
+  },
+  {
+   "t": "p",
+   "text": "В каталоге verify-ipv6-1 появились три файла (конец рисунка {fig:snap1}). Имена двух из них составлены из имени устройства и команды (CSR1kv_show-ipv6-interface-gig-1): в файле с окончанием `_console.txt` (758 байт) сохранён исходный вывод маршрутизатора, в файле с окончанием `_parsed.txt` (877 байт) разобранная структура. Третий файл, `connection_CSR1kv.txt` (4824 байта), содержит журнал подключения и создан с правами `rw-rw-rw-`, то есть изменить его может любой пользователь системы, тогда как два других файла доступны на запись только владельцу (`rw-r--r--`)."
+  },
+  {
+   "t": "p",
+   "text": "Журнал подключения приведён в приложении Б (листинг {lst:conn}). По нему видно, что Unicon запустил клиент OpenSSH командой `ssh -l cisco -o KexAlgorithms=diffie-hellman-group14-sha1 192.168.56.101` и ответил на запрос пароля, но сам пароль в журнал не попал. После входа были выполнены служебные команды `show version | include operating mode`, `term length 0` и `term width 0` (две последние отключают постраничный вывод и перенос строк), затем `show version` и только после этого `show ipv6 interface gig 1`. Такую же последовательность при каждом запуске `genie parse` записал журнал эмулятора."
+  },
+  {
+   "t": "p",
+   "text": "Файл с исходным выводом начинается заголовком «+++ CSR1kv with via 'cli': executing command 'show ipv6 interface gig 1' +++» (в методичке без слов with via 'cli'), за которым следуют команда и её вывод; тот же вывод записан в конце журнала подключения (листинг {lst:conn}). В выводе есть глобальный адрес 2001:DB8:ACAD:56::101 в сети 2001:DB8:ACAD:56::/64, link-local адрес FE80::A00:27FF:FE73:D79F, который эмулятор строит по методу EUI-64 из MAC-адреса интерфейса (в середине идентификатора стоят байты FF FE), группы FF02::1, FF02::1:FF00:101 и FF02::1:FF73:D79F и MTU 1500 байт."
+  },
+  {
+   "t": "p",
+   "text": "Разобранная структура первого снимка показана на рисунке {fig:parsed1}. На верхнем уровне в ней стоят имя интерфейса GigabitEthernet1 и пустой служебный список _exclude. В ключе ipv6 каждый адрес записан отдельным объектом: у глобального адреса есть поля ip, prefix_length (64) и status (valid), у link-local адреса вместо длины префикса указано origin: link_layer. Рядом лежат параметры ICMP (одно сообщение об ошибке за 100 мс, redirects, unreachables) и ND (dad_attempts 1, reachable_time 30000, ns_retransmit_interval 1000), а на уровне интерфейса список joined_group_addresses, mtu 1500 и oper_status up. Структура и размер файла (877 байт) совпали с методичкой, так как эмулятор выдаёт те же адреса, что маршрутизатор в методичке."
+  },
+  {
+   "t": "terminal",
+   "id": "parsed1",
+   "src": "steps/31_cat_v6_1_parsed.txt",
+   "caption": "Разобранный вывод show ipv6 interface gig 1 в первом снимке"
+  },
+  {
+   "t": "p",
+   "text": "Затем тем же способом на интерфейсе был задан link-local адрес командой `ipv6 address fe80::56:1 link-local` (шаг 3), а на шаге 4 командой `genie parse` с параметром `--output verify-ipv6-2` сделан второй снимок (рисунок {fig:snap2}). Файлы второго снимка меньше: 741, 846 и 4807 байт против 758, 877 и 4824 байт в первом. Новый link-local адрес короче прежнего на 14 символов, а новая группа на 3, поэтому файл вывода и журнал подключения уменьшились на 17 байт, а разобранная структура, где адрес записан дважды (ключ и поле ip), на 31 байт."
+  },
+  {
+   "t": "terminal",
+   "id": "snap2",
+   "src": [
+    "steps/32_router_link_local.txt",
+    "transcript.txt"
+   ],
+   "lines": [
+    "1-3",
+    "1428-1436,1442-1466"
+   ],
+   "ellipsis_between": true,
+   "caption": "Назначение link-local адреса и второй снимок verify-ipv6-2"
+  },
+  {
+   "t": "p",
+   "text": "Во втором снимке (рисунок {fig:console2}) маршрутизатор сообщает link-local адрес FE80::56:1 и группу FF02::1:FF56:1 вместо FF02::1:FF73:D79F, а глобальный адрес и группа FF02::1:FF00:101 не изменились. В файле `_parsed.txt` вместо объекта FE80::A00:27FF:FE73:D79F появился объект FE80::56:1, в остальном файл отличается от первого снимка только третьим элементом списка joined_group_addresses."
+  },
+  {
+   "t": "terminal",
+   "id": "console2",
+   "src": "transcript.txt",
+   "lines": "1467-1504",
+   "append": "...",
+   "caption": "Вывод маршрутизатора и начало файла _parsed.txt во втором снимке"
+  },
+  {
+   "t": "p",
+   "text": "Команда `genie diff verify-ipv6-1 verify-ipv6-2` (шаг 5) сравнила одноимённые файлы `_parsed.txt` двух каталогов и записала различия в текущий каталог, в файл с тем же именем и приставкой `diff_` (рисунок {fig:diff}). Этот файл содержит дерево ключей, где строки со знаком плюс появились во втором снимке, а строки со знаком минус были в первом. В ветви GigabitEthernet1/ipv6 удалён адрес FE80::A00:27FF:FE73:D79F и добавлен адрес FE80::56:1, а в списке joined_group_addresses элемент index[2] сменился с FF02::1:FF73:D79F на FF02::1:FF56:1. Неизменённые параметры, в том числе глобальный адрес, в файл не попали; результат совпадает с методичкой."
+  },
+  {
+   "t": "terminal",
+   "id": "diff",
+   "src": "transcript.txt",
+   "lines": "1530,1536-1561",
+   "caption": "Сравнение снимков командой genie diff и выход из окружения"
+  },
+  {
+   "t": "p",
+   "text": "Смена группы следует из правила построения адреса solicited-node: его последние 24 бита совпадают с младшими 24 битами одноадресного адреса [7]. Новому link-local адресу соответствует группа FF02::1:FF56:1, а прежнему группа FF02::1:FF73:D79F. Группа FF02::1:FF00:101 принадлежит глобальному адресу 2001:DB8:ACAD:56::101, поэтому она осталась на месте."
+  },
+  {
+   "t": "h2",
+   "text": "Завершение работы и дальнейшее изучение"
+  },
+  {
+   "t": "p",
+   "text": "Командой `deactivate` виртуальное окружение было выключено, и в последней строке рисунка {fig:diff} приглашение снова без префикса (csr1kv). Шаг 2 (знакомство с другими примерами CiscoTestAutomation и материалами по NetDevOps) ограничился просмотром каталога examples на рисунке {fig:examples} [9]: кроме basic, там ещё 20 подкаталогов с примерами, например blitz, clean, health и parsergen; подробно они не разбирались."
+  },
+  {
+   "t": "h1",
+   "text": "Выводы",
+   "num": false
+  },
+  {
+   "t": "p",
+   "text": "В работе pyATS и Genie версии 24.9 установлены в виртуальное окружение csr1kv на Python 3.8.10; перед установкой pip в окружении был обновлён с 20.0.2 до 25.0.1. Пример `basic_example_job.py` выполнен в среде Easypy с ожидаемым результатом: из четырёх разделов скрипта прошли три, а tc_two провалился из-за намеренной ошибки в simple_test_1 (75 % по разделам, 9 из 10 секций)."
+  },
+  {
+   "t": "p",
+   "text": "Genie с testbed-файлом, созданным по методичке, подключился к эмулятору маршрутизатора CSR1kv по адресу 192.168.56.101 и разобрал вывод `show ip interface brief`, `show version` и `show ipv6 interface gig 1` в структуры JSON; например, из `show version` получены версия IOS XE 16.9.5, модель CSR1000V и серийный номер 9K8P1OFYE3D. Команда `genie diff` по двум снимкам нашла внесённую вручную замену link-local адреса FE80::A00:27FF:FE73:D79F на FE80::56:1 и вызванную ею смену группы solicited-node. Глобальный адрес 2001:DB8:ACAD:56::101/64 в различия не попал."
+  },
+  {
+   "t": "p",
+   "text": "Отличия от методички связаны со стендом и новыми версиями программ: маршрутизатор заменён эмулятором CLI IOS XE и настраивался по SSH, а вместо pyATS 20.4 установлен 24.9, поэтому изменились справка команд и часть выводов. Дополнительные примеры из части 6 подробно не изучались. С точки зрения безопасности пароль в testbed-файле лишь закодирован общим ключом pyATS и для реальной работы должен быть перекодирован собственным ключом с шифрованием Fernet, обмен ключами diffie-hellman-group14-sha1 устарел, а Python 3.8 с октября 2024 года не поддерживается."
+  },
+  {
+   "t": "sources",
+   "items": [
+    "Lab - Automated Testing Using pyATS and Genie : лабораторная работа 7.6.3 // DevNet Associate v1.0 / Cisco Networking Academy. – 2020. – 21 с.",
+    "pyATS Documentation : [сайт]. – URL: https://pubhub.devnetcloud.com/media/pyats/docs/index.html (дата обращения: 14.11.2026).",
+    "Genie Documentation : [сайт]. – URL: https://pubhub.devnetcloud.com/media/genie-docs/docs/index.html (дата обращения: 14.11.2026).",
+    "Secret Strings // pyATS Documentation : [сайт]. – URL: https://pubhub.devnetcloud.com/media/pyats/docs/utilities/secret_strings.html (дата обращения: 14.11.2026).",
+    "Unicon: The Connection Library : [сайт]. – URL: https://pubhub.devnetcloud.com/media/unicon/docs/index.html (дата обращения: 14.11.2026).",
+    "venv — Creation of virtual environments // Python 3.8 documentation : [сайт]. – URL: https://docs.python.org/3.8/library/venv.html (дата обращения: 14.11.2026).",
+    "Hinden R. IP Version 6 Addressing Architecture : RFC 4291 / R. Hinden, S. Deering. – 2006. – URL: https://www.rfc-editor.org/rfc/rfc4291 (дата обращения: 14.11.2026).",
+    "Status of Python versions // Python Developer's Guide : [сайт]. – URL: https://devguide.python.org/versions/ (дата обращения: 14.11.2026).",
+    "CiscoTestAutomation/examples : примеры pyATS и Genie : [сайт]. – URL: https://github.com/CiscoTestAutomation/examples (дата обращения: 14.11.2026).",
+    "Baushke M. Key Exchange (KEX) Method Updates and Recommendations for Secure Shell (SSH) : RFC 9142 / M. Baushke. – 2022. – URL: https://www.rfc-editor.org/rfc/rfc9142 (дата обращения: 14.11.2026)."
+   ]
+  },
+  {
+   "t": "appendix",
+   "letter": "А",
+   "title": "Тестовый скрипт basic_example_script.py"
+  },
+  {
+   "t": "listing",
+   "id": "script",
+   "caption": "Скрипт examples/basic/basic_example_script.py (вывод команды cat)",
+   "code": "#!/usr/bin/env python\n###################################################################\n# basic_example.py : A very simple test script example which include:\n#     common_setup\n#     Tescases\n#     common_cleanup\n# The purpose of this sample test script is to show the \"hello world\"\n# of aetest.\n###################################################################\n\n# To get a logger for the script\nimport logging\n\n# Needed for aetest script\nfrom pyats import aetest\n\n# Get your logger for your script\nlog = logging.getLogger(__name__)\n\n###################################################################\n###                  COMMON SETUP SECTION                       ###\n###################################################################\n\n# This is how to create a CommonSetup\n# You can have one of no CommonSetup\n# CommonSetup can be named whatever you want\n\nclass common_setup(aetest.CommonSetup):\n    \"\"\" Common Setup section \"\"\"\n\n    # CommonSetup have subsection.\n    # You can have 1 to as many subsection as wanted\n    # here is an example of 2 subsections\n\n    # First subsection\n    @aetest.subsection\n    def sample_subsection_1(self):\n        \"\"\" Common Setup subsection \"\"\"\n        log.info(\"Aetest Common Setup \")\n\n    # If you want to get the name of current section,\n    # add section to the argument of the function.\n\n    # Second subsection\n    @aetest.subsection\n    def sample_subsection_2(self, section):\n        \"\"\" Common Setup subsection \"\"\"\n        log.info(\"Inside %s\" % (section))\n\n        # And how to access the class itself ?\n\n        # self refers to the instance of that class, and remains consistent\n        # throughout the execution of that container.\n        log.info(\"Inside class %s\" % (self.uid))\n\n###################################################################\n###                     TESTCASES SECTION                       ###\n###################################################################\n\n# This is how to create a testcase\n# You can have 0 to as many testcase as wanted\n\n# Testcase name : tc_one\nclass tc_one(aetest.Testcase):\n    \"\"\" This is user Testcases section \"\"\"\n\n    # Testcases are divided into 3 sections\n    # Setup, Test and Cleanup.\n\n    # This is how to create a setup section\n    @aetest.setup\n    def prepare_testcase(self, section):\n        \"\"\" Testcase Setup section \"\"\"\n        log.info(\"Preparing the test\")\n        log.info(section)\n\n    # This is how to create a test section\n    # You can have 0 to as many test section as wanted\n\n    # First test section\n    @ aetest.test\n    def simple_test_1(self):\n        \"\"\" Sample test section. Only print \"\"\"\n        log.info(\"First test section \")\n\n    # Second test section\n    @ aetest.test\n    def simple_test_2(self):\n        \"\"\" Sample test section. Only print \"\"\"\n        log.info(\"Second test section \")\n\n    # This is how to create a cleanup section\n    @aetest.cleanup\n    def clean_testcase(self):\n        \"\"\" Testcase cleanup section \"\"\"\n        log.info(\"Pass testcase cleanup\")\n\n# Testcase name : tc_two\nclass tc_two(aetest.Testcase):\n    \"\"\" This is user Testcases section \"\"\"\n\n    @ aetest.test\n    def simple_test_1(self):\n        \"\"\" Sample test section. Only print \"\"\"\n        log.info(\"First test section \")\n        self.failed('This is an intentional failure')\n\n    # Second test section\n    @ aetest.test\n    def simple_test_2(self):\n        \"\"\" Sample test section. Only print \"\"\"\n        log.info(\"Second test section \")\n\n    # This is how to create a cleanup section\n    @aetest.cleanup\n    def clean_testcase(self):\n        \"\"\" Testcase cleanup section \"\"\"\n        log.info(\"Pass testcase cleanup\")\n\n#####################################################################\n####                       COMMON CLEANUP SECTION                 ###\n#####################################################################\n\n# This is how to create a CommonCleanup\n# You can have 0 , or 1 CommonCleanup.\n# CommonCleanup can be named whatever you want :)\nclass common_cleanup(aetest.CommonCleanup):\n    \"\"\" Common Cleanup for Sample Test \"\"\"\n\n    # CommonCleanup follow exactly the same rule as CommonSetup regarding\n    # subsection\n    # You can have 1 to as many subsection as wanted\n    # here is an example of 1 subsections\n\n    @aetest.subsection\n    def clean_everything(self):\n        \"\"\" Common Cleanup Subsection \"\"\"\n        log.info(\"Aetest Common Cleanup \")\n\nif __name__ == '__main__': # pragma: no cover\n    result = aetest.main()\n    aetest.exit_cli_code(result)",
+   "font_size": 9
+  },
+  {
+   "t": "appendix",
+   "letter": "Б",
+   "title": "Журнал подключения Genie к маршрутизатору"
+  },
+  {
+   "t": "listing",
+   "id": "conn",
+   "caption": "Файл verify-ipv6-1/connection_CSR1kv.txt",
+   "code": "\n2026-11-14 10:03:01,182: %UNICON-INFO: +++ CSR1kv logfile verify-ipv6-1/connection_CSR1kv.txt +++\n\n2026-11-14 10:03:01,183: %UNICON-INFO: +++ Unicon plugin iosxe (unicon.plugins.iosxe) +++\n\nPassword: \n\n2026-11-14 10:03:01,219: %UNICON-INFO: +++ connection to spawn: ssh -l cisco -o KexAlgorithms=diffie-hellman-group14-sha1 192.168.56.101, id: 139744339867488 +++\n\n2026-11-14 10:03:01,219: %UNICON-INFO: connection to CSR1kv\n\n\n*                                           *\n**                                         **\n***                                       ***\n***  Cisco Networking Academy             ***\n***                                       ***\n***  This software is provided for        ***\n***   Educational Purposes                ***\n***    Only in Networking Academies       ***\n***                                       ***\n**                                         **\n*                                           *\n\n\nCSR1kv#\n\nCSR1kv#\n\n2026-11-14 10:03:01,476: %UNICON-INFO: +++ CSR1kv with via 'cli': executing command 'show version | include operating mode' +++\nshow version | include operating mode\nCSR1kv#\n\n2026-11-14 10:03:01,599: %UNICON-INFO: +++ initializing handle +++\n\n2026-11-14 10:03:01,722: %UNICON-INFO: +++ CSR1kv with via 'cli': executing command 'term length 0' +++\nterm length 0\nCSR1kv#\n\n2026-11-14 10:03:01,966: %UNICON-INFO: +++ CSR1kv with via 'cli': executing command 'term width 0' +++\nterm width 0\nCSR1kv#\n\n2026-11-14 10:03:02,211: %UNICON-INFO: +++ CSR1kv with via 'cli': executing command 'show version' +++\nshow version\nCisco IOS XE Software, Version 16.09.05\nCisco IOS Software [Fuji], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.5, RELEASE SOFTWARE (fc1)\nTechnical Support: http://www.cisco.com/techsupport\nCopyright (c) 1986-2020 by Cisco Systems, Inc.\nCompiled Thu 30-Jan-20 18:48 by mcpre\n\n\nCisco IOS-XE software, Copyright (c) 2005-2020 by cisco Systems, Inc.\nAll rights reserved.  Certain components of Cisco IOS-XE software are\nlicensed under the GNU General Public License (\"GPL\") Version 2.0.  The\nsoftware code licensed under GPL Version 2.0 is free software that comes\nwith ABSOLUTELY NO WARRANTY.  You can redistribute and/or modify such\nGPL code under the terms of GPL Version 2.0.  For more details, see the\ndocumentation or \"License Notice\" file accompanying the IOS-XE software,\nor the applicable URL provided on the flyer accompanying the IOS-XE\nsoftware.\n\n\nROM: IOS-XE ROMMON\n\nCSR1kv uptime is 2 minutes\nUptime for this control processor is 3 minutes\nSystem returned to ROM by reload\nSystem image file is \"bootflash:packages.conf\"\nLast reload reason: reload\n\n\n\nThis product contains cryptographic features and is subject to United\nStates and local country laws governing import, export, transfer and\nuse. Delivery of Cisco cryptographic products does not imply\nthird-party authority to import, export, distribute or use encryption.\nImporters, exporters, distributors and users are responsible for\ncompliance with U.S. and local country laws. By using this product you\nagree to comply with applicable laws and regulations. If you are unable\nto comply with U.S. and local laws, return this product immediately.\n\nA summary of U.S. laws governing Cisco cryptographic products may be found at:\nhttp://www.cisco.com/wwl/export/crypto/tool/stqrg.html\n\nIf you require further assistance please contact us by sending email to\nexport@cisco.com.\n\nLicense Level: ax\nLicense Type: Default. No valid license found.\nNext reload license Level: ax\n\n\nSmart Licensing Status: Smart Licensing is DISABLED\n\ncisco CSR1000V (VXE) processor (revision VXE) with 2182252K/3075K bytes of memory.\nProcessor board ID 9K8P1OFYE3D\n1 Gigabit Ethernet interface\n32768K bytes of non-volatile configuration memory.\n3985032K bytes of physical memory.\n7774207K bytes of virtual hard disk at bootflash:.\n0K bytes of WebUI ODM Files at webui:.\n\nConfiguration register is 0x2102\n\nCSR1kv#\n\n2026-11-14 10:03:02,915: %UNICON-INFO: +++ CSR1kv with via 'cli': executing command 'show ipv6 interface gig 1' +++\nshow ipv6 interface gig 1\nGigabitEthernet1 is up, line protocol is up\n  IPv6 is enabled, link-local address is FE80::A00:27FF:FE73:D79F\n  No Virtual link-local address(es):\n  Description: VBox\n  Global unicast address(es):\n    2001:DB8:ACAD:56::101, subnet is 2001:DB8:ACAD:56::/64\n  Joined group address(es):\n    FF02::1\n    FF02::1:FF00:101\n    FF02::1:FF73:D79F\n  MTU is 1500 bytes\n  ICMP error messages limited to one every 100 milliseconds\n  ICMP redirects are enabled\n  ICMP unreachables are sent\n  ND DAD is enabled, number of DAD attempts: 1\n  ND reachable time is 30000 milliseconds (using 30000)\n  ND NS retransmit interval is 1000 milliseconds\nCSR1kv#",
+   "font_size": 8.5
+  }
+ ]
+}

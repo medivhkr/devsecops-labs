@@ -21,6 +21,12 @@ BOLD_CANDIDATES = [
     "C:/Windows/Fonts/consolab.ttf",
     "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
 ]
+# Запасные шрифты для символов, которых нет в основном (★ у Newman, ⠋ у индикаторов, иероглифы в названиях улиц)
+FALLBACK_CANDIDATES = [
+    "C:/Windows/Fonts/CascadiaMono.ttf",
+    "C:/Windows/Fonts/seguisym.ttf",
+    "C:/Windows/Fonts/msyh.ttc",
+]
 
 BG = (30, 33, 39)
 TITLE_BG = (52, 56, 64)
@@ -42,6 +48,50 @@ def load_font(cands, size):
     return ImageFont.load_default()
 
 
+_CMAPS = {}
+
+
+def has_glyph(path, ch):
+    """Есть ли в шрифте глиф для символа (по таблице cmap)."""
+    if path not in _CMAPS:
+        try:
+            from fontTools.ttLib import TTFont
+            _CMAPS[path] = set(TTFont(path, fontNumber=0).getBestCmap().keys())
+        except Exception:
+            _CMAPS[path] = None
+    cmap = _CMAPS[path]
+    return True if cmap is None else ord(ch) in cmap
+
+
+def first_existing(cands):
+    for c in cands:
+        if os.path.exists(c):
+            return c
+    return None
+
+
+def draw_text(d, x, y, text, font, font_path, fallbacks, fill):
+    """Рисует строку, подставляя запасной шрифт для отсутствующих символов. Возвращает новую x."""
+    run, run_font = "", font
+    for ch in text:
+        f = font
+        if font_path and ord(ch) > 127 and not has_glyph(font_path, ch):
+            for fp, ff in fallbacks:
+                if has_glyph(fp, ch):
+                    f = ff
+                    break
+        if f is not run_font and run:
+            d.text((x, y), run, font=run_font, fill=fill)
+            x += d.textlength(run, font=run_font)
+            run = ""
+        run_font = f
+        run += ch
+    if run:
+        d.text((x, y), run, font=run_font, fill=fill)
+        x += d.textlength(run, font=run_font)
+    return x
+
+
 def wrap(lines, cols):
     out = []
     for line in lines:
@@ -61,6 +111,9 @@ def render(text, title, out_png, cols=100, size=26, max_lines=None):
         lines = lines[:max_lines]
     font = load_font(FONT_CANDIDATES, size)
     bold = load_font(BOLD_CANDIDATES, size)
+    font_path = first_existing(FONT_CANDIDATES)
+    bold_path = first_existing(BOLD_CANDIDATES)
+    fallbacks = [(p, ImageFont.truetype(p, size)) for p in FALLBACK_CANDIDATES if os.path.exists(p)]
     cw = font.getbbox("M")[2]
     lh = int(size * 1.32)
     pad = int(size * 0.8)
@@ -82,17 +135,16 @@ def render(text, title, out_png, cols=100, size=26, max_lines=None):
         r = ROUTER_RE.match(line) if not m else None
         if m:
             venv, userhost, colon, path, sign, rest = m.groups()
-            for txt, fnt, col in ((venv or "", font, FG), (userhost, bold, GREEN), (colon, font, FG),
-                                  (path, bold, BLUE), (sign, font, FG), (rest, font, FG)):
+            for txt, fnt, fp, col in ((venv or "", font, font_path, FG), (userhost, bold, bold_path, GREEN),
+                                      (colon, font, font_path, FG), (path, bold, bold_path, BLUE),
+                                      (sign, font, font_path, FG), (rest, font, font_path, FG)):
                 if txt:
-                    d.text((x, y), txt, font=fnt, fill=col)
-                    x += d.textlength(txt, font=fnt)
+                    x = draw_text(d, x, y, txt, fnt, fp, fallbacks, col)
         elif r:
-            d.text((x, y), r.group(1), font=bold, fill=YELLOW)
-            x += d.textlength(r.group(1), font=bold)
-            d.text((x, y), r.group(2), font=font, fill=FG)
+            x = draw_text(d, x, y, r.group(1), bold, bold_path, fallbacks, YELLOW)
+            draw_text(d, x, y, r.group(2), font, font_path, fallbacks, FG)
         else:
-            d.text((x, y), line, font=font, fill=FG)
+            draw_text(d, x, y, line, font, font_path, fallbacks, FG)
         y += lh
     img.save(out_png, optimize=True)
     return img.size
