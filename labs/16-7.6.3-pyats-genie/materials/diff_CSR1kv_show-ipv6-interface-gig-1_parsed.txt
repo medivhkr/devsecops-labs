@@ -1,0 +1,15 @@
+--- verify-ipv6-1/CSR1kv_show-ipv6-interface-gig-1_parsed.txt
++++ verify-ipv6-2/CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+ GigabitEthernet1:
+  ipv6:
++  FE80::56:1:
++   ip: FE80::56:1
++   origin: link_layer
++   status: valid
+-  FE80::A00:27FF:FE73:D79F:
+-   ip: FE80::A00:27FF:FE73:D79F
+-   origin: link_layer
+-   status: valid
+  joined_group_addresses:
+-  index[2]: FF02::1:FF73:D79F
++  index[2]: FF02::1:FF56:1

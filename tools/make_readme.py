@@ -45,6 +45,8 @@ def lab_rows():
         rows.append({
             "lab": lab, "folder": folder, "title": title, "module": lab.split(".")[0],
             "report": "[PDF]({}) · [DOCX]({})".format(pdf, docx) if has_pdf else "в работе",
+            "materials": "[материалы](labs/{}/materials) · [описание](labs/{})".format(folder, folder)
+            if os.path.isdir(os.path.join(REPO, "labs", folder, "materials")) else "—",
             "protocol": "<br>".join(protos) if protos else "—",
             "badge": badges,
         })
@@ -65,10 +67,10 @@ def main():
         if not mrows:
             continue
         out.append("### {}\n".format(name))
-        out.append("| № | Тема | Отчёт | Протокол выполнения | Прогон в CI |")
-        out.append("|---|------|-------|---------------------|-------------|")
+        out.append("| № | Тема | Отчёт | Материалы работы | Протокол выполнения | Прогон в CI |")
+        out.append("|---|------|-------|------------------|---------------------|-------------|")
         for r in mrows:
-            out.append("| {lab} | {title} | {report} | {protocol} | {badge} |".format(**r))
+            out.append("| {lab} | {title} | {report} | {materials} | {protocol} | {badge} |".format(**r))
         out.append("")
     out.append(open(os.path.join(REPO, "tools", "README_body.md"), encoding="utf-8").read())
     open(os.path.join(REPO, "README.md"), "w", encoding="utf-8", newline="\n").write("\n".join(out))

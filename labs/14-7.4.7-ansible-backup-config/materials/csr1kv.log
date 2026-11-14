@@ -1,0 +1,47 @@
+2026-11-14 10:00:03,825 csr1kv CSR1kv emulator listening on 192.168.56.101:22
+2026-11-14 10:00:04,755 csr1kv SSH negotiation failed from 192.168.56.101: Error reading SSH protocol banner
+2026-11-14 10:00:45,179 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:00:45,320 csr1kv [192.168.56.101 cisco] exec: terminal length 0
+2026-11-14 10:00:45,421 csr1kv [192.168.56.101 cisco] exec: terminal width 512
+2026-11-14 10:00:45,522 csr1kv [192.168.56.101 cisco] exec: terminal width 0
+2026-11-14 10:00:45,824 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:00:45,926 csr1kv [192.168.56.101 cisco] exec: show running-config
+2026-11-14 10:00:46,553 csr1kv session closed: 192.168.56.101
+2026-11-14 10:01:06,553 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:01:06,694 csr1kv [192.168.56.101 cisco] exec: terminal length 0
+2026-11-14 10:01:06,795 csr1kv [192.168.56.101 cisco] exec: terminal width 512
+2026-11-14 10:01:06,896 csr1kv [192.168.56.101 cisco] exec: terminal width 0
+2026-11-14 10:01:07,201 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:07,304 csr1kv [192.168.56.101 cisco] exec: show running-config
+2026-11-14 10:01:07,407 csr1kv [192.168.56.101 cisco] exec: configure terminal
+2026-11-14 10:01:07,508 csr1kv [192.168.56.101 cisco] config: interface GigabitEthernet1
+2026-11-14 10:01:07,610 csr1kv [192.168.56.101 cisco] config-if: description IPv6 ADDRESS
+2026-11-14 10:01:07,711 csr1kv [192.168.56.101 cisco] config-if: ipv6 address 2001:DB8:ACAD:1::1/64
+2026-11-14 10:01:07,813 csr1kv [192.168.56.101 cisco] config-if: ipv6 address FE80::1:1 link-local
+2026-11-14 10:01:07,914 csr1kv [192.168.56.101 cisco] config-if: end
+2026-11-14 10:01:08,341 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:08,443 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief
+2026-11-14 10:01:09,067 csr1kv session closed: 192.168.56.101
+2026-11-14 10:01:15,528 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:01:15,670 csr1kv [192.168.56.101 cisco] exec: terminal length 0
+2026-11-14 10:01:15,771 csr1kv [192.168.56.101 cisco] exec: terminal width 512
+2026-11-14 10:01:15,872 csr1kv [192.168.56.101 cisco] exec: terminal width 0
+2026-11-14 10:01:16,181 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:16,284 csr1kv [192.168.56.101 cisco] exec: show running-config
+2026-11-14 10:01:16,718 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:16,820 csr1kv [192.168.56.101 cisco] exec: show ipv6 interface brief
+2026-11-14 10:01:17,443 csr1kv session closed: 192.168.56.101
+2026-11-14 10:01:20,820 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:01:20,961 csr1kv [192.168.56.101 cisco] exec: terminal length 0
+2026-11-14 10:01:21,062 csr1kv [192.168.56.101 cisco] exec: terminal width 512
+2026-11-14 10:01:21,163 csr1kv [192.168.56.101 cisco] exec: terminal width 0
+2026-11-14 10:01:21,471 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:21,573 csr1kv [192.168.56.101 cisco] exec: show running-config
+2026-11-14 10:01:22,209 csr1kv session closed: 192.168.56.101
+2026-11-14 10:01:38,371 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:01:38,512 csr1kv [192.168.56.101 cisco] exec: terminal length 0
+2026-11-14 10:01:38,613 csr1kv [192.168.56.101 cisco] exec: terminal width 512
+2026-11-14 10:01:38,714 csr1kv [192.168.56.101 cisco] exec: terminal width 0
+2026-11-14 10:01:39,016 csr1kv [192.168.56.101 cisco] exec: show version
+2026-11-14 10:01:39,118 csr1kv [192.168.56.101 cisco] exec: show running-config
+2026-11-14 10:01:39,776 csr1kv session closed: 192.168.56.101

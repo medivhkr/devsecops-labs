@@ -1,0 +1,10 @@
+2026-11-14 10:00:22,068 csr1kv CSR1kv emulator listening on 192.168.56.101:22
+2026-11-14 10:00:22,997 csr1kv SSH negotiation failed from 192.168.56.101: Error reading SSH protocol banner
+2026-11-14 10:00:30,661 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:00:30,754 csr1kv [192.168.56.101 cisco] exec: show ip interface brief
+2026-11-14 10:00:30,806 csr1kv [192.168.56.101 cisco] exec: show version | include Version|uptime|processor
+2026-11-14 10:00:30,858 csr1kv [192.168.56.101 cisco] exec: exit
+2026-11-14 10:00:31,058 csr1kv session closed: 192.168.56.101
+2026-11-14 10:00:40,410 csr1kv session opened: cisco from 192.168.56.101
+2026-11-14 10:00:40,501 csr1kv [192.168.56.101 cisco] exec: exit
+2026-11-14 10:00:40,701 csr1kv session closed: 192.168.56.101
