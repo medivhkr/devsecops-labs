@@ -136,7 +136,7 @@ steps:
                 self.name = name
                 self.country = country
 
-        loc = Location("Your_Name", "Your_Country")
+        loc = Location("Adis", "Kyrgyzstan")
         print(loc.name)
         print(loc.country)
         print(type(loc))
@@ -212,7 +212,7 @@ steps:
         loc3 = Location("Amare", "Kenya")
         loc2.myLocation()
         loc3.myLocation()
-        your_loc = Location("Your_Name", "Your_Country")
+        your_loc = Location("Adis", "Kyrgyzstan")
         your_loc.myLocation()
   - id: run_location_4
     title: "Part 4 Step 3d: запуск с четырьмя объектами"
