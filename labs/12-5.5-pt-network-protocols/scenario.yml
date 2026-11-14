@@ -1,0 +1,577 @@
+lab: "5.5.7"
+title: "Packet Tracer - Explore Network Protocols"
+collect:
+  - ~/labs/devnet-src/pt-protocols
+  - /etc/dnsmasq.d
+  - /etc/chrony/Corporate-chrony.conf
+  - /etc/snmp/R3-snmpd.conf
+  - /etc/nginx/DEVASC-Server.conf
+  - /etc/nginx/Example-Server.conf
+  - /etc/labnet
+  - /etc/netns
+  - /var/lib/misc/dnsmasq.leases
+  - /var/log/pt-lab
+  - /var/spool/pt-mail
+steps:
+  # ---------- Стенд: топология Packet Tracer в сетевых пространствах имён ----------
+  - id: netns_list
+    title: "Part 0 Step 1: стенд — устройства топологии (сетевые пространства имён)"
+    cmd: "ip netns list"
+  - id: addressing
+    title: "Part 0 Step 2: стенд — IPv4-адреса устройств (таблица адресации)"
+    cmd: "for d in $(ip netns list | cut -d' ' -f1); do echo \"== $d\"; sudo ip -n $d -4 -br addr show up; done"
+  - id: cd_work
+    title: "Part 0 Step 3: рабочий каталог (диски PC-A и PC-B)"
+    cmd: "cd ~/labs/devnet-src/pt-protocols && ls -lR"
+
+  # ---------- Part 1: Configure DNS ----------
+  - id: corp_dns_conf
+    title: "Part 1 Step 1: DNS-служба сервера Corporate (запись www.example.com)"
+    write_file:
+      path: /etc/dnsmasq.d/Corporate-dns.conf
+      content: |
+        # Corporate > Services > DNS: DNS Service On
+        # Name: www.example.com, Address: 64.100.0.10 (A Record), Add
+        port=53
+        listen-address=192.168.1.3
+        bind-interfaces
+        no-resolv
+        no-hosts
+        host-record=www.example.com,64.100.0.10
+        log-queries
+        pid-file
+  - id: corp_dns_cat
+    title: "Part 1 Step 1: файл настройки DNS сервера Corporate"
+    cmd: "cat /etc/dnsmasq.d/Corporate-dns.conf"
+  - id: corp_dns_on
+    title: "Part 1 Step 1d: включение службы DNS на Corporate"
+    cmd: "sudo ip netns exec Corporate dnsmasq -C /etc/dnsmasq.d/Corporate-dns.conf"
+  - id: corp_dns_check
+    title: "Part 1 Step 1g: запись www.example.com на DNS-сервере Corporate"
+    cmd: "sudo ip netns exec Corporate dig @192.168.1.3 www.example.com +noall +answer"
+  - id: pca_ipconfig_static
+    title: "Part 1 Step 2a: текущая (статическая) IP-конфигурация PC-A"
+    cmd: "sudo ip netns exec PC-A ip -4 addr show eth0"
+  - id: pca_dns_conf
+    title: "Part 1 Step 2c: DNS Server 192.168.1.3 на PC-A"
+    write_file:
+      path: /etc/netns/PC-A/resolv.conf
+      content: |
+        # PC-A > Config > DNS Server
+        nameserver 192.168.1.3
+  - id: pca_dns_cat
+    title: "Part 1 Step 2c: resolv.conf PC-A"
+    cmd: "cat /etc/netns/PC-A/resolv.conf"
+  - id: pca_ping_example
+    title: "Part 1 Step 2e: ping www.example.com с PC-A"
+    cmd: "sudo ip netns exec PC-A ping -c 4 www.example.com"
+    timeout: 60
+  - id: corp_dns_log
+    title: "Part 1 Step 2e: запросы PC-A в журнале DNS-сервера Corporate"
+    cmd: "sudo journalctl -t dnsmasq -o cat --no-pager -g 'from 192.168.1.2'"
+  - id: example_dns_cat
+    title: "Part 1 Step 3: DNS-служба Example Server (настроена заранее)"
+    cmd: "cat /etc/dnsmasq.d/Example-Server-dns.conf"
+  - id: pcb_dns_conf
+    title: "Part 1 Step 3c: DNS Server 64.100.0.10 на PC-B"
+    write_file:
+      path: /etc/netns/PC-B/resolv.conf
+      content: |
+        # PC-B > Config > DNS Server
+        nameserver 64.100.0.10
+  - id: pcb_dns_cat
+    title: "Part 1 Step 3c: resolv.conf PC-B"
+    cmd: "cat /etc/netns/PC-B/resolv.conf"
+  - id: pcb_ping_example
+    title: "Part 1 Step 3e: ping www.example.com с PC-B"
+    cmd: "sudo ip netns exec PC-B ping -c 4 www.example.com"
+    timeout: 60
+  - id: pcb_ping_devasc
+    title: "Part 1 Step 3f: ping www.devasc-netacad.pka с PC-B"
+    cmd: "sudo ip netns exec PC-B ping -c 4 www.devasc-netacad.pka"
+    timeout: 60
+  - id: pcb_web_example
+    title: "Part 1 Step 3h: страница www.example.com (браузер PC-B)"
+    cmd: "sudo ip netns exec PC-B curl -i http://www.example.com"
+    timeout: 60
+  - id: pcb_web_devasc
+    title: "Part 1 Step 3i: страница www.devasc-netacad.pka (браузер PC-B)"
+    cmd: "sudo ip netns exec PC-B curl -i http://www.devasc-netacad.pka"
+    timeout: 60
+
+  # ---------- Part 2: Configure DHCP ----------
+  - id: corp_dhcp_conf
+    title: "Part 2 Step 1: DHCP-служба Corporate, пул serverPool"
+    write_file:
+      path: /etc/dnsmasq.d/Corporate-dhcp.conf
+      content: |
+        # Corporate > Services > DHCP: Service On, Pool Name serverPool
+        port=0
+        interface=eth0
+        dhcp-authoritative
+        dhcp-sequential-ip
+        # Start IP Address 192.168.1.10, Subnet Mask 255.255.255.0, Maximum number of users 245
+        dhcp-range=set:serverPool,192.168.1.10,192.168.1.254,255.255.255.0,24h
+        dhcp-lease-max=245
+        # Default Gateway 192.168.1.1, DNS Server 192.168.1.3
+        dhcp-option=tag:serverPool,option:router,192.168.1.1
+        dhcp-option=tag:serverPool,option:dns-server,192.168.1.3
+        dhcp-leasefile=/var/lib/misc/dnsmasq.leases
+        log-dhcp
+        pid-file
+  - id: corp_dhcp_cat
+    title: "Part 2 Step 1d-i: файл настройки DHCP сервера Corporate"
+    cmd: "cat /etc/dnsmasq.d/Corporate-dhcp.conf"
+  - id: corp_dhcp_on
+    title: "Part 2 Step 1c, 1j: включение службы DHCP (Save)"
+    cmd: "sudo ip netns exec Corporate dnsmasq -C /etc/dnsmasq.d/Corporate-dhcp.conf"
+  - id: corp_udp_ports
+    title: "Part 2 Step 1: службы DNS (53) и DHCP (67) на Corporate"
+    cmd: "sudo ip netns exec Corporate ss -ulpn"
+  - id: pca_static_off
+    title: "Part 2 Step 2d: PC-A — отказ от статического адреса"
+    cmd: "sudo ip netns exec PC-A ip addr flush dev eth0"
+  - id: pca_dhcp
+    title: "Part 2 Step 2d: PC-A — получение адреса по DHCP"
+    cmd: "sudo ip netns exec PC-A busybox udhcpc -i eth0 -fqn -t 5 -x hostname:PC-A -s /opt/labnet/dhcp.sh"
+    timeout: 90
+  - id: pca_ip_dhcp
+    title: "Part 2 Step 2: адрес PC-A, полученный по DHCP"
+    cmd: "sudo ip netns exec PC-A ip -4 addr show eth0"
+  - id: pca_route_dhcp
+    title: "Part 2 Step 2: шлюз по умолчанию PC-A"
+    cmd: "sudo ip netns exec PC-A ip route"
+  - id: pca_dns_dhcp
+    title: "Part 2 Step 2: DNS-сервер PC-A"
+    cmd: "sudo ip netns exec PC-A cat /etc/resolv.conf"
+  - id: corp_leases
+    title: "Part 2 Step 2: аренда в базе DHCP-сервера Corporate"
+    cmd: "sudo cat /var/lib/misc/dnsmasq.leases"
+  - id: corp_dhcp_log
+    title: "Part 2 Step 2: обмен DHCP в журнале сервера"
+    cmd: "sudo journalctl -t dnsmasq-dhcp -o cat --no-pager -g 'DHCP(DISCOVER|OFFER|REQUEST|ACK)'"
+
+  # ---------- Part 3: Configure NTP ----------
+  - id: corp_ntp_conf
+    title: "Part 3 Step 1: NTP-служба сервера Corporate"
+    write_file:
+      path: /etc/chrony/Corporate-chrony.conf
+      content: |
+        # Corporate > Services > NTP: Service On
+        # Внешнего источника времени нет: сервер сам служит эталоном для сети 192.168.1.0/24
+        local stratum 8
+        allow 192.168.1.0/24
+        bindaddress 192.168.1.3
+        bindcmdaddress 127.0.0.1
+        bindcmdaddress /run/chrony/Corporate.sock
+        pidfile /run/chrony/Corporate.pid
+  - id: corp_ntp_cat
+    title: "Part 3 Step 1: файл настройки NTP сервера Corporate"
+    cmd: "cat /etc/chrony/Corporate-chrony.conf"
+  - id: corp_ntp_on
+    title: "Part 3 Step 1d: включение службы NTP (chronyd)"
+    cmd: "sudo ip netns exec Corporate chronyd -4 -x -f /etc/chrony/Corporate-chrony.conf"
+  - id: corp_ntp_tracking
+    title: "Part 3 Step 1: состояние NTP-сервера"
+    cmd: "sudo ip netns exec Corporate chronyc -h 127.0.0.1 tracking"
+    pause: 2
+  - id: corp_ntp_port
+    title: "Part 3 Step 1: сервер NTP слушает UDP 123"
+    cmd: "sudo ip netns exec Corporate ss -ulpn 'sport = :123'"
+  - id: s2_console_ntp
+    title: "Part 3 Step 2a-f: консоль S2 — enable, show clock detail, ntp server 192.168.1.3"
+    cmd: "sudo pt-console S2"
+    timeout: 240
+    interact:
+      - expect: "Press RETURN to get started"
+        send: ""
+        timeout: 30
+        optional: true
+      - expect: "S2>"
+        send: "enable"
+        timeout: 20
+        optional: true
+      - expect: "Password: "
+        send: "cisco"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        send: "show clock detail"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        send: "configure terminal"
+        timeout: 20
+        optional: true
+      - expect: "S2\\(config\\)#"
+        send: "ntp server 192.168.1.3"
+        timeout: 20
+        optional: true
+      - expect: "S2\\(config\\)#"
+        send: "exit"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        delay: 5
+        send: "show clock detail"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        send: "show ntp associations"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        send: "exit"
+        timeout: 20
+        optional: true
+  - id: corp_ntp_clients
+    title: "Part 3 Step 2f: S2 (192.168.1.4) среди клиентов NTP-сервера"
+    cmd: "sudo ip netns exec Corporate chronyc -h /run/chrony/Corporate.sock -n clients"
+  - id: s2_ntp_log
+    title: "Part 3 Step 2f: журнал эмулятора S2 — синхронизация по NTP"
+    cmd: "sudo grep -E 'ntp|NTP' /var/log/pt-lab/S2.log"
+
+  # ---------- Part 4: Use SSH to Securely Access a Switch ----------
+  - id: pca_telnet_s2
+    title: "Part 4 Step c: Telnet с PC-A на S2 (отклоняется)"
+    cmd: "sudo ip netns exec PC-A telnet 192.168.1.4"
+    timeout: 60
+  - id: pca_ssh_usage
+    title: "Part 4 Step d: справка по команде ssh"
+    cmd: "sudo ip netns exec PC-A ssh"
+  - id: pca_ssh_s2
+    title: "Part 4 Step e-f: SSH с PC-A на S2, enable, exit"
+    cmd: "sudo ip netns exec PC-A ssh -l administrator 192.168.1.4"
+    timeout: 180
+    interact:
+      - expect: "continue connecting \\(yes/no[^)]*\\)\\?"
+        send: "yes"
+        timeout: 20
+        optional: true
+      - expect: "[Pp]assword:"
+        send: "cisco"
+        timeout: 30
+        optional: true
+      - expect: "S2>"
+        send: "enable"
+        timeout: 20
+        optional: true
+      - expect: "Password: "
+        send: "cisco"
+        timeout: 20
+        optional: true
+      - expect: "S2#"
+        send: "exit"
+        timeout: 20
+        optional: true
+  - id: s2_ssh_log
+    title: "Part 4: журнал эмулятора S2 — Telnet отклонён, сессия SSH"
+    cmd: "sudo grep -E 'telnet|SSH|enable' /var/log/pt-lab/S2.log"
+
+  # ---------- Part 5: Investigate SNMP MIB Object IDs ----------
+  - id: r3_snmp_cat
+    title: "Part 5: SNMP-агент R3 и community-строки read/write (настроены заранее)"
+    cmd: "cat /etc/snmp/R3-snmpd.conf"
+  - id: pcb_snmp_system
+    title: "Part 5 Step c-n: дерево .mgmt.mib-2.system на R3 (community read)"
+    cmd: "sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.1 1.3.6.1.2.1.1"
+    timeout: 60
+  - id: pcb_snmp_sysname
+    title: "Part 5 Step o-p: GET .sysName.0"
+    cmd: "sudo ip netns exec PC-B snmpget -v2c -c read 172.16.3.1 1.3.6.1.2.1.1.5.0"
+    timeout: 60
+  - id: pcb_snmp_ifdescr
+    title: "Part 5 Step q: интерфейсы R3 (.ifTable.ifEntry.ifDescr)"
+    cmd: "sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.1 1.3.6.1.2.1.2.2.1.2"
+    timeout: 60
+  - id: pcb_snmp_ifoper
+    title: "Part 5 Step q: состояние интерфейсов R3 (.ifTable.ifEntry.ifOperStatus)"
+    cmd: "sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.1 1.3.6.1.2.1.2.2.1.8"
+    timeout: 60
+
+  # ---------- Part 6: Configure HTTPS ----------
+  - id: pcb_http_devasc
+    title: "Part 6 Step 1d: www.devasc-netacad.pka открывается по HTTP"
+    cmd: "sudo ip netns exec PC-B curl -sI http://www.devasc-netacad.pka"
+    timeout: 60
+  - id: fw_show_run
+    title: "Part 6 Step 2e: правила FIREWALL, список доступа OUTSIDE-DMZ"
+    cmd: "sudo ip netns exec FIREWALL iptables -S"
+  - id: fw_show_nat
+    title: "Part 6 Step 2e: статический NAT 192.168.2.3 <-> 209.165.200.227 на FIREWALL"
+    cmd: "sudo ip netns exec FIREWALL iptables -t nat -S"
+  - id: fw_no_www
+    title: "Part 6 Step 2g: удаление разрешения HTTP (порт 80) из OUTSIDE-DMZ"
+    cmd: "sudo ip netns exec FIREWALL iptables -D OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 80 -j ACCEPT"
+  - id: fw_acl_after
+    title: "Part 6 Step 2g: OUTSIDE-DMZ после изменения"
+    cmd: "sudo ip netns exec FIREWALL iptables -S OUTSIDE-DMZ"
+  - id: devasc_http_conf
+    title: "Part 6 Step 3b: веб-сервер DEVASC Server — HTTP On, HTTPS Off"
+    cmd: "cat /etc/nginx/DEVASC-Server.conf"
+  - id: cd_devasc
+    title: "Part 6 Step 3: каталог DEVASC-Server"
+    cmd: "cd DEVASC-Server"
+  - id: devasc_key
+    title: "Part 6 Step 3: закрытый ключ сервера"
+    cmd: "openssl genrsa -out devasc.key 2048"
+    timeout: 120
+  - id: devasc_cert
+    title: "Part 6 Step 3: самоподписанный сертификат www.devasc-netacad.pka"
+    cmd: "openssl req -new -x509 -key devasc.key -out devasc.crt -subj /CN=www.devasc-netacad.pka"
+    timeout: 120
+  - id: devasc_cert_show
+    title: "Part 6 Step 3: параметры сертификата"
+    cmd: "openssl x509 -in devasc.crt -noout -subject -issuer -dates"
+  - id: devasc_https_conf
+    title: "Part 6 Step 3c-d: HTTP Off, HTTPS On"
+    write_file:
+      path: /etc/nginx/DEVASC-Server.conf
+      content: |
+        # DEVASC Server (www.devasc-netacad.pka): Services > HTTP - HTTP Off, HTTPS On
+        user www-data;
+        worker_processes 1;
+        pid /run/nginx-DEVASC-Server.pid;
+        error_log /var/log/pt-lab/nginx-DEVASC-Server.error.log;
+        events {
+            worker_connections 64;
+        }
+        http {
+            include /etc/nginx/mime.types;
+            access_log /var/log/pt-lab/nginx-DEVASC-Server.access.log;
+            # блока server с listen 80 больше нет: HTTP выключен
+            server {
+                listen 192.168.2.3:443 ssl;
+                server_name www.devasc-netacad.pka;
+                ssl_certificate     /home/devasc/labs/devnet-src/pt-protocols/DEVASC-Server/devasc.crt;
+                ssl_certificate_key /home/devasc/labs/devnet-src/pt-protocols/DEVASC-Server/devasc.key;
+                root /srv/labnet/DEVASC-Server/www;
+                index index.html;
+            }
+        }
+  - id: devasc_https_cat
+    title: "Part 6 Step 3c-d: новый файл настройки веб-сервера"
+    cmd: "cat /etc/nginx/DEVASC-Server.conf"
+  - id: devasc_nginx_test
+    title: "Part 6 Step 3: проверка синтаксиса"
+    cmd: "sudo ip netns exec DEVASC-Server nginx -t -c /etc/nginx/DEVASC-Server.conf"
+  - id: devasc_nginx_reload
+    title: "Part 6 Step 3: применение настройки"
+    cmd: "sudo ip netns exec DEVASC-Server nginx -s reload -c /etc/nginx/DEVASC-Server.conf"
+  - id: devasc_ports
+    title: "Part 6 Step 3: DEVASC Server слушает только 443"
+    cmd: "sudo ip netns exec DEVASC-Server ss -tlnp"
+    pause: 2
+  - id: cd_back_6
+    title: "Part 6 Step 3: возврат в рабочий каталог"
+    cmd: "cd .."
+  - id: pcb_http_timeout
+    title: "Part 6 Step 4c: http://www.devasc-netacad.pka — Request Timeout"
+    cmd: "sudo ip netns exec PC-B curl -m 10 http://www.devasc-netacad.pka"
+    timeout: 60
+  - id: pcb_https
+    title: "Part 6 Step 4d: https://www.devasc-netacad.pka"
+    cmd: "sudo ip netns exec PC-B curl -vk https://www.devasc-netacad.pka"
+    timeout: 60
+
+  # ---------- Part 7: Configure EMAIL ----------
+  - id: email_conf_1
+    title: "Part 7 Step 1: служба EMAIL Example Server — SMTP и POP3, домен"
+    write_file:
+      path: /etc/labnet/Example-Server-email.ini
+      content: |
+        # Example Server > Services > EMAIL
+        [email]
+        smtp = on
+        pop3 = on
+        domain = www.example.com
+        address = 64.100.0.10
+
+        [users]
+  - id: email_cat_1
+    title: "Part 7 Step 1d-f: SMTP On, POP3 On, Domain Name www.example.com"
+    cmd: "cat /etc/labnet/Example-Server-email.ini"
+  - id: email_conf_2
+    title: "Part 7 Step 2: пользователи Student1 и Student2"
+    write_file:
+      path: /etc/labnet/Example-Server-email.ini
+      content: |
+        # Example Server > Services > EMAIL
+        [email]
+        smtp = on
+        pop3 = on
+        domain = www.example.com
+        address = 64.100.0.10
+
+        [users]
+        Student1 = class
+        Student2 = class
+  - id: email_cat_2
+    title: "Part 7 Step 2a-d: пользователи почтового сервера"
+    cmd: "cat /etc/labnet/Example-Server-email.ini"
+  - id: email_on
+    title: "Part 7 Step 2: запуск службы EMAIL на Example Server"
+    cmd: "sudo ip netns exec Example-Server python3 /opt/labnet/email_server.py -c /etc/labnet/Example-Server-email.ini --daemon"
+    timeout: 60
+  - id: email_ports
+    title: "Part 7 Step 2: порты SMTP (25) и POP3 (110)"
+    cmd: "sudo ip netns exec Example-Server ss -tlnp"
+  - id: pca_mail_client
+    title: "Part 7 Step 3a-e: почтовый клиент PC-A (Student1, сервер 64.100.0.10)"
+    cmd: "sudo ip netns exec PC-A curl -v -u Student1:class pop3://64.100.0.10/"
+    timeout: 60
+  - id: pcb_mail_client
+    title: "Part 7 Step 3f: почтовый клиент PC-B (Student2, сервер 64.100.0.10)"
+    cmd: "sudo ip netns exec PC-B curl -v -u Student2:class pop3://64.100.0.10/"
+    timeout: 60
+  - id: cd_pcb
+    title: "Part 7 Step 4a: PC-B"
+    cmd: "cd PC-B"
+  - id: pcb_compose
+    title: "Part 7 Step 4b-c: письмо Student1 (Compose)"
+    write_file:
+      path: ~/labs/devnet-src/pt-protocols/PC-B/email-to-Student1.eml
+      content: |
+        From: Student2 <Student2@www.example.com>
+        To: Student1@www.example.com
+        Subject: Email
+        Message-ID: <pcb-email-1@www.example.com>
+        Content-Type: text/plain; charset=utf-8
+
+        How are you?
+  - id: pcb_compose_cat
+    title: "Part 7 Step 4c: текст письма"
+    cmd: "cat email-to-Student1.eml"
+  - id: pcb_send
+    title: "Part 7 Step 4d: отправка письма по SMTP (Send)"
+    cmd: "sudo ip netns exec PC-B curl -v --crlf -T email-to-Student1.eml smtp://64.100.0.10/PC-B --mail-from Student2@www.example.com --mail-rcpt Student1@www.example.com"
+    timeout: 60
+  - id: cd_pca_mail
+    title: "Part 7 Step 4e: PC-A"
+    cmd: "cd ../PC-A"
+  - id: pca_receive
+    title: "Part 7 Step 4f: получение почты по POP3 (Receive)"
+    cmd: "sudo ip netns exec PC-A curl -u Student1:class pop3://64.100.0.10/"
+    timeout: 60
+  - id: pca_read
+    title: "Part 7 Step 4g: чтение письма"
+    cmd: "sudo ip netns exec PC-A curl -u Student1:class pop3://64.100.0.10/1"
+    timeout: 60
+  - id: pca_reply
+    title: "Part 7 Step 4h-i: ответ Student2 (Reply)"
+    write_file:
+      path: ~/labs/devnet-src/pt-protocols/PC-A/reply-to-Student2.eml
+      content: |
+        From: Student1 <Student1@www.example.com>
+        To: Student2@www.example.com
+        Subject: Re: Email
+        In-Reply-To: <pcb-email-1@www.example.com>
+        References: <pcb-email-1@www.example.com>
+        Message-ID: <pca-reply-1@www.example.com>
+        Content-Type: text/plain; charset=utf-8
+
+        I'm fine, thank you!
+
+        > How are you?
+  - id: pca_reply_cat
+    title: "Part 7 Step 4i: текст ответа"
+    cmd: "cat reply-to-Student2.eml"
+  - id: pca_send_reply
+    title: "Part 7 Step 4j: отправка ответа (Send)"
+    cmd: "sudo ip netns exec PC-A curl -v --crlf -T reply-to-Student2.eml smtp://64.100.0.10/PC-A --mail-from Student1@www.example.com --mail-rcpt Student2@www.example.com"
+    timeout: 60
+  - id: cd_pcb_reply
+    title: "Part 7 Step 4k: PC-B"
+    cmd: "cd ../PC-B"
+  - id: pcb_receive
+    title: "Part 7 Step 4k: получение ответа (Receive)"
+    cmd: "sudo ip netns exec PC-B curl -u Student2:class pop3://64.100.0.10/"
+    timeout: 60
+  - id: pcb_read
+    title: "Part 7 Step 4k: чтение ответа"
+    cmd: "sudo ip netns exec PC-B curl -u Student2:class pop3://64.100.0.10/1"
+    timeout: 60
+  - id: email_log
+    title: "Part 7 Step 4: журнал почтового сервера"
+    cmd: "sudo cat /var/log/pt-lab/email.log"
+  - id: cd_back_7
+    title: "Part 7 Step 4: возврат в рабочий каталог"
+    cmd: "cd .."
+
+  # ---------- Part 8: Configure FTP ----------
+  - id: ftp_conf
+    title: "Part 8 Step 1: FTP-служба Corporate, пользователь Student"
+    write_file:
+      path: /etc/labnet/Corporate-ftp.ini
+      content: |
+        # Corporate > Services > FTP: Service On
+        [ftp]
+        service = on
+        address = 192.168.1.3
+        root = /srv/labnet/Corporate/ftp
+        banner = Welcome to Corporate FTP server
+
+        # Username: Student, Password: class; Write, Read, Delete, Rename, List; Add
+        [user Student]
+        password = class
+        permissions = write, read, delete, rename, list
+  - id: ftp_cat
+    title: "Part 8 Step 1e-g: файл настройки FTP сервера Corporate"
+    cmd: "cat /etc/labnet/Corporate-ftp.ini"
+  - id: ftp_on
+    title: "Part 8 Step 1d, 1h: включение службы FTP"
+    cmd: "sudo ip netns exec Corporate python3 /opt/labnet/ftp_server.py -c /etc/labnet/Corporate-ftp.ini --daemon"
+    timeout: 60
+  - id: cd_pca_ftp
+    title: "Part 8 Step 2a-c: PC-A"
+    cmd: "cd PC-A"
+  - id: pca_dir_before
+    title: "Part 8 Step 2d: файлы на PC-A (dir)"
+    cmd: "ls -l"
+  - id: pca_ftp
+    title: "Part 8 Step 2e-m: сеанс FTP с PC-A на Corporate"
+    cmd: "sudo ip netns exec PC-A ftp 192.168.1.3"
+    timeout: 300
+    interact:
+      - expect: "Name \\(192\\.168\\.1\\.3:[^)]*\\): "
+        send: "Student"
+        timeout: 30
+        optional: true
+      - expect: "Password:"
+        send: "class"
+        timeout: 20
+        optional: true
+      - expect: "ftp> "
+        send: "?"
+        timeout: 20
+        optional: true
+      - expect: "ftp> "
+        send: "dir"
+        timeout: 20
+        optional: true
+      - expect: "ftp> "
+        send: "put sampleFile.txt"
+        timeout: 30
+        optional: true
+      - expect: "ftp> "
+        send: "dir"
+        timeout: 30
+        optional: true
+      - expect: "ftp> "
+        send: "get asa842-k8.bin"
+        timeout: 30
+        optional: true
+      - expect: "ftp> "
+        send: "delete sampleFile.txt"
+        timeout: 120
+        optional: true
+      - expect: "ftp> "
+        send: "quit"
+        timeout: 30
+        optional: true
+  - id: pca_dir_after
+    title: "Part 8 Step 2n: файлы на PC-A после сеанса FTP (dir)"
+    cmd: "ls -l"
+  - id: ftp_log
+    title: "Part 8 Step 2: журнал FTP-сервера Corporate"
+    cmd: "sudo cat /var/log/pt-lab/ftp.log"

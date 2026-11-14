@@ -1,0 +1,24 @@
+name: "Лаб. 5.5: Сетевые протоколы"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/12-5.5-pt-network-protocols/scenario.yml"
+      - "labs/12-5.5-pt-network-protocols/prepare.sh"
+      - "labs/12-5.5-pt-network-protocols/src/**"
+      - "tools/labrun/**"
+      - "tools/csr1kv_emulator/**"
+      - "lab-env/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 12-5.5-pt-network-protocols
+      env: vm
