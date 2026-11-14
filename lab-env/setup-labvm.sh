@@ -12,12 +12,15 @@ echo "== Пакеты"
 apt-get update -qq
 BASE_PKGS="sudo git curl wget ca-certificates nano less tree jq iproute2 iputils-ping net-tools dnsutils \
   openssh-client sshpass procps psmisc file unzip locales tzdata python3 python3-pip python3-venv \
-  python3-pexpect python3-yaml python3-paramiko python3-pyte"
+  python3-pexpect python3-yaml python3-paramiko"
 if [ "$MODE" = "--vm" ]; then
   apt-get install -y -qq $BASE_PKGS ansible openssh-server >/dev/null
 else
   apt-get install -y -qq $BASE_PKGS ansible >/dev/null
 fi
+
+# эмулятор терминала для записи протоколов (одна версия на обеих платформах)
+python3 -m pip install -q pyte==0.8.2 2>/dev/null || python3 -m pip install -q --break-system-packages pyte==0.8.2
 
 echo "== Пользователь devasc"
 if ! id devasc >/dev/null 2>&1; then

@@ -32,6 +32,9 @@ jobs:
       - name: Лабораторная ВМ (аналог DEVASC)
         run: bash lab-env/setup-labvm.sh
       - name: Подготовка стенда
+        env:
+          DEVASC_STUDY_TEAM_KEY: ${{ secrets.DEVASC_STUDY_TEAM_KEY }}
+          MAPQUEST_KEY: ${{ secrets.MAPQUEST_KEY }}
         run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then bash "labs/${{ inputs.lab }}/prepare.sh"; fi
       - name: Выполнение лабораторной
         run: python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
@@ -54,7 +57,10 @@ jobs:
       - name: Лабораторная ВМ (аналог DEVASC)
         run: sudo bash lab-env/setup-labvm.sh --vm
       - name: Подготовка стенда
-        run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then sudo bash "labs/${{ inputs.lab }}/prepare.sh"; fi
+        env:
+          DEVASC_STUDY_TEAM_KEY: ${{ secrets.DEVASC_STUDY_TEAM_KEY }}
+          MAPQUEST_KEY: ${{ secrets.MAPQUEST_KEY }}
+        run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then sudo -E bash "labs/${{ inputs.lab }}/prepare.sh"; fi
       - name: Выполнение лабораторной
         run: sudo python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
       - name: Права на результаты

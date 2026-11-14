@@ -58,7 +58,11 @@ def screen_text(raw, width=WIDTH):
     height = raw.count("\n") + raw.count("\r") // 4 + 60
     height += sum(len(l) // width for l in raw.split("\n"))
     screen = pyte.Screen(width, max(height, 60))
-    stream = pyte.Stream(screen)
+    try:
+        stream = pyte.Stream(screen)
+    except TypeError:  # старый API pyte (< 0.5)
+        stream = pyte.Stream()
+        stream.attach(screen)
     stream.feed(raw)
     lines = [l.rstrip() for l in screen.display]
     while lines and not lines[-1]:
