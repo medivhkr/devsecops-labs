@@ -538,6 +538,10 @@ class Session(object):
                     self.send("\r\n")
                     keep = self.execute(line)
                     if not keep:
+                        try:
+                            self.chan.send_exit_status(0)
+                        except Exception:
+                            pass
                         self.close()
                         return
                     self.send(self.prompt())
@@ -956,6 +960,8 @@ def main():
     if args.log:
         handlers.append(logging.FileHandler(args.log))
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s", handlers=handlers)
+    # проверки доступности порта без SSH-рукопожатия не должны засорять журнал
+    logging.getLogger("paramiko").setLevel(logging.CRITICAL)
 
     if args.host_key and os.path.exists(args.host_key):
         host_key = paramiko.RSAKey(filename=args.host_key)

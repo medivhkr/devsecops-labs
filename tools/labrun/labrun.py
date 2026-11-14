@@ -40,6 +40,32 @@ MARK_RE = re.compile(r"\x1b\]0;LABRUN:(\d+)\x07")
 ANSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)|\x1b[()][A-Za-z0-9]|\x1b[=>78]|[\x0e\x0f]")
 
 
+WIDTH = 100  # ширина терминала, как у обычного окна эмулятора терминала
+VENV_PREFIX_RE = re.compile(r"^\([\w.-]+\) ?$")
+
+
+def screen_text(raw, width=WIDTH):
+    """Возвращает текст так, как он выглядит на экране терминала шириной width.
+
+    Используется эмулятор VT100 pyte: учитываются перенос длинных строк, \\r, \\b,
+    стирание строки, перемещения курсора (readline, more, индикаторы прогресса).
+    """
+    raw = MARK_RE.sub("", raw)
+    try:
+        import pyte
+    except ImportError:
+        return clean(raw)
+    height = raw.count("\n") + raw.count("\r") // 4 + 60
+    height += sum(len(l) // width for l in raw.split("\n"))
+    screen = pyte.Screen(width, max(height, 60))
+    stream = pyte.Stream(screen)
+    stream.feed(raw)
+    lines = [l.rstrip() for l in screen.display]
+    while lines and not lines[-1]:
+        lines.pop()
+    return "\n".join(lines)
+
+
 def clean(text):
     """Удаляет escape-последовательности и применяет \\r и \\b так, как это сделал бы терминал."""
     text = MARK_RE.sub("", text)
@@ -93,7 +119,7 @@ class LabRunner(object):
         env = {
             "HOME": pw.pw_dir, "USER": self.user, "LOGNAME": self.user, "SHELL": "/bin/bash",
             "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-            "TERM": "xterm", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "COLUMNS": "200", "LINES": "50",
+            "TERM": "xterm", "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "COLUMNS": str(WIDTH), "LINES": "50",
         }
 
         def drop_privileges():
@@ -103,14 +129,14 @@ class LabRunner(object):
                 os.setuid(pw.pw_uid)
 
         self.child = pexpect.spawn("/bin/bash", ["--noprofile", "--norc", "-i"], env=env, cwd=pw.pw_dir,
-                                   encoding="utf-8", codec_errors="replace", dimensions=(50, 200), timeout=600,
+                                   encoding="utf-8", codec_errors="replace", dimensions=(50, WIDTH), timeout=600,
                                    preexec_fn=drop_privileges)
         self.child.logfile_read = self.raw
         time.sleep(1.0)
         init = [
             "bind 'set enable-bracketed-paste off' 2>/dev/null",
-            "export LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM=xterm COLUMNS=200",
-            "stty cols 200 rows 50",
+            "export LANG=C.UTF-8 LC_ALL=C.UTF-8 TERM=xterm COLUMNS={}".format(WIDTH),
+            "stty cols {} rows 50".format(WIDTH),
             "cd ~",
         ]
         init += list(self.sc.get("shell_init", []) or [])
@@ -136,9 +162,13 @@ class LabRunner(object):
                 continue
             except pexpect.EOF:
                 break
+        # приглашение начинается с маркера; перед ним может стоять только префикс venv "(name) "
         idx = before.rfind("\n")
-        body, prefix = (before[:idx + 1], before[idx + 1:]) if idx >= 0 else ("", before)
-        return code, body, prefix + tail
+        last = clean(before[idx + 1:]) if idx >= 0 else clean(before)
+        if VENV_PREFIX_RE.match(last):
+            body = before[:idx + 1] if idx >= 0 else ""
+            return code, body, last.rstrip() + " " + tail
+        return code, before, tail
 
     def chown_path(self, path):
         cur = os.path.dirname(path)
@@ -210,7 +240,7 @@ class LabRunner(object):
             self.child.sendcontrol("c")
             code, body, prompt = self.wait_prompt(120)
         chunks.append(body)
-        text = prompt_text + clean("".join(chunks))
+        text = screen_text(prompt_text + "".join(chunks))
         next_prompt = clean(prompt)
         self.pending = next_prompt
         text = text.rstrip() + "\n"

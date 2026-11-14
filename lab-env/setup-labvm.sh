@@ -12,7 +12,7 @@ echo "== Пакеты"
 apt-get update -qq
 BASE_PKGS="sudo git curl wget ca-certificates nano less tree jq iproute2 iputils-ping net-tools dnsutils \
   openssh-client sshpass procps psmisc file unzip locales tzdata python3 python3-pip python3-venv \
-  python3-pexpect python3-yaml python3-paramiko"
+  python3-pexpect python3-yaml python3-paramiko python3-pyte"
 if [ "$MODE" = "--vm" ]; then
   apt-get install -y -qq $BASE_PKGS ansible openssh-server >/dev/null
 else
