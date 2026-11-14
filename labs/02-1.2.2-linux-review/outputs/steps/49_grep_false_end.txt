@@ -1,0 +1,5 @@
+devasc@labvm:~$ grep 'false$' /etc/passwd
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false

@@ -1,0 +1,113 @@
+devasc@labvm:~$ apt-cache search speed test
+libclass-xsaccessor-perl - Perl module providing fast XS accessors
+libsamplerate0 - Audio sample rate conversion library
+libsamplerate0-dev - Development files for audio sample rate conversion
+libsnappy-dev - fast compression/decompression library (development files)
+libsnappy1v5 - fast compression/decompression library
+libxxhash-dev - header files and a static library for libxxhash
+libxxhash0 - shared library for xxhash
+mysql-server - MySQL database server (metapackage depending on the latest version)
+python3-routes - Routing Recognition and Generation Tools for Python 3
+qemu-system-arm - QEMU full system emulation binaries (arm)
+qemu-system-mips - QEMU full system emulation binaries (mips)
+qemu-system-ppc - QEMU full system emulation binaries (ppc)
+qemu-system-s390x - QEMU full system emulation binaries (s390x)
+qemu-system-sparc - QEMU full system emulation binaries (sparc)
+qemu-system-x86 - QEMU full system emulation binaries (x86)
+axel - light command line download accelerator
+bittwist - libpcap based Ethernet packet generator
+cbm - display in real time the network traffic speed
+diskscan - scan storage media for bad or near failure sectors
+dmucs - distributed compilation system for use with distcc
+dsda-doom - Doom source port with a focus on demo recording and speedrunning
+dt-schema - Tooling for devicetree validation using YAML and jsonschema
+gertty - Console-based interface to Gerrit
+ghdl - VHDL compiler/simulator
+golang-github-cristalhq-hedgedhttp-dev - Hedged HTTP client which helps to reduce tail latency at sc
+ale (library)
+golang-github-davecgh-go-xdr-dev - Pure Go XDR standard (RFC 4506) implementation
+golang-github-golang-snappy-dev - Implementation of the Snappy compression format in Go
+golang-github-iafan-cwalk-dev - Concurrent filepath.Walk replacement
+golang-github-maruel-natural-dev - Natural sorting (natsort) in Go (library)
+golang-github-minio-sha256-simd-dev - implementation of SHA256 using SIMD instructions for Intel and
+ ARM
+golang-github-tdewolff-parse-dev - Go parsers for web formats
+gpsim - Simulator for Microchip's PIC microcontrollers
+gtypist - simple ncurses touch typing tutor
+isync - IMAP and MailDir mailbox synchronizer
+jdupes - identify and delete or link duplicate files
+kraken - assigning taxonomic labels to short DNA sequences
+latte-int - Lattice point Enumeration
+latte-int-doc - Lattice point Enumeration (documentation and examples)
+libcompress-snappy-perl - Perl interface to Google's Snappy (de)compressor
+libconcurrentqueue-dev - industrial-strength lock-free queue for C++
+libcrypto++-utils - General purpose cryptographic library - utilities and data files
+libghc-commonmark-dev - Pure Haskell commonmark parser
+libghc-commonmark-doc - Pure Haskell commonmark parser; documentation
+libghc-commonmark-prof - Pure Haskell commonmark parser; profiling libraries
+libghc-double-conversion-dev - fast conversion between double precision floating point and text
+libghc-double-conversion-doc - fast conversion between double precision floating point and text; doc
+umentation
+libghc-double-conversion-prof - fast conversion between double precision floating point and text; pr
+ofiling libraries
+libghc-sha-dev - Haskell SHA suite of message digest functions
+libghc-sha-doc - Haskell SHA suite of message digest functions; documentation
+libghc-sha-prof - Haskell SHA suite of message digest functions; profiling libraries
+libghc-store-dev - Fast binary serialization
+libghc-store-doc - Fast binary serialization; documentation
+libghc-store-prof - Fast binary serialization; profiling libraries
+libiksemel-utils - utilities from the iksemel library
+libmath-prime-util-gmp-perl - utilities related to prime numbers, using GMP
+libmpeg2-4 - MPEG1 and MPEG2 video decoder library
+libonnx-testdata - Open Neural Network Exchange (ONNX) (test data)
+libsimde-dev - Implementations of SIMD instructions for all systems
+libtime-mock-perl - shift and scale time Perl module
+libyadifa-dev - development libraries and header files for YADIFA
+libzmat1 - compression library - runtime
+mariadb-test - MariaDB database regression test suite
+mariadb-test-data - MariaDB database regression test suite - data files
+medusa - fast, parallel, modular, login brute-forcer for network services
+metaphlan - Metagenomic Phylogenetic Analysis
+monitoring-plugins-contrib - Plugins for nagios compatible monitoring systems
+mysql-testsuite-8.0 - MySQL 8.0 testsuite
+ncrack - High-speed network authentication cracking tool
+netsend - a speedy filetransfer and network diagnostic program
+nlohmann-json3-dev - JSON for Modern C++
+node-vows - asynchronous BDD & continuous integration for Node
+octave-zmat - in-memory data compression for Octave
+pdns-tools - Tools for DNS debugging by PowerDNS
+python3-falcon - supersonic micro-framework for building cloud APIs - Python 3.x
+python3-fastapi - modern, fast, web framework for building APIs, based on type hints
+python3-opentsne - t-Distributed Stochastic Neighbor Embedding algorithm
+python3-pprofile - Line-granularity, deterministic and statistic Python 3 profiler
+python3-pyperform - fast and convenient way to performance test functions and compare results
+python3-pytest-xdist - xdist plugin for py.test (Python 3)
+python3-xxhash - Bindings for the xxHash library (Python 3)
+qrq - high speed morse trainer, similar to DL4MM's Rufz
+r-cran-cvst - GNU R fast cross-validation via sequential testing
+r-cran-genie - GNU R fast, robust, and outlier resistant hierarchical clustering
+rav1e - Fastest and safest AV1 encoder - command line encoder
+ruby-actionpack-page-caching - static page caching for Action Pack (removed from core in Rails 4.0)
+ruby-minitest-hooks - Around and before_all/after_all/around_all hooks for Minitest
+ruby-parallel-tests - Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+ruby-rspec-set - #set(), speed-up your specs
+ruby-simple-po-parser - Simple PO file to ruby hash parser
+ruby-spring - Rails application preloader
+samba-testsuite - test suite from Samba
+smalt-examples - Sequence Mapping and Alignment Tool (examples)
+smartdns - local DNS server to obtain the fastest IP for the best experience
+speedtest-cli - Command line interface for testing internet bandwidth using speedtest.net
+sup - Software Upgrade Protocol implementation
+sysbench - multi-threaded benchmark tool for database systems
+tcpreplay - Tool to replay saved tcpdump files at arbitrary speeds
+ugrep - faster grep with an interactive query UI
+vowpal-wabbit-doc - fast and scalable online machine learning algorithm - documentation
+whipper - CD-DA ripper
+wtdbg2-examples - Examples for wtdbg - de novo sequence assembler
+xbomb - 'minesweeper' game with squares, hexagons or triangles
+xxhash - Extremely fast hash algorithm
+yadifa - Internet Domain Name Server
+zsh-theme-powerlevel9k - powerlevel9k is a theme for zsh which uses powerline fonts
+libnucleotidelikelihoodcore0 - implementation of LikelihoodCore for nucleotides used by beast-mcmc
+qemu-system-misc - QEMU full system emulation binaries (miscellaneous)
+golang-github-bmatsuo-lmdb-go-dev - Bindings for the LMDB C library

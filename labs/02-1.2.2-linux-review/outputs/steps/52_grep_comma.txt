@@ -1,0 +1,8 @@
+devasc@labvm:~$ grep '[,]' /etc/passwd
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+_chrony:x:109:113:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+sphinxsearch:x:110:114:Sphinx fulltext search service,,,:/var/run/sphinxsearch:/usr/sbin/nologin
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false
+postgres:x:112:117:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
+devasc:x:1002:1002:DEVASC,,,:/home/devasc:/bin/bash

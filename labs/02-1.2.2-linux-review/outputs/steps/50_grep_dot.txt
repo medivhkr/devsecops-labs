@@ -1,0 +1,4 @@
+devasc@labvm:~$ grep 'd..m' /etc/passwd
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+_chrony:x:109:113:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin

@@ -1,0 +1,1 @@
+devasc@labvm:~/Documents$ cp myfile_renamed.sh myfile_renamed_and_copied.sh

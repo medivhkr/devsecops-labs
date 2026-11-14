@@ -1,0 +1,1 @@
+devasc@labvm:~$ echo "Linux is AWESOME!" > linux.txt

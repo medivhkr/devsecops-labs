@@ -1,0 +1,12 @@
+devasc@labvm:~$ ls -l
+total 40
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Desktop
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Documents
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Downloads
+drwxrwxr-x+ 3 devasc devasc 4096 Nov 14 11:20 labs
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Music
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Pictures
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Public
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 snap
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Templates
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Videos

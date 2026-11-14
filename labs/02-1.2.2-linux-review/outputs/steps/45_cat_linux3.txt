@@ -1,0 +1,3 @@
+devasc@labvm:~$ cat linux3.txt
+Linux is Linux
+I am AWESOME!

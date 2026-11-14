@@ -1,0 +1,2 @@
+devasc@labvm:~$ ls -r
+Videos  Templates  snap  Public  Pictures  Music  labs  Downloads  Documents  Desktop

@@ -1,0 +1,43 @@
+devasc@labvm:~$ ip address
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 7c:ed:8d:81:f4:a1 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.0.29/20 metric 100 brd 10.1.15.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7eed:8dff:fe81:f4a1/64 scope link
+       valid_lft forever preferred_lft forever
+3: ens1: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc mq master eth0 state UP group defaul
+t qlen 1000
+    link/ether 7c:ed:8d:81:f4:a1 brd ff:ff:ff:ff:ff:ff
+    altname enp0s0
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether ba:f0:81:be:0d:cf brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+5: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 100
+0
+    link/ether b2:7c:c5:b9:e7:9c brd ff:ff:ff:ff:ff:ff
+    inet 192.0.2.1/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.2/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.3/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.4/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.5/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b07c:c5ff:feb9:e79c/64 scope link
+       valid_lft forever preferred_lft forever
+7: lan0@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 10
+00
+    link/ether 1a:e7:82:5b:4b:a4 brd ff:ff:ff:ff:ff:ff link-netns lan-router
+    inet 192.168.1.10/24 scope global lan0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::18e7:82ff:fe5b:4ba4/64 scope link
+       valid_lft forever preferred_lft forever

@@ -1,0 +1,1286 @@
+devasc@labvm:~$ head -n 4 /etc/os-release && hostname && whoami
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+labvm
+devasc
+devasc@labvm:~$ ls
+Desktop  Documents  Downloads  labs  Music  Pictures  Public  snap  Templates  Videos
+devasc@labvm:~$ ls labs
+devnet-src
+devasc@labvm:~$ ls -l
+total 40
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Desktop
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Documents
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Downloads
+drwxrwxr-x+ 3 devasc devasc 4096 Nov 14 11:20 labs
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Music
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Pictures
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Public
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 snap
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Templates
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Videos
+devasc@labvm:~$ ls -r
+Videos  Templates  snap  Public  Pictures  Music  labs  Downloads  Documents  Desktop
+devasc@labvm:~$ ls -lr
+total 40
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Videos
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Templates
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 snap
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Public
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Pictures
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Music
+drwxrwxr-x+ 3 devasc devasc 4096 Nov 14 11:20 labs
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Downloads
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Documents
+drwxr-xr-x+ 2 devasc devasc 4096 Nov 14 11:20 Desktop
+devasc@labvm:~$ man ls
+LS(1)                                     User Commands
+LS(1)
+
+NAME
+       ls - list directory contents
+
+SYNOPSIS
+       ls [OPTION]... [FILE]...
+
+DESCRIPTION
+       List  information about the FILEs (the current directory by default).  Sort entries alpha‐
+       betically if none of -cftuvSUX nor --sort is specified.
+
+       Mandatory arguments to long options are mandatory for short options too.
+
+       -a, --all
+              do not ignore entries starting with .
+
+       -A, --almost-all
+              do not list implied . and ..
+
+       --author
+              with -l, print the author of each file
+
+       -b, --escape
+              print C-style escapes for nongraphic characters
+
+       --block-size=SIZE
+              with -l, scale sizes by SIZE when printing them; e.g., '--block-size=M';  see
+SIZE
+              format below
+
+       -B, --ignore-backups
+              do not list implied entries ending with ~
+
+       -c     with  -lt:  sort  by,  and show, ctime (time of last change of file stat
+us informa‐
+              tion); with -l: show ctime and sort by name; otherwise: sort by ctime, newest f
+irst
+
+       -C     list entries by columns
+
+       --color[=WHEN]
+              color the output WHEN; more info below
+
+       -d, --directory
+              list directories themselves, not their contents
+
+       -D, --dired
+              generate output designed for Emacs' dired mode
+
+       -f     list all entries in directory order
+
+       -F, --classify[=WHEN]
+              append indicator (one of */=>@|) to entries WHEN
+
+       --file-type
+              likewise, except do not append '*'
+
+       --format=WORD
+              across -x, commas -m, horizontal -x, long -l, single-colum
+n -1, verbose -l,  verti‐
+              cal -C
+
+       --full-time
+              like -l --time-style=full-iso
+
+       -g     like -l, but do not list owner
+
+       --group-directories-first
+              group  directories before files; can be augmented with a --sort option, but any
+ use
+              of --sort=none (-U) disables grouping
+
+       -G, --no-group
+              in a long listing, don't print group names
+
+       -h, --human-readable
+              with -l and -s, print sizes like 1K 234M 2G etc.
+
+       --si   likewise, but use powers of 1000 not 1024
+
+       -H, --dereference-command-line
+              follow symbolic links listed on the command line
+
+       --dereference-command-line-symlink-to-dir
+              follow each command line symbolic link that points to a directory
+
+       --hide=PATTERN
+              do not list implied entries matching shell PATTERN (overridden by -a or -A
+)
+
+       --hyperlink[=WHEN]
+              hyperlink file names WHEN
+
+       --indicator-style=WORD
+              append indicator with style WORD  to  entry  names:  none  (default),  slash  (-p
+),
+devasc@labvm:~$ ls --help
+Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
+Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
+
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --all                  do not ignore entries starting with .
+  -A, --almost-all           do not list implied . and ..
+      --author               with -l, print the author of each file
+  -b, --escape               print C-style escapes for nongraphic characters
+      --block-size=SIZE      with -l, scale sizes by SIZE when printing them;
+                             e.g., '--block-size=M'; see SIZE format below
+
+  -B, --ignore-backups       do not list implied entries ending with ~
+  -c                         with -lt: sort by, and show, ctime (time of last
+                             change of file status information);
+                             with -l: show ctime and sort by name;
+                             otherwise: sort by ctime, newest first
+
+  -C                         list entries by columns
+      --color[=WHEN]         color the output WHEN; more info below
+  -d, --directory            list directories themselves, not their contents
+  -D, --dired                generate output designed for Emacs' dired mode
+  -f                         list all entries in directory order
+  -F, --classify[=WHEN]      append indicator (one of */=>@|) to entries WHEN
+      --file-type            likewise, except do not append '*'
+      --format=WORD          across -x, commas -m, horizontal -x, long -l,
+                             single-column -1, verbose -l, vertical -C
+
+      --full-time            like -l --time-style=full-iso
+  -g                         like -l, but do not list owner
+      --group-directories-first
+                             group directories before files;
+                             can be augmented with a --sort option, but any
+                             use of --sort=none (-U) disables grouping
+
+  -G, --no-group             in a long listing, don't print group names
+  -h, --human-readable       with -l and -s, print sizes like 1K 234M 2G etc.
+      --si                   likewise, but use powers of 1000 not 1024
+  -H, --dereference-command-line
+                             follow symbolic links listed on the command line
+      --dereference-command-line-symlink-to-dir
+                             follow each command line symbolic link
+                             that points to a directory
+
+      --hide=PATTERN         do not list implied entries matching shell PATTERN
+                             (overridden by -a or -A)
+
+      --hyperlink[=WHEN]     hyperlink file names WHEN
+      --indicator-style=WORD
+                             append indicator with style WORD to entry names:
+                             none (default), slash (-p),
+                             file-type (--file-type), classify (-F)
+
+  -i, --inode                print the index number of each file
+  -I, --ignore=PATTERN       do not list implied entries matching shell PATTERN
+  -k, --kibibytes            default to 1024-byte blocks for file system usage;
+                             used only with -s and per directory totals
+
+  -l                         use a long listing format
+  -L, --dereference          when showing file information for a symbolic
+                             link, show information for the file the link
+                             references rather than for the link itself
+
+  -m                         fill width with a comma separated list of entries
+  -n, --numeric-uid-gid      like -l, but list numeric user and group IDs
+  -N, --literal              print entry names without quoting
+  -o                         like -l, but do not list group information
+  -p, --indicator-style=slash
+                             append / indicator to directories
+  -q, --hide-control-chars   print ? instead of nongraphic characters
+      --show-control-chars   show nongraphic characters as-is (the default,
+                             unless program is 'ls' and output is a terminal)
+
+  -Q, --quote-name           enclose entry names in double quotes
+      --quoting-style=WORD   use quoting style WORD for entry names:
+                             literal, locale, shell, shell-always,
+                             shell-escape, shell-escape-always, c, escape
+                             (overrides QUOTING_STYLE environment variable)
+
+  -r, --reverse              reverse order while sorting
+  -R, --recursive            list subdirectories recursively
+  -s, --size                 print the allocated size of each file, in blocks
+  -S                         sort by file size, largest first
+      --sort=WORD            sort by WORD instead of name: none (-U), size (-S),
+                             time (-t), version (-v), extension (-X), width
+
+      --time=WORD            select which timestamp used to display or sort;
+                               access time (-u): atime, access, use;
+                               metadata change time (-c): ctime, status;
+                               modified time (default): mtime, modification;
+                               birth time: birth, creation;
+                             with -l, WORD determines which time to show;
+                             with --sort=time, sort by WORD (newest first)
+
+      --time-style=TIME_STYLE
+                             time/date format with -l; see TIME_STYLE below
+  -t                         sort by time, newest first; see --time
+  -T, --tabsize=COLS         assume tab stops at each COLS instead of 8
+  -u                         with -lt: sort by, and show, access time;
+                             with -l: show access time and sort by name;
+                             otherwise: sort by access time, newest first
+
+  -U                         do not sort; list entries in directory order
+  -v                         natural sort of (version) numbers within text
+  -w, --width=COLS           set output width to COLS.  0 means no limit
+  -x                         list entries by lines instead of by columns
+  -X                         sort alphabetically by entry extension
+  -Z, --context              print any security context of each file
+      --zero                 end each output line with NUL, not newline
+  -1                         list one file per line
+      --help        display this help and exit
+      --version     output version information and exit
+
+The SIZE argument is an integer and optional unit (example: 10K is 10*1024).
+Units are K,M,G,T,P,E,Z,Y,R,Q (powers of 1024) or KB,MB,... (powers of 1000).
+Binary prefixes can be used, too: KiB=K, MiB=M, and so on.
+
+The TIME_STYLE argument can be full-iso, long-iso, iso, locale, or +FORMAT.
+FORMAT is interpreted like in date(1).  If FORMAT is FORMAT1<newline>FORMAT2,
+then FORMAT1 applies to non-recent files and FORMAT2 to recent files.
+TIME_STYLE prefixed with 'posix-' takes effect only outside the POSIX locale.
+Also the TIME_STYLE environment variable sets the default style to use.
+
+The WHEN argument defaults to 'always' and can also be 'auto' or 'never'.
+
+Using color to distinguish file types is disabled both by default and
+with --color=never.  With --color=auto, ls emits color codes only when
+standard output is connected to a terminal.  The LS_COLORS environment
+variable can change the settings.  Use the dircolors(1) command to set it.
+
+Exit status:
+ 0  if OK,
+ 1  if minor problems (e.g., cannot access subdirectory),
+ 2  if serious trouble (e.g., cannot access command-line argument).
+
+GNU coreutils online help: <https://www.gnu.org/software/coreutils/>
+Full documentation <https://www.gnu.org/software/coreutils/ls>
+or available locally via: info '(coreutils) ls invocation'
+devasc@labvm:~$ pwd
+/home/devasc
+devasc@labvm:~$ cd Documents
+devasc@labvm:~/Documents$ cd /
+devasc@labvm:/$ pwd
+/
+devasc@labvm:/$ cd /home/devasc/Documents/
+devasc@labvm:~/Documents$ cd ..
+devasc@labvm:~$ pwd
+/home/devasc
+devasc@labvm:~$ sudo apt-get update
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+Hit:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+Reading package lists... Done
+devasc@labvm:~$ ls Desktop -l
+total 28
+-rwxr-xr-x 1 devasc devasc 493 Nov 14 11:20 chromium_chromium.desktop
+-rwxr-xr-x 1 devasc devasc 379 Nov 14 11:20 cisco-packet-tracer_cisco-pacet-tracer.desktop
+-rwxr-xr-x 1 devasc devasc 507 Nov 14 11:20 code.desktop
+-rwxr-xr-x 1 devasc devasc 370 Nov 14 11:20 drawio_drawio.desktop
+-rwxr-xr-x 1 devasc devasc 255 Nov 14 11:20 exo-terminal-emulator.desktop
+-rwxr-xr-x 1 devasc devasc  89 Nov 14 11:20 labs.desktop
+-rwxr-xr-x 1 devasc devasc 322 Nov 14 11:20 postman_postman.desktop
+devasc@labvm:~$ cd Documents/
+devasc@labvm:~/Documents$ echo "ls ../Desktop" > myfile.sh
+devasc@labvm:~/Documents$ cat myfile.sh
+ls ../Desktop
+devasc@labvm:~/Documents$ ./myfile.sh
+bash: ./myfile.sh: Permission denied
+devasc@labvm:~/Documents$ ls -l myfile.sh
+-rw-rw-r--+ 1 devasc devasc 14 Nov 14 11:20 myfile.sh
+devasc@labvm:~/Documents$ chmod +x myfile.sh
+devasc@labvm:~/Documents$ ./myfile.sh
+chromium_chromium.desktop                       exo-terminal-emulator.desktop
+cisco-packet-tracer_cisco-pacet-tracer.desktop  labs.desktop
+code.desktop                                    postman_postman.desktop
+drawio_drawio.desktop
+devasc@labvm:~/Documents$ sudo chown root myfile.sh
+devasc@labvm:~/Documents$ ls -l
+total 4
+-rwxrwxr-x+ 1 root devasc 14 Nov 14 11:20 myfile.sh
+devasc@labvm:~/Documents$ mv myfile.sh /home/devasc/Desktop/
+devasc@labvm:~/Documents$ ls ../Desktop/
+chromium_chromium.desktop                       exo-terminal-emulator.desktop
+cisco-packet-tracer_cisco-pacet-tracer.desktop  labs.desktop
+code.desktop                                    myfile.sh
+drawio_drawio.desktop                           postman_postman.desktop
+devasc@labvm:~/Documents$ mv ../Desktop/myfile.sh myfile.sh
+devasc@labvm:~/Documents$ mv myfile.sh myfile_renamed.sh
+devasc@labvm:~/Documents$ ls
+myfile_renamed.sh
+devasc@labvm:~/Documents$ cp myfile_renamed.sh myfile_renamed_and_copied.sh
+devasc@labvm:~/Documents$ ls
+myfile_renamed_and_copied.sh  myfile_renamed.sh
+devasc@labvm:~/Documents$ rm myfile_renamed_and_copied.sh
+devasc@labvm:~/Documents$ ls
+myfile_renamed.sh
+devasc@labvm:~/Documents$ cd ~
+devasc@labvm:~$ echo "Linux is AWESOME!" > linux.txt
+devasc@labvm:~$ cat linux.txt > linux2.txt
+devasc@labvm:~$ cat linux2.txt
+Linux is AWESOME!
+devasc@labvm:~$ echo "I LOVE Linux!" >> linux2.txt
+devasc@labvm:~$ cat linux2.txt
+Linux is AWESOME!
+I LOVE Linux!
+devasc@labvm:~$ echo "Linux is POWERFUL!" > linux.txt
+devasc@labvm:~$ cat linux.txt
+Linux is POWERFUL!
+devasc@labvm:~$ cat linux3.txt
+Linux is Linux
+I am AWESOME!
+devasc@labvm:~$ grep devasc /etc/passwd
+devasc:x:1002:1002:DEVASC,,,:/home/devasc:/bin/bash
+devasc@labvm:~$ grep root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+devasc@labvm:~$ grep '^root' /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+devasc@labvm:~$ grep 'false$' /etc/passwd
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+pollinate:x:106:1::/var/cache/pollinate:/bin/false
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false
+devasc@labvm:~$ grep 'd..m' /etc/passwd
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+_chrony:x:109:113:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+devasc@labvm:~$ grep '[8-9]' /etc/passwd
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+systemd-timesync:x:996:996:systemd Time Synchronization:/:/usr/sbin/nologin
+systemd-resolve:x:991:991:systemd Resolver:/:/usr/sbin/nologin
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+landscape:x:108:109::/var/lib/landscape:/usr/sbin/nologin
+fwupd-refresh:x:990:990:Firmware update daemon:/var/lib/fwupd:/usr/sbin/nologin
+polkitd:x:989:989:User for polkitd:/:/usr/sbin/nologin
+_chrony:x:109:113:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+systemd-coredump:x:988:988:systemd Core Dumper:/:/usr/sbin/nologin
+devasc@labvm:~$ grep '[,]' /etc/passwd
+dhcpcd:x:100:65534:DHCP Client Daemon,,,:/usr/lib/dhcpcd:/bin/false
+tss:x:104:104:TPM software stack,,,:/var/lib/tpm:/bin/false
+_chrony:x:109:113:Chrony daemon,,,:/var/lib/chrony:/usr/sbin/nologin
+sphinxsearch:x:110:114:Sphinx fulltext search service,,,:/var/run/sphinxsearch:/usr/sbin/nologin
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false
+postgres:x:112:117:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
+devasc:x:1002:1002:DEVASC,,,:/home/devasc:/bin/bash
+devasc@labvm:~$ grep 'new*' /etc/passwd
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false
+runner:x:1001:1001::/home/runner:/bin/bash
+devasc@labvm:~$ date
+Sat Nov 14 11:20:18 AM UTC 2026
+devasc@labvm:~$ sudo shutdown +1 "Come back soon!"
+Shutdown scheduled for Sat 2026-11-14 11:21:18 UTC, use 'shutdown -c' to cancel.
+devasc@labvm:~$ sudo shutdown -c
+devasc@labvm:~$ ip address
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 7c:ed:8d:81:f4:a1 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.0.29/20 metric 100 brd 10.1.15.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::7eed:8dff:fe81:f4a1/64 scope link
+       valid_lft forever preferred_lft forever
+3: ens1: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc mq master eth0 state UP group defaul
+t qlen 1000
+    link/ether 7c:ed:8d:81:f4:a1 brd ff:ff:ff:ff:ff:ff
+    altname enp0s0
+4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether ba:f0:81:be:0d:cf brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+5: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 100
+0
+    link/ether b2:7c:c5:b9:e7:9c brd ff:ff:ff:ff:ff:ff
+    inet 192.0.2.1/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.2/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.3/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.4/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.5/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b07c:c5ff:feb9:e79c/64 scope link
+       valid_lft forever preferred_lft forever
+7: lan0@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 10
+00
+    link/ether 1a:e7:82:5b:4b:a4 brd ff:ff:ff:ff:ff:ff link-netns lan-router
+    inet 192.168.1.10/24 scope global lan0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::18e7:82ff:fe5b:4ba4/64 scope link
+       valid_lft forever preferred_lft forever
+devasc@labvm:~$ ping -c 4 192.168.1.1
+PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=0.049 ms
+64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.045 ms
+64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.045 ms
+64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.045 ms
+
+--- 192.168.1.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3109ms
+rtt min/avg/max/mdev = 0.045/0.046/0.049/0.002 ms
+devasc@labvm:~$ ping -c 4 www.cisco.com
+PING e2867.dsca.akamaiedge.net (23.39.149.18) 56(84) bytes of data.
+
+--- e2867.dsca.akamaiedge.net ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3064ms
+devasc@labvm:~$ ps
+    PID TTY          TIME CMD
+   4197 pts/0    00:00:00 bash
+   4575 pts/0    00:00:00 ps
+devasc@labvm:~$ ps -e
+    PID TTY          TIME CMD
+      1 ?        00:00:02 systemd
+      2 ?        00:00:00 kthreadd
+      3 ?        00:00:00 pool_workqueue_release
+      4 ?        00:00:00 kworker/R-rcu_gp
+      5 ?        00:00:00 kworker/R-sync_wq
+      6 ?        00:00:00 kworker/R-kvfree_rcu_reclaim
+      7 ?        00:00:00 kworker/R-slub_flushwq
+      8 ?        00:00:00 kworker/R-netns
+      9 ?        00:00:00 kworker/0:0-rcu_gp
+     10 ?        00:00:00 kworker/0:0H-kblockd
+     11 ?        00:00:00 kworker/0:1-events
+     12 ?        00:00:00 kworker/u16:0-events_unbound
+     13 ?        00:00:00 kworker/R-mm_percpu_wq
+     14 ?        00:00:00 ksoftirqd/0
+     15 ?        00:00:00 pr/ttyS0
+     16 ?        00:00:00 rcu_sched
+     17 ?        00:00:00 rcu_exp_par_gp_kthread_worker/0
+     18 ?        00:00:00 rcu_exp_gp_kthread_worker
+     19 ?        00:00:00 migration/0
+     20 ?        00:00:00 kprobe-optimizer
+     21 ?        00:00:00 idle_inject/0
+     22 ?        00:00:00 cpuhp/0
+     23 ?        00:00:00 cpuhp/2
+     24 ?        00:00:00 idle_inject/2
+     25 ?        00:00:00 migration/2
+     26 ?        00:00:00 ksoftirqd/2
+     27 ?        00:00:00 kworker/2:0-events
+     28 ?        00:00:00 kworker/2:0H-kblockd
+     29 ?        00:00:00 cpuhp/1
+     30 ?        00:00:00 idle_inject/1
+     31 ?        00:00:00 migration/1
+     32 ?        00:00:00 ksoftirqd/1
+     33 ?        00:00:00 kworker/1:0-events
+     34 ?        00:00:00 kworker/1:0H-kblockd
+     35 ?        00:00:00 cpuhp/3
+     36 ?        00:00:00 idle_inject/3
+     37 ?        00:00:00 migration/3
+     38 ?        00:00:00 ksoftirqd/3
+     39 ?        00:00:00 kworker/3:0-events
+     40 ?        00:00:00 kworker/3:0H-kblockd
+     41 ?        00:00:00 kdevtmpfs
+     42 ?        00:00:00 kworker/R-inet_frag_wq
+     43 ?        00:00:00 rcu_tasks_kthread
+     44 ?        00:00:00 rcu_tasks_rude_kthread
+     45 ?        00:00:00 kauditd
+     46 ?        00:00:00 khungtaskd
+     47 ?        00:00:00 oom_reaper
+     48 ?        00:00:00 kworker/u16:1-events_unbound
+     49 ?        00:00:00 kworker/R-writeback
+     50 ?        00:00:00 kworker/2:1-events
+     51 ?        00:00:00 kcompactd0
+     52 ?        00:00:00 kworker/u16:2-flush-8:0
+     53 ?        00:00:00 ksmd
+     54 ?        00:00:00 khugepaged
+     55 ?        00:00:00 kworker/R-kblockd
+     56 ?        00:00:00 kworker/R-blkcg_punt_bio
+     57 ?        00:00:00 kworker/R-kintegrityd
+     58 ?        00:00:00 irq/9-acpi
+     59 ?        00:00:00 kworker/3:1-events
+     60 ?        00:00:00 kworker/1:1-events
+     61 ?        00:00:00 kworker/R-tpm_dev_wq
+     62 ?        00:00:00 kworker/R-ata_sff
+     63 ?        00:00:00 kworker/R-md_bitmap
+     64 ?        00:00:00 kworker/R-md_llbitmap_io
+     65 ?        00:00:00 kworker/R-md_llbitmap_unplug
+     66 ?        00:00:00 kworker/R-edac-poller
+     67 ?        00:00:00 kworker/R-hv_vmbus_con
+     68 ?        00:00:00 kworker/R-hv_vmbus_rescind
+     69 ?        00:00:00 kworker/R-hv_pri_chan
+     70 ?        00:00:00 kworker/R-hv_sub_chan
+     71 ?        00:00:00 kworker/R-devfreq_wq
+     72 ?        00:00:00 watchdogd
+     73 ?        00:00:00 kworker/R-quota_events_unbound
+     74 ?        00:00:00 kswapd0
+     75 ?        00:00:00 ecryptfs-kthread
+     76 ?        00:00:00 kworker/R-kthrotld
+     77 ?        00:00:00 kworker/R-acpi_thermal_pm
+     78 ?        00:00:00 kworker/R-nfit
+     79 ?        00:00:00 scsi_eh_0
+     80 ?        00:00:00 scsi_eh_1
+     81 ?        00:00:00 kworker/R-nvme-wq
+     82 ?        00:00:00 kworker/R-scsi_tmf_0
+     83 ?        00:00:00 kworker/R-nvme-reset-wq
+     84 ?        00:00:00 kworker/R-nvme-delete-wq
+     85 ?        00:00:00 kworker/R-nvme-auth-wq
+     86 ?        00:00:00 kworker/R-scsi_tmf_1
+     87 ?        00:00:00 kworker/2:2-events
+     88 ?        00:00:00 kworker/u16:3-flush-8:0
+     89 ?        00:00:00 kworker/R-mld
+     90 ?        00:00:00 kworker/u16:4-writeback
+     91 ?        00:00:00 kworker/R-ipv6_addrconf
+     92 ?        00:00:00 hv_balloon
+     93 ?        00:00:00 kworker/R-kstrp
+     95 ?        00:00:00 kworker/u17:0
+    106 ?        00:00:00 kworker/R-charger_manager
+    107 ?        00:00:00 jbd2/sda1-8
+    108 ?        00:00:00 kworker/R-ext4-rsv-conversion
+    109 ?        00:00:00 kworker/0:2-events
+    134 ?        00:00:00 kworker/0:1H-kblockd
+    176 ?        00:00:00 kworker/1:2-events
+    182 ?        00:00:00 kworker/R-kmpathd
+    183 ?        00:00:00 kworker/R-kmpath_handlerd
+    201 ?        00:00:00 kworker/3:2-events
+    230 ?        00:00:00 kworker/1:1H-kblockd
+    233 ?        00:00:00 kworker/2:1H-kblockd
+    240 ?        00:00:00 kworker/3:1H-kblockd
+    304 ?        00:00:00 kworker/0:3-cgwb_release
+    314 ?        00:00:00 kworker/R-mana_per_port_queue_reset_wq
+    319 ?        00:00:00 card1-crtc0
+    382 ?        00:00:00 kworker/R-ib-comp-wq
+    383 ?        00:00:00 kworker/R-ib-comp-unb-wq
+    384 ?        00:00:00 kworker/R-ib_mcast
+    385 ?        00:00:00 kworker/R-ib_nl_sa_wq
+    386 ?        00:00:00 kworker/R-ib_mad1
+    420 ?        00:00:00 jbd2/sda16-8
+    421 ?        00:00:00 kworker/R-ext4-rsv-conversion
+    523 ?        00:00:00 kworker/2:3-events
+    525 ?        00:00:00 kworker/2:4-events
+    656 ?        00:00:00 kworker/R-cfg80211
+    804 ?        00:00:00 kworker/u16:5-ext4-rsv-conversion
+    805 ?        00:00:00 kworker/u16:6-flush-8:0
+   1023 ?        00:00:00 dbus-daemon
+   1028 ?        00:00:00 networkd-dispat
+   1042 ?        00:00:00 systemd-logind
+   1045 ?        00:00:00 python3
+   1129 ttyS0    00:00:00 agetty
+   1146 tty1     00:00:00 agetty
+   1174 ?        00:00:00 systemd
+   1188 ?        00:00:00 (sd-pam)
+   1296 ?        00:00:00 dockerd
+   1395 ?        00:00:00 kworker/R-tls-strp
+   1845 ?        00:00:00 python3
+   2166 ?        00:00:00 hosted-compute-
+   2180 ?        00:00:00 sudo
+   2183 ?        00:00:01 provjobd2137002
+   2230 ?        00:00:01 Runner.Listener
+   2248 ?        00:00:02 Runner.Worker
+   2913 ?        00:00:00 psimon
+   3839 ?        00:00:00 kworker/1:3-events
+   3841 ?        00:00:00 kworker/3:3-rcu_gp
+   3843 ?        00:00:00 cron
+   3848 ?        00:00:00 haveged
+   3849 ?        00:00:00 hv_kvp_daemon
+   3850 ?        00:00:00 containerd
+   3860 ?        00:00:00 packagekitd
+   3867 ?        00:00:00 multipathd
+   3890 ?        00:00:00 polkitd
+   3901 ?        00:00:00 chronyd
+   3903 ?        00:00:00 chronyd
+   3912 ?        00:00:00 systemd-journal
+   3913 ?        00:00:00 php-fpm8.3
+   3914 ?        00:00:00 systemd-resolve
+   3916 ?        00:00:00 udisksd
+   3919 ?        00:00:00 systemd-udevd
+   3934 ?        00:00:00 php-fpm8.3
+   3935 ?        00:00:00 ModemManager
+   3936 ?        00:00:00 php-fpm8.3
+   3938 ?        00:00:00 psimon
+   3940 ?        00:00:00 systemd-network
+   3949 ?        00:00:00 rsyslogd
+   4044 ?        00:00:00 systemd-hostnam
+   4194 ?        00:00:00 bash
+   4195 ?        00:00:00 sudo
+   4196 ?        00:00:00 python3
+   4197 pts/0    00:00:00 bash
+   4576 pts/0    00:00:00 ps
+devasc@labvm:~$ ps -e | more
+    PID TTY          TIME CMD
+      1 ?        00:00:02 systemd
+      2 ?        00:00:00 kthreadd
+      3 ?        00:00:00 pool_workqueue_release
+      4 ?        00:00:00 kworker/R-rcu_gp
+      5 ?        00:00:00 kworker/R-sync_wq
+      6 ?        00:00:00 kworker/R-kvfree_rcu_reclaim
+      7 ?        00:00:00 kworker/R-slub_flushwq
+      8 ?        00:00:00 kworker/R-netns
+      9 ?        00:00:00 kworker/0:0-rcu_gp
+     10 ?        00:00:00 kworker/0:0H-kblockd
+     11 ?        00:00:00 kworker/0:1-events
+     12 ?        00:00:00 kworker/u16:0-events_unbound
+     13 ?        00:00:00 kworker/R-mm_percpu_wq
+     14 ?        00:00:00 ksoftirqd/0
+     15 ?        00:00:00 pr/ttyS0
+     16 ?        00:00:00 rcu_sched
+     17 ?        00:00:00 rcu_exp_par_gp_kthread_worker/0
+     18 ?        00:00:00 rcu_exp_gp_kthread_worker
+     19 ?        00:00:00 migration/0
+     20 ?        00:00:00 kprobe-optimizer
+     21 ?        00:00:00 idle_inject/0
+     22 ?        00:00:00 cpuhp/0
+     23 ?        00:00:00 cpuhp/2
+     24 ?        00:00:00 idle_inject/2
+     25 ?        00:00:00 migration/2
+     26 ?        00:00:00 ksoftirqd/2
+     27 ?        00:00:00 kworker/2:0-events
+     28 ?        00:00:00 kworker/2:0H-kblockd
+     29 ?        00:00:00 cpuhp/1
+     30 ?        00:00:00 idle_inject/1
+     31 ?        00:00:00 migration/1
+     32 ?        00:00:00 ksoftirqd/1
+     33 ?        00:00:00 kworker/1:0-events
+     34 ?        00:00:00 kworker/1:0H-kblockd
+     35 ?        00:00:00 cpuhp/3
+     36 ?        00:00:00 idle_inject/3
+     37 ?        00:00:00 migration/3
+     38 ?        00:00:00 ksoftirqd/3
+     39 ?        00:00:00 kworker/3:0-events
+     40 ?        00:00:00 kworker/3:0H-kblockd
+     41 ?        00:00:00 kdevtmpfs
+     42 ?        00:00:00 kworker/R-inet_frag_wq
+     43 ?        00:00:00 rcu_tasks_kthread
+     44 ?        00:00:00 rcu_tasks_rude_kthread
+     45 ?        00:00:00 kauditd
+     46 ?        00:00:00 khungtaskd
+     47 ?        00:00:00 oom_reaper
+     48 ?        00:00:00 kworker/u16:1-events_unbound
+     49 ?        00:00:00 kworker/R-writeback
+     50 ?        00:00:00 kworker/2:1-events
+     51 ?        00:00:00 kcompactd0
+     52 ?        00:00:00 kworker/u16:2-flush-8:0
+     53 ?        00:00:00 ksmd
+     54 ?        00:00:00 khugepaged
+     55 ?        00:00:00 kworker/R-kblockd
+     56 ?        00:00:00 kworker/R-blkcg_punt_bio
+     57 ?        00:00:00 kworker/R-kintegrityd
+     58 ?        00:00:00 irq/9-acpi
+     59 ?        00:00:00 kworker/3:1-events
+     60 ?        00:00:00 kworker/1:1-events
+     61 ?        00:00:00 kworker/R-tpm_dev_wq
+     62 ?        00:00:00 kworker/R-ata_sff
+     63 ?        00:00:00 kworker/R-md_bitmap
+     64 ?        00:00:00 kworker/R-md_llbitmap_io
+     65 ?        00:00:00 kworker/R-md_llbitmap_unplug
+     66 ?        00:00:00 kworker/R-edac-poller
+     67 ?        00:00:00 kworker/R-hv_vmbus_con
+     68 ?        00:00:00 kworker/R-hv_vmbus_rescind
+     69 ?        00:00:00 kworker/R-hv_pri_chan
+     70 ?        00:00:00 kworker/R-hv_sub_chan
+     71 ?        00:00:00 kworker/R-devfreq_wq
+     72 ?        00:00:00 watchdogd
+     73 ?        00:00:00 kworker/R-quota_events_unbound
+     74 ?        00:00:00 kswapd0
+     75 ?        00:00:00 ecryptfs-kthread
+     76 ?        00:00:00 kworker/R-kthrotld
+     77 ?        00:00:00 kworker/R-acpi_thermal_pm
+     78 ?        00:00:00 kworker/R-nfit
+     79 ?        00:00:00 scsi_eh_0
+     80 ?        00:00:00 scsi_eh_1
+     81 ?        00:00:00 kworker/R-nvme-wq
+     82 ?        00:00:00 kworker/R-scsi_tmf_0
+     83 ?        00:00:00 kworker/R-nvme-reset-wq
+     84 ?        00:00:00 kworker/R-nvme-delete-wq
+     85 ?        00:00:00 kworker/R-nvme-auth-wq
+     86 ?        00:00:00 kworker/R-scsi_tmf_1
+     87 ?        00:00:00 kworker/2:2-events
+     88 ?        00:00:00 kworker/u16:3-flush-8:0
+     89 ?        00:00:00 kworker/R-mld
+     90 ?        00:00:00 kworker/u16:4-writeback
+     91 ?        00:00:00 kworker/R-ipv6_addrconf
+     92 ?        00:00:00 hv_balloon
+     93 ?        00:00:00 kworker/R-kstrp
+     95 ?        00:00:00 kworker/u17:0
+    106 ?        00:00:00 kworker/R-charger_manager
+    107 ?        00:00:00 jbd2/sda1-8
+    108 ?        00:00:00 kworker/R-ext4-rsv-conversion
+    109 ?        00:00:00 kworker/0:2-events
+devasc@labvm:~$ ps -ef
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  1 11:17 ?        00:00:02 /usr/lib/systemd/systemd --system --deserialize=
+root           2       0  0 11:17 ?        00:00:00 [kthreadd]
+root           3       2  0 11:17 ?        00:00:00 [pool_workqueue_release]
+root           4       2  0 11:17 ?        00:00:00 [kworker/R-rcu_gp]
+root           5       2  0 11:17 ?        00:00:00 [kworker/R-sync_wq]
+root           6       2  0 11:17 ?        00:00:00 [kworker/R-kvfree_rcu_reclaim]
+root           7       2  0 11:17 ?        00:00:00 [kworker/R-slub_flushwq]
+root           8       2  0 11:17 ?        00:00:00 [kworker/R-netns]
+root           9       2  0 11:17 ?        00:00:00 [kworker/0:0-rcu_gp]
+root          10       2  0 11:17 ?        00:00:00 [kworker/0:0H-kblockd]
+root          11       2  0 11:17 ?        00:00:00 [kworker/0:1-events]
+root          12       2  0 11:17 ?        00:00:00 [kworker/u16:0-events_unbound]
+root          13       2  0 11:17 ?        00:00:00 [kworker/R-mm_percpu_wq]
+root          14       2  0 11:17 ?        00:00:00 [ksoftirqd/0]
+root          15       2  0 11:17 ?        00:00:00 [pr/ttyS0]
+root          16       2  0 11:17 ?        00:00:00 [rcu_sched]
+root          17       2  0 11:17 ?        00:00:00 [rcu_exp_par_gp_kthread_worker/0]
+root          18       2  0 11:17 ?        00:00:00 [rcu_exp_gp_kthread_worker]
+root          19       2  0 11:17 ?        00:00:00 [migration/0]
+root          20       2  0 11:17 ?        00:00:00 [kprobe-optimizer]
+root          21       2  0 11:17 ?        00:00:00 [idle_inject/0]
+root          22       2  0 11:17 ?        00:00:00 [cpuhp/0]
+root          23       2  0 11:17 ?        00:00:00 [cpuhp/2]
+root          24       2  0 11:17 ?        00:00:00 [idle_inject/2]
+root          25       2  0 11:17 ?        00:00:00 [migration/2]
+root          26       2  0 11:17 ?        00:00:00 [ksoftirqd/2]
+root          27       2  0 11:17 ?        00:00:00 [kworker/2:0-events]
+root          28       2  0 11:17 ?        00:00:00 [kworker/2:0H-kblockd]
+root          29       2  0 11:17 ?        00:00:00 [cpuhp/1]
+root          30       2  0 11:17 ?        00:00:00 [idle_inject/1]
+root          31       2  0 11:17 ?        00:00:00 [migration/1]
+root          32       2  0 11:17 ?        00:00:00 [ksoftirqd/1]
+root          33       2  0 11:17 ?        00:00:00 [kworker/1:0-events]
+root          34       2  0 11:17 ?        00:00:00 [kworker/1:0H-kblockd]
+root          35       2  0 11:17 ?        00:00:00 [cpuhp/3]
+root          36       2  0 11:17 ?        00:00:00 [idle_inject/3]
+root          37       2  0 11:17 ?        00:00:00 [migration/3]
+root          38       2  0 11:17 ?        00:00:00 [ksoftirqd/3]
+root          39       2  0 11:17 ?        00:00:00 [kworker/3:0-events]
+root          40       2  0 11:17 ?        00:00:00 [kworker/3:0H-kblockd]
+root          41       2  0 11:17 ?        00:00:00 [kdevtmpfs]
+root          42       2  0 11:17 ?        00:00:00 [kworker/R-inet_frag_wq]
+root          43       2  0 11:17 ?        00:00:00 [rcu_tasks_kthread]
+root          44       2  0 11:17 ?        00:00:00 [rcu_tasks_rude_kthread]
+root          45       2  0 11:17 ?        00:00:00 [kauditd]
+root          46       2  0 11:17 ?        00:00:00 [khungtaskd]
+root          47       2  0 11:17 ?        00:00:00 [oom_reaper]
+root          48       2  0 11:17 ?        00:00:00 [kworker/u16:1-events_unbound]
+root          49       2  0 11:17 ?        00:00:00 [kworker/R-writeback]
+root          50       2  0 11:17 ?        00:00:00 [kworker/2:1-events]
+root          51       2  0 11:17 ?        00:00:00 [kcompactd0]
+root          52       2  0 11:17 ?        00:00:00 [kworker/u16:2-flush-8:0]
+root          53       2  0 11:17 ?        00:00:00 [ksmd]
+root          54       2  0 11:17 ?        00:00:00 [khugepaged]
+root          55       2  0 11:17 ?        00:00:00 [kworker/R-kblockd]
+root          56       2  0 11:17 ?        00:00:00 [kworker/R-blkcg_punt_bio]
+root          57       2  0 11:17 ?        00:00:00 [kworker/R-kintegrityd]
+root          58       2  0 11:17 ?        00:00:00 [irq/9-acpi]
+root          59       2  0 11:17 ?        00:00:00 [kworker/3:1-events]
+root          60       2  0 11:17 ?        00:00:00 [kworker/1:1-events]
+root          61       2  0 11:17 ?        00:00:00 [kworker/R-tpm_dev_wq]
+root          62       2  0 11:17 ?        00:00:00 [kworker/R-ata_sff]
+root          63       2  0 11:17 ?        00:00:00 [kworker/R-md_bitmap]
+root          64       2  0 11:17 ?        00:00:00 [kworker/R-md_llbitmap_io]
+root          65       2  0 11:17 ?        00:00:00 [kworker/R-md_llbitmap_unplug]
+root          66       2  0 11:17 ?        00:00:00 [kworker/R-edac-poller]
+root          67       2  0 11:17 ?        00:00:00 [kworker/R-hv_vmbus_con]
+root          68       2  0 11:17 ?        00:00:00 [kworker/R-hv_vmbus_rescind]
+root          69       2  0 11:17 ?        00:00:00 [kworker/R-hv_pri_chan]
+root          70       2  0 11:17 ?        00:00:00 [kworker/R-hv_sub_chan]
+root          71       2  0 11:17 ?        00:00:00 [kworker/R-devfreq_wq]
+root          72       2  0 11:17 ?        00:00:00 [watchdogd]
+root          73       2  0 11:17 ?        00:00:00 [kworker/R-quota_events_unbound]
+root          74       2  0 11:17 ?        00:00:00 [kswapd0]
+root          75       2  0 11:17 ?        00:00:00 [ecryptfs-kthread]
+root          76       2  0 11:17 ?        00:00:00 [kworker/R-kthrotld]
+root          77       2  0 11:17 ?        00:00:00 [kworker/R-acpi_thermal_pm]
+root          78       2  0 11:17 ?        00:00:00 [kworker/R-nfit]
+root          79       2  0 11:17 ?        00:00:00 [scsi_eh_0]
+root          80       2  0 11:17 ?        00:00:00 [scsi_eh_1]
+root          81       2  0 11:17 ?        00:00:00 [kworker/R-nvme-wq]
+root          82       2  0 11:17 ?        00:00:00 [kworker/R-scsi_tmf_0]
+root          83       2  0 11:17 ?        00:00:00 [kworker/R-nvme-reset-wq]
+root          84       2  0 11:17 ?        00:00:00 [kworker/R-nvme-delete-wq]
+root          85       2  0 11:17 ?        00:00:00 [kworker/R-nvme-auth-wq]
+root          86       2  0 11:17 ?        00:00:00 [kworker/R-scsi_tmf_1]
+root          87       2  0 11:17 ?        00:00:00 [kworker/2:2-events]
+root          88       2  0 11:17 ?        00:00:00 [kworker/u16:3-flush-8:0]
+root          89       2  0 11:17 ?        00:00:00 [kworker/R-mld]
+root          90       2  0 11:17 ?        00:00:00 [kworker/u16:4-writeback]
+root          91       2  0 11:17 ?        00:00:00 [kworker/R-ipv6_addrconf]
+root          92       2  0 11:17 ?        00:00:00 [hv_balloon]
+root          93       2  0 11:17 ?        00:00:00 [kworker/R-kstrp]
+root          95       2  0 11:17 ?        00:00:00 [kworker/u17:0]
+root         106       2  0 11:17 ?        00:00:00 [kworker/R-charger_manager]
+root         107       2  0 11:17 ?        00:00:00 [jbd2/sda1-8]
+root         108       2  0 11:17 ?        00:00:00 [kworker/R-ext4-rsv-conversion]
+root         109       2  0 11:17 ?        00:00:00 [kworker/0:2-events]
+root         134       2  0 11:17 ?        00:00:00 [kworker/0:1H-kblockd]
+root         176       2  0 11:17 ?        00:00:00 [kworker/1:2-events]
+root         182       2  0 11:17 ?        00:00:00 [kworker/R-kmpathd]
+root         183       2  0 11:17 ?        00:00:00 [kworker/R-kmpath_handlerd]
+root         201       2  0 11:17 ?        00:00:00 [kworker/3:2-events]
+root         230       2  0 11:17 ?        00:00:00 [kworker/1:1H-kblockd]
+root         233       2  0 11:17 ?        00:00:00 [kworker/2:1H-kblockd]
+root         240       2  0 11:17 ?        00:00:00 [kworker/3:1H-kblockd]
+root         304       2  0 11:17 ?        00:00:00 [kworker/0:3-cgwb_release]
+root         314       2  0 11:17 ?        00:00:00 [kworker/R-mana_per_port_queue_reset_wq]
+root         319       2  0 11:17 ?        00:00:00 [card1-crtc0]
+root         382       2  0 11:17 ?        00:00:00 [kworker/R-ib-comp-wq]
+root         383       2  0 11:17 ?        00:00:00 [kworker/R-ib-comp-unb-wq]
+root         384       2  0 11:17 ?        00:00:00 [kworker/R-ib_mcast]
+root         385       2  0 11:17 ?        00:00:00 [kworker/R-ib_nl_sa_wq]
+root         386       2  0 11:17 ?        00:00:00 [kworker/R-ib_mad1]
+root         420       2  0 11:17 ?        00:00:00 [jbd2/sda16-8]
+root         421       2  0 11:17 ?        00:00:00 [kworker/R-ext4-rsv-conversion]
+root         523       2  0 11:17 ?        00:00:00 [kworker/2:3-events]
+root         525       2  0 11:17 ?        00:00:00 [kworker/2:4-events]
+root         656       2  0 11:17 ?        00:00:00 [kworker/R-cfg80211]
+root         804       2  0 11:17 ?        00:00:00 [kworker/u16:5-ext4-rsv-conversion]
+root         805       2  0 11:17 ?        00:00:00 [kworker/u16:6-flush-8:0]
+message+    1023       1  0 11:17 ?        00:00:00 @dbus-daemon --system --address=systemd: --nofor
+root        1028       1  0 11:17 ?        00:00:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --
+root        1042       1  0 11:17 ?        00:00:00 /usr/lib/systemd/systemd-logind
+root        1045       1  0 11:17 ?        00:00:00 /usr/bin/python3 -u /usr/sbin/waagent -daemon
+root        1129       1  0 11:17 ttyS0    00:00:00 /sbin/agetty -o -p -- \u --keep-baud 115200,5760
+root        1146       1  0 11:17 tty1     00:00:00 /sbin/agetty -o -p -- \u --noclear - linux
+runner      1174       1  0 11:17 ?        00:00:00 /usr/lib/systemd/systemd --user
+runner      1188    1174  0 11:17 ?        00:00:00 (sd-pam)
+root        1296       1  0 11:17 ?        00:00:00 /usr/bin/dockerd -H fd:// --containerd=/run/cont
+root        1395       2  0 11:17 ?        00:00:00 [kworker/R-tls-strp]
+root        1845    1045  0 11:17 ?        00:00:00 /usr/bin/python3 -u bin/WALinuxAgent-2.17.0.2-py
+runner      2166       1  0 11:18 ?        00:00:00 /opt/hca/hosted-compute-agent
+root        2180    2166  0 11:18 ?        00:00:00 sudo -n PROVJOBD_E2E=1 /tmp/provjobd2137002611
+root        2183    2180  0 11:18 ?        00:00:01 /tmp/provjobd2137002611
+runner      2230    2166  0 11:18 ?        00:00:01 /home/runner/actions-runner/cached/2.338.2/bin/R
+runner      2248    2230  1 11:18 ?        00:00:02 /home/runner/actions-runner/cached/2.338.2/bin/R
+root        2913       2  0 11:18 ?        00:00:00 [psimon]
+root        3839       2  0 11:18 ?        00:00:00 [kworker/1:3-events]
+root        3841       2  0 11:18 ?        00:00:00 [kworker/3:3-rcu_gp]
+root        3843       1  0 11:18 ?        00:00:00 /usr/sbin/cron -f -P
+root        3848       1  0 11:18 ?        00:00:00 /usr/sbin/haveged --Foreground --verbose=1
+root        3849       1  0 11:18 ?        00:00:00 /usr/lib/linux-tools/7.0.0-1017-azure/hv_kvp_dae
+root        3850       1  0 11:18 ?        00:00:00 /usr/bin/containerd
+root        3860       1  0 11:18 ?        00:00:00 /usr/libexec/packagekitd
+root        3867       1  0 11:18 ?        00:00:00 /sbin/multipathd -d -s
+polkitd     3890       1  0 11:18 ?        00:00:00 /usr/lib/polkit-1/polkitd --no-debug
+_chrony     3901       1  0 11:18 ?        00:00:00 /usr/sbin/chronyd -F 1
+_chrony     3903    3901  0 11:18 ?        00:00:00 /usr/sbin/chronyd -F 1
+root        3912       1  0 11:18 ?        00:00:00 /usr/lib/systemd/systemd-journald
+root        3913       1  0 11:18 ?        00:00:00 php-fpm: master process (/etc/php/8.3/fpm/php-fp
+systemd+    3914       1  0 11:18 ?        00:00:00 /usr/lib/systemd/systemd-resolved
+root        3916       1  0 11:18 ?        00:00:00 /usr/libexec/udisks2/udisksd
+root        3919       1  0 11:18 ?        00:00:00 /usr/lib/systemd/systemd-udevd
+www-data    3934    3913  0 11:18 ?        00:00:00 php-fpm: pool www
+root        3935       1  0 11:18 ?        00:00:00 /usr/sbin/ModemManager
+www-data    3936    3913  0 11:18 ?        00:00:00 php-fpm: pool www
+root        3938       2  0 11:18 ?        00:00:00 [psimon]
+systemd+    3940       1  0 11:18 ?        00:00:00 /usr/lib/systemd/systemd-networkd
+syslog      3949       1  0 11:18 ?        00:00:00 /usr/sbin/rsyslogd -n -iNONE
+root        4044       1  0 11:20 ?        00:00:00 /usr/lib/systemd/systemd-hostnamed
+runner      4194    2248  0 11:20 ?        00:00:00 /usr/bin/bash -e /home/runner/work/_temp/fb76d0e
+root        4195    4194  0 11:20 ?        00:00:00 sudo python3 tools/labrun/labrun.py labs/02-1.2.
+root        4196    4195  1 11:20 ?        00:00:00 python3 tools/labrun/labrun.py labs/02-1.2.2-lin
+devasc      4197    4196  0 11:20 pts/0    00:00:00 /bin/bash --noprofile --norc -i
+devasc      4579    4197  0 11:20 pts/0    00:00:00 ps -ef
+devasc@labvm:~$ sudo apt-get update
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+Hit:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+Reading package lists... Done
+devasc@labvm:~$ apt-cache search speed test
+libclass-xsaccessor-perl - Perl module providing fast XS accessors
+libsamplerate0 - Audio sample rate conversion library
+libsamplerate0-dev - Development files for audio sample rate conversion
+libsnappy-dev - fast compression/decompression library (development files)
+libsnappy1v5 - fast compression/decompression library
+libxxhash-dev - header files and a static library for libxxhash
+libxxhash0 - shared library for xxhash
+mysql-server - MySQL database server (metapackage depending on the latest version)
+python3-routes - Routing Recognition and Generation Tools for Python 3
+qemu-system-arm - QEMU full system emulation binaries (arm)
+qemu-system-mips - QEMU full system emulation binaries (mips)
+qemu-system-ppc - QEMU full system emulation binaries (ppc)
+qemu-system-s390x - QEMU full system emulation binaries (s390x)
+qemu-system-sparc - QEMU full system emulation binaries (sparc)
+qemu-system-x86 - QEMU full system emulation binaries (x86)
+axel - light command line download accelerator
+bittwist - libpcap based Ethernet packet generator
+cbm - display in real time the network traffic speed
+diskscan - scan storage media for bad or near failure sectors
+dmucs - distributed compilation system for use with distcc
+dsda-doom - Doom source port with a focus on demo recording and speedrunning
+dt-schema - Tooling for devicetree validation using YAML and jsonschema
+gertty - Console-based interface to Gerrit
+ghdl - VHDL compiler/simulator
+golang-github-cristalhq-hedgedhttp-dev - Hedged HTTP client which helps to reduce tail latency at sc
+ale (library)
+golang-github-davecgh-go-xdr-dev - Pure Go XDR standard (RFC 4506) implementation
+golang-github-golang-snappy-dev - Implementation of the Snappy compression format in Go
+golang-github-iafan-cwalk-dev - Concurrent filepath.Walk replacement
+golang-github-maruel-natural-dev - Natural sorting (natsort) in Go (library)
+golang-github-minio-sha256-simd-dev - implementation of SHA256 using SIMD instructions for Intel and
+ ARM
+golang-github-tdewolff-parse-dev - Go parsers for web formats
+gpsim - Simulator for Microchip's PIC microcontrollers
+gtypist - simple ncurses touch typing tutor
+isync - IMAP and MailDir mailbox synchronizer
+jdupes - identify and delete or link duplicate files
+kraken - assigning taxonomic labels to short DNA sequences
+latte-int - Lattice point Enumeration
+latte-int-doc - Lattice point Enumeration (documentation and examples)
+libcompress-snappy-perl - Perl interface to Google's Snappy (de)compressor
+libconcurrentqueue-dev - industrial-strength lock-free queue for C++
+libcrypto++-utils - General purpose cryptographic library - utilities and data files
+libghc-commonmark-dev - Pure Haskell commonmark parser
+libghc-commonmark-doc - Pure Haskell commonmark parser; documentation
+libghc-commonmark-prof - Pure Haskell commonmark parser; profiling libraries
+libghc-double-conversion-dev - fast conversion between double precision floating point and text
+libghc-double-conversion-doc - fast conversion between double precision floating point and text; doc
+umentation
+libghc-double-conversion-prof - fast conversion between double precision floating point and text; pr
+ofiling libraries
+libghc-sha-dev - Haskell SHA suite of message digest functions
+libghc-sha-doc - Haskell SHA suite of message digest functions; documentation
+libghc-sha-prof - Haskell SHA suite of message digest functions; profiling libraries
+libghc-store-dev - Fast binary serialization
+libghc-store-doc - Fast binary serialization; documentation
+libghc-store-prof - Fast binary serialization; profiling libraries
+libiksemel-utils - utilities from the iksemel library
+libmath-prime-util-gmp-perl - utilities related to prime numbers, using GMP
+libmpeg2-4 - MPEG1 and MPEG2 video decoder library
+libonnx-testdata - Open Neural Network Exchange (ONNX) (test data)
+libsimde-dev - Implementations of SIMD instructions for all systems
+libtime-mock-perl - shift and scale time Perl module
+libyadifa-dev - development libraries and header files for YADIFA
+libzmat1 - compression library - runtime
+mariadb-test - MariaDB database regression test suite
+mariadb-test-data - MariaDB database regression test suite - data files
+medusa - fast, parallel, modular, login brute-forcer for network services
+metaphlan - Metagenomic Phylogenetic Analysis
+monitoring-plugins-contrib - Plugins for nagios compatible monitoring systems
+mysql-testsuite-8.0 - MySQL 8.0 testsuite
+ncrack - High-speed network authentication cracking tool
+netsend - a speedy filetransfer and network diagnostic program
+nlohmann-json3-dev - JSON for Modern C++
+node-vows - asynchronous BDD & continuous integration for Node
+octave-zmat - in-memory data compression for Octave
+pdns-tools - Tools for DNS debugging by PowerDNS
+python3-falcon - supersonic micro-framework for building cloud APIs - Python 3.x
+python3-fastapi - modern, fast, web framework for building APIs, based on type hints
+python3-opentsne - t-Distributed Stochastic Neighbor Embedding algorithm
+python3-pprofile - Line-granularity, deterministic and statistic Python 3 profiler
+python3-pyperform - fast and convenient way to performance test functions and compare results
+python3-pytest-xdist - xdist plugin for py.test (Python 3)
+python3-xxhash - Bindings for the xxHash library (Python 3)
+qrq - high speed morse trainer, similar to DL4MM's Rufz
+r-cran-cvst - GNU R fast cross-validation via sequential testing
+r-cran-genie - GNU R fast, robust, and outlier resistant hierarchical clustering
+rav1e - Fastest and safest AV1 encoder - command line encoder
+ruby-actionpack-page-caching - static page caching for Action Pack (removed from core in Rails 4.0)
+ruby-minitest-hooks - Around and before_all/after_all/around_all hooks for Minitest
+ruby-parallel-tests - Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+ruby-rspec-set - #set(), speed-up your specs
+ruby-simple-po-parser - Simple PO file to ruby hash parser
+ruby-spring - Rails application preloader
+samba-testsuite - test suite from Samba
+smalt-examples - Sequence Mapping and Alignment Tool (examples)
+smartdns - local DNS server to obtain the fastest IP for the best experience
+speedtest-cli - Command line interface for testing internet bandwidth using speedtest.net
+sup - Software Upgrade Protocol implementation
+sysbench - multi-threaded benchmark tool for database systems
+tcpreplay - Tool to replay saved tcpdump files at arbitrary speeds
+ugrep - faster grep with an interactive query UI
+vowpal-wabbit-doc - fast and scalable online machine learning algorithm - documentation
+whipper - CD-DA ripper
+wtdbg2-examples - Examples for wtdbg - de novo sequence assembler
+xbomb - 'minesweeper' game with squares, hexagons or triangles
+xxhash - Extremely fast hash algorithm
+yadifa - Internet Domain Name Server
+zsh-theme-powerlevel9k - powerlevel9k is a theme for zsh which uses powerline fonts
+libnucleotidelikelihoodcore0 - implementation of LikelihoodCore for nucleotides used by beast-mcmc
+qemu-system-misc - QEMU full system emulation binaries (miscellaneous)
+golang-github-bmatsuo-lmdb-go-dev - Bindings for the LMDB C library
+devasc@labvm:~$ sudo apt-get install speedtest-cli
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  speedtest-cli
+0 upgraded, 1 newly installed, 0 to remove and 14 not upgraded.
+Need to get 24.1 kB of archives.
+After this operation, 106 kB of additional disk space will be used.
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 speedtest-cli all 2.1.3-2 [24.1 kB
+]
+Fetched 24.1 kB in 0s (275 kB/s)
+Selecting previously unselected package speedtest-cli.
+(Reading database ... 239787 files and directories currently installed.)
+Preparing to unpack .../speedtest-cli_2.1.3-2_all.deb ...
+Unpacking speedtest-cli (2.1.3-2) ...
+Setting up speedtest-cli (2.1.3-2) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Not building database; man-db/auto-update is not 'true'.
+Disabling Ubuntu mode, explicit restart mode configuredScanning processes... [
+Scanning processes...
+Scanning candidates...
+
+Services to be restarted:
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart docker.service
+ systemctl restart getty@tty1.service
+ systemctl restart hosted-compute-agent.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart serial-getty@ttyS0.service
+ systemctl restart systemd-logind.service
+ systemctl restart walinuxagent.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ runner @ user manager service: systemd[1174]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+devasc@labvm:~$ speedtest-cli
+Retrieving speedtest.net configuration...
+Testing from Microsoft Azure (172.208.153.215)...
+Retrieving speedtest.net server list...
+Selecting best server based on ping...
+Hosted by Far Eastone Telecommunications Co., Ltd. (Taipei) [11242.29 km]: 184.627 ms
+Testing download speed..............................................................................
+..
+Download: 342.92 Mbit/s
+Testing upload speed................................................................................
+......................
+Upload: 126.48 Mbit/s
+devasc@labvm:~$ sudo apt-get upgrade
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+Calculating upgrade... Done
+The following packages will be upgraded:
+  apache2 apache2-bin apache2-data apache2-utils firefox libmysqlclient-dev libmysqlclient21
+  mysql-client mysql-client-8.0 mysql-client-core-8.0 mysql-server mysql-server-8.0
+  mysql-server-core-8.0 powershell
+14 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Need to get 83.0 MB of archives.
+After this operation, 322 MB disk space will be freed.
+Do you want to continue? [Y/n] Y
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Get:15 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 powershell amd64 7.7.0-1.de
+b [56.6 MB]
+Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2 amd64 2.4.58-1ubuntu8.
+19 [90.2 kB]
+Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2-bin amd64 2.4.58-1ubun
+tu8.19 [1,339 kB]
+Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2-data all 2.4.58-1ubunt
+u8.19 [163 kB]
+Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2-utils amd64 2.4.58-1ub
+untu8.19 [101 kB]
+Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 firefox amd64 1:1snap1-0ubuntu5 [77.3
+kB]
+Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-client-core-8.0 amd64 8.
+0.46-0ubuntu0.24.04.5 [2,661 kB]
+Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-client-8.0 amd64 8.0.46-
+0ubuntu0.24.04.5 [22.4 kB]
+Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-server-8.0 amd64 8.0.46-
+0ubuntu0.24.04.5 [1,444 kB]
+Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-server-core-8.0 amd64 8
+.0.46-0ubuntu0.24.04.5 [17.6 MB]
+Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmysqlclient-dev amd64 8.0.
+46-0ubuntu0.24.04.5 [1,592 kB]
+Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libmysqlclient21 amd64 8.0.46
+-0ubuntu0.24.04.5 [1,255 kB]
+Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-client all 8.0.46-0ubun
+tu0.24.04.5 [9,410 B]
+Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mysql-server all 8.0.46-0ubun
+tu0.24.04.5 [9,526 B]
+Fetched 83.0 MB in 5s (16.3 MB/s)
+Preconfiguring packages ...
+(Reading database ... 239802 files and directories currently installed.)
+Preparing to unpack .../00-apache2_2.4.58-1ubuntu8.19_amd64.deb ...
+Unpacking apache2 (2.4.58-1ubuntu8.19) over (2.4.58-1ubuntu8.18) ...
+Preparing to unpack .../01-apache2-bin_2.4.58-1ubuntu8.19_amd64.deb ...
+Unpacking apache2-bin (2.4.58-1ubuntu8.19) over (2.4.58-1ubuntu8.18) ...
+Preparing to unpack .../02-apache2-data_2.4.58-1ubuntu8.19_all.deb ...
+Unpacking apache2-data (2.4.58-1ubuntu8.19) over (2.4.58-1ubuntu8.18) ...
+Preparing to unpack .../03-apache2-utils_2.4.58-1ubuntu8.19_amd64.deb ...
+Unpacking apache2-utils (2.4.58-1ubuntu8.19) over (2.4.58-1ubuntu8.18) ...
+Preparing to unpack .../04-firefox_1%3a1snap1-0ubuntu5_amd64.deb ...
+=> Installing the firefox snap
+==> Checking connectivity with the snap store
+==> Installing the firefox snap
+2026-11-14T11:22:05Z INFO Waiting for automatic snapd restart...
+2026-11-14T11:22:06Z INFO Waiting for automatic snapd restart...
+2026-11-14T11:22:07Z INFO Waiting for automatic snapd restart...
+2026-11-14T11:22:08Z INFO Waiting for automatic snapd restart...
+firefox 160.0-1 from Mozilla✓ installed
+=> Snap installation complete
+Unpacking firefox (1:1snap1-0ubuntu5) over (160.0+build1-0ubuntu0.24.04.1~mt1) ...
+dpkg: warning: unable to delete old directory '/etc/firefox': Directory not empty
+dpkg: warning: unable to delete old directory '/etc/apport/native-origins.d': Directory not empty
+dpkg: warning: unable to delete old directory '/etc/apport/blacklist.d': Directory not empty
+Preparing to unpack .../05-mysql-client-core-8.0_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking mysql-client-core-8.0 (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../06-mysql-client-8.0_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking mysql-client-8.0 (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../07-mysql-server-8.0_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking mysql-server-8.0 (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../08-mysql-server-core-8.0_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking mysql-server-core-8.0 (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../09-libmysqlclient-dev_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking libmysqlclient-dev (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../10-libmysqlclient21_8.0.46-0ubuntu0.24.04.5_amd64.deb ...
+Unpacking libmysqlclient21:amd64 (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../11-mysql-client_8.0.46-0ubuntu0.24.04.5_all.deb ...
+Unpacking mysql-client (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../12-mysql-server_8.0.46-0ubuntu0.24.04.5_all.deb ...
+Unpacking mysql-server (8.0.46-0ubuntu0.24.04.5) over (8.0.46-0ubuntu0.24.04.4) ...
+Preparing to unpack .../13-powershell_7.7.0-1.deb_amd64.deb ...
+Unpacking powershell (7.7.0-1.deb) over (7.6.10-1.deb) ...
+Setting up mysql-client-core-8.0 (8.0.46-0ubuntu0.24.04.5) ...
+Setting up libmysqlclient21:amd64 (8.0.46-0ubuntu0.24.04.5) ...
+Setting up firefox (1:1snap1-0ubuntu5) ...
+Setting up apache2-bin (2.4.58-1ubuntu8.19) ...
+Setting up mysql-server-core-8.0 (8.0.46-0ubuntu0.24.04.5) ...
+Setting up powershell (7.7.0-1.deb) ...
+Setting up mysql-client-8.0 (8.0.46-0ubuntu0.24.04.5) ...
+Setting up apache2-data (2.4.58-1ubuntu8.19) ...
+Setting up libmysqlclient-dev (8.0.46-0ubuntu0.24.04.5) ...
+Setting up apache2-utils (2.4.58-1ubuntu8.19) ...
+Setting up mysql-server-8.0 (8.0.46-0ubuntu0.24.04.5) ...
+mysqld will log errors to /var/log/mysql/error.log
+mysqld is running as pid 7094
+Setting up mysql-client (8.0.46-0ubuntu0.24.04.5) ...
+Setting up apache2 (2.4.58-1ubuntu8.19) ...
+apache2.service is a disabled or a static unit not running, not starting it.
+apache-htcacheclean.service is a disabled or a static unit not running, not starting it.
+Setting up mysql-server (8.0.46-0ubuntu0.24.04.5) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.12) ...
+Processing triggers for ufw (0.36.2-6) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Not building database; man-db/auto-update is not 'true'.
+Processing triggers for hicolor-icon-theme (0.17-2) ...
+Disabling Ubuntu mode, explicit restart mode configuredScanning processes... [
+Scanning processes...
+Scanning candidates...
+
+Services to be restarted:
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart docker.service
+ systemctl restart getty@tty1.service
+ systemctl restart hosted-compute-agent.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart serial-getty@ttyS0.service
+ systemctl restart systemd-logind.service
+ systemctl restart walinuxagent.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ runner @ user manager service: systemd[1174]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+devasc@labvm:~$ sudo apt-get purge speedtest-cli
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following packages will be REMOVED:
+  speedtest-cli*
+0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.
+After this operation, 106 kB disk space will be freed.
+Do you want to continue? [Y/n] Y
+(Reading database ... 239877 files and directories currently installed.)
+Removing speedtest-cli (2.1.3-2) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Not building database; man-db/auto-update is not 'true'.
+devasc@labvm:~$ passwd
+Changing password for devasc.
+Current password:
+New password:
+Retype new password:
+passwd: password updated successfully
+devasc@labvm:~$ passwd -S
+devasc P 2026-11-14 0 99999 7 -1
+devasc@labvm:~$ man passwd
+PASSWD(1)                                 User Commands                                 PA
+SSWD(1)
+
+NAME
+       passwd - change user password
+
+SYNOPSIS
+
+       passwd [options] [LOGIN]
+
+DESCRIPTION
+       The passwd command changes passwords for user accounts. A normal user may only change
+the
+       password for their own account, while the superuser may change the password for any
+       account.  passwd also changes the account or associated password validity period.
+
+   Password Changes
+       The user is first prompted for their old password, if one is present. This password is
+       then encrypted and compared against the stored password. The user has only one chance to
+       enter the correct password. The superuser is permitted to bypass this step so that
+       forgotten passwords may be changed.
+
+       After the password has been entered, password aging information is checked to see if the
+       user is permitted to change the password at this time. If not, passwd refuses to chang
+e
+       the password and exits.
+
+       The user is then prompted twice for a replacement password. The second entry is compared
+       against the first and both are required to match in order for the password to be changed.
+
+       Then, the password is tested for complexity. As a general guideline, passwords should
+       consist of 6 to 8 characters including one or more characters from each of the following
+       sets:
+
+       •   lower case alphabetics
+
+       •   digits 0 thru 9
+
+       •   punctuation marks
+
+       Care must be taken not to include the system default erase or kill characters.  passwd
+       will reject any password which is not suitably complex.
+
+   Hints for user passwords
+       The security of a password depends upon the strength of the encryption algorithm and the
+       size of the key space. The legacy UNIX System encryption method is based on the NBS DE
+S
+       algorithm. More recent methods are now recommended (see ENCRYPT_METHOD). The size of t
+he
+devasc@labvm:~$ man passwd | grep -B 1 -A 6 'Display account status'
+       -S, --status
+           Display account status information. The status information consists of 7 fields. The
+           first field is the user's login name. The second field indicates if the user account
+           has a locked password (L), has no password (NP), or has a usable password (P). The
+           third field gives the date of the last password change. The next four fields are the
+           minimum age, maximum age, warning period, and inactivity period for the password.
+           These ages are expressed in days.
+devasc@labvm:~$

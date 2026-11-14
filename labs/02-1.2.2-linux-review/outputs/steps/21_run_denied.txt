@@ -1,0 +1,2 @@
+devasc@labvm:~/Documents$ ./myfile.sh
+bash: ./myfile.sh: Permission denied

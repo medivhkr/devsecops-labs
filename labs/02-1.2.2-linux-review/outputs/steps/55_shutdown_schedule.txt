@@ -1,0 +1,2 @@
+devasc@labvm:~$ sudo shutdown +1 "Come back soon!"
+Shutdown scheduled for Sat 2026-11-14 11:21:18 UTC, use 'shutdown -c' to cancel.

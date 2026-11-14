@@ -1,0 +1,5 @@
+devasc@labvm:~/Documents$ ls ../Desktop/
+chromium_chromium.desktop                       exo-terminal-emulator.desktop
+cisco-packet-tracer_cisco-pacet-tracer.desktop  labs.desktop
+code.desktop                                    myfile.sh
+drawio_drawio.desktop                           postman_postman.desktop

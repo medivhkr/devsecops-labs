@@ -1,0 +1,2 @@
+devasc@labvm:~$ grep devasc /etc/passwd
+devasc:x:1002:1002:DEVASC,,,:/home/devasc:/bin/bash

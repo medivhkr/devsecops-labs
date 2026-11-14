@@ -1,0 +1,5 @@
+devasc@labvm:~$ ping -c 4 www.cisco.com
+PING e2867.dsca.akamaiedge.net (23.39.149.18) 56(84) bytes of data.
+
+--- e2867.dsca.akamaiedge.net ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3064ms

@@ -1,0 +1,10 @@
+devasc@labvm:~$ grep 'new*' /etc/passwd
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:998:998:systemd Network Management:/:/usr/sbin/nologin
+messagebus:x:101:101::/nonexistent:/usr/sbin/nologin
+syslog:x:102:102::/nonexistent:/usr/sbin/nologin
+tcpdump:x:107:108::/nonexistent:/usr/sbin/nologin
+mysql:x:111:116:MySQL Server,,,:/nonexistent:/bin/false
+runner:x:1001:1001::/home/runner:/bin/bash

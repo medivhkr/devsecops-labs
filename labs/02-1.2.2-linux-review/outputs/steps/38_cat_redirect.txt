@@ -1,0 +1,1 @@
+devasc@labvm:~$ cat linux.txt > linux2.txt

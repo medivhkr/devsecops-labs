@@ -1,0 +1,9 @@
+devasc@labvm:~$ ls Desktop -l
+total 28
+-rwxr-xr-x 1 devasc devasc 493 Nov 14 11:20 chromium_chromium.desktop
+-rwxr-xr-x 1 devasc devasc 379 Nov 14 11:20 cisco-packet-tracer_cisco-pacet-tracer.desktop
+-rwxr-xr-x 1 devasc devasc 507 Nov 14 11:20 code.desktop
+-rwxr-xr-x 1 devasc devasc 370 Nov 14 11:20 drawio_drawio.desktop
+-rwxr-xr-x 1 devasc devasc 255 Nov 14 11:20 exo-terminal-emulator.desktop
+-rwxr-xr-x 1 devasc devasc  89 Nov 14 11:20 labs.desktop
+-rwxr-xr-x 1 devasc devasc 322 Nov 14 11:20 postman_postman.desktop

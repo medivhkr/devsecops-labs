@@ -1,0 +1,1 @@
+devasc@labvm:~$ echo "I LOVE Linux!" >> linux2.txt

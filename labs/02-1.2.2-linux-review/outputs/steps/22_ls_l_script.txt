@@ -1,0 +1,2 @@
+devasc@labvm:~/Documents$ ls -l myfile.sh
+-rw-rw-r--+ 1 devasc devasc 14 Nov 14 11:20 myfile.sh

@@ -1,0 +1,2 @@
+devasc@labvm:~$ cat linux2.txt
+Linux is AWESOME!

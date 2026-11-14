@@ -1,0 +1,4 @@
+devasc@labvm:~$ ps
+    PID TTY          TIME CMD
+   4197 pts/0    00:00:00 bash
+   4575 pts/0    00:00:00 ps

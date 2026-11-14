@@ -1,0 +1,1 @@
+devasc@labvm:~/Documents$ echo "ls ../Desktop" > myfile.sh

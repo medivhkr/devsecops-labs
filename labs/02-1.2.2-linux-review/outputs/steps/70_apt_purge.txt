@@ -1,0 +1,13 @@
+devasc@labvm:~$ sudo apt-get purge speedtest-cli
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following packages will be REMOVED:
+  speedtest-cli*
+0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.
+After this operation, 106 kB disk space will be freed.
+Do you want to continue? [Y/n] Y
+(Reading database ... 239877 files and directories currently installed.)
+Removing speedtest-cli (2.1.3-2) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Not building database; man-db/auto-update is not 'true'.
