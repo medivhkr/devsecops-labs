@@ -1,0 +1,23 @@
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 2+3
+5
+>>> 10-4
+6
+>>> 2*4
+8
+>>> 20/5
+4.0
+>>> 3**2
+9
+>>> 2+3*4**2/(7-5)
+26.0
+>>> "Hello World!"
+'Hello World!'
+>>> 'Hello World!'
+'Hello World!'
+>>> print("Hello World!")
+Hello World!
+>>> quit()

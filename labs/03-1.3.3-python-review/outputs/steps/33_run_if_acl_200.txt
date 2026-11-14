@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 if-acl.py
+What is the IPv4 ACL number? 200
+This is not a standard or extended IPv4 ACL.

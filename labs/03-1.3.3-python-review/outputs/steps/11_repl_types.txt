@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> type(98)
+<class 'int'>
+>>> type(98.6)
+<class 'float'>
+>>> type("Hi!")
+<class 'str'>
+>>> type(True)
+<class 'bool'>
+>>> quit()

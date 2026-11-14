@@ -1,0 +1,6 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 personal-info.py
+What is your first name? Bob
+What is your last name? Smith
+What is your location? London
+What is your age? 36
+Hi Bob Smith! Your location is London and you are 36 years old.

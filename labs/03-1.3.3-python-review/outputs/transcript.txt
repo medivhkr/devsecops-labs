@@ -1,0 +1,429 @@
+devasc@labvm:~$ cat /etc/os-release | head -4 && hostname && whoami
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+labvm
+devasc
+devasc@labvm:~$ python3 -V
+Python 3.8.10
+devasc@labvm:~$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 2+3
+5
+>>> 10-4
+6
+>>> 2*4
+8
+>>> 20/5
+4.0
+>>> 3**2
+9
+>>> 2+3*4**2/(7-5)
+26.0
+>>> "Hello World!"
+'Hello World!'
+>>> 'Hello World!'
+'Hello World!'
+>>> print("Hello World!")
+Hello World!
+>>> quit()
+devasc@labvm:~$ cd ~/labs/devnet-src/python
+devasc@labvm:~/labs/devnet-src/python$ cat hello-world.py
+print("Hello World!")
+devasc@labvm:~/labs/devnet-src/python$ python3 hello-world.py
+Hello World!
+devasc@labvm:~/labs/devnet-src/python$ cd ~
+devasc@labvm:~$ python3 ~/labs/devnet-src/python/hello-world.py
+Hello World!
+devasc@labvm:~$ cd labs/devnet-src
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> type(98)
+<class 'int'>
+>>> type(98.6)
+<class 'float'>
+>>> type("Hi!")
+<class 'str'>
+>>> type(True)
+<class 'bool'>
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 1<2
+True
+>>> 1<1
+False
+>>> 1==1
+True
+>>> 1>=1
+True
+>>> 1<=1
+True
+>>> 1>2
+False
+>>> 1!=1
+False
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> x=3
+>>> x*5
+15
+>>> "Cisco"*x
+'CiscoCiscoCisco'
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> str1="Cisco"
+>>> str2="Networking"
+>>> str3="Academy"
+>>> space=" "
+>>> print(str1+space+str2+space+str3)
+Cisco Networking Academy
+>>> print(str1,str2,str3)
+Cisco Networking Academy
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> x=3
+>>> print("The value of x is " + x)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate str (not "int") to str
+>>> print("The value of x is " + str(x))
+The value of x is 3
+>>> type(x)
+<class 'int'>
+>>> x=str(x)
+>>> type(x)
+<class 'str'>
+>>> num = 22/7
+>>> f"The value of num is {num}"
+'The value of num is 3.142857142857143'
+>>> pi = "{:.2f}".format(num)
+>>> f"The value of pi is {pi}."
+'The value of pi is 3.14.'
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> hostnames=["R1","R2","R3","S1","S2"]
+>>> type(hostnames)
+<class 'list'>
+>>> len(hostnames)
+5
+>>> hostnames
+['R1', 'R2', 'R3', 'S1', 'S2']
+>>> hostnames[0]
+'R1'
+>>> hostnames[-1]
+'S2'
+>>> hostnames[0]="RTR1"
+>>> hostnames
+['RTR1', 'R2', 'R3', 'S1', 'S2']
+>>> del hostnames[3]
+>>> hostnames
+['RTR1', 'R2', 'R3', 'S2']
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> ipAddress={"R1":"10.1.1.1","R2":"10.2.2.1","R3":"10.3.3.1"}
+>>> type(ipAddress)
+<class 'dict'>
+>>> ipAddress
+{'R1': '10.1.1.1', 'R2': '10.2.2.1', 'R3': '10.3.3.1'}
+>>> ipAddress['R1']
+'10.1.1.1'
+>>> "R3" in ipAddress
+True
+>>> ipAddress["S1"]="10.1.1.10"
+>>> ipAddress
+{'R1': '10.1.1.1', 'R2': '10.2.2.1', 'R3': '10.3.3.1', 'S1': '10.1.1.10'}
+>>> ipAddress["R3"]=["10.3.3.1","10.3.3.2","10.3.3.3"]
+>>> ipAddress
+{'R1': '10.1.1.1', 'R2': '10.2.2.1', 'R3': ['10.3.3.1', '10.3.3.2', '10.3.3.3'], 'S1': '10.1.1.10'}
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> firstName = input("What is your first name? ")
+What is your first name? Bob
+>>> print("Hello " + firstName +"!")
+Hello Bob!
+>>> quit()
+devasc@labvm:~/labs/devnet-src$ cd python
+devasc@labvm:~/labs/devnet-src/python$ cat personal-info.py
+firstName = input("What is your first name? ")
+lastName = input("What is your last name? ")
+location = input("What is your location? ")
+age = input("What is your age? ")
+print("Hi " + firstName, lastName + "! Your location is " + location + " and you are " + age + " yea
+rs old.")
+devasc@labvm:~/labs/devnet-src/python$ python3 personal-info.py
+What is your first name? Bob
+What is your last name? Smith
+What is your location? London
+What is your age? 36
+Hi Bob Smith! Your location is London and you are 36 years old.
+devasc@labvm:~/labs/devnet-src/python$ cat if-vlan.py
+nativeVLAN = 1
+dataVLAN = 100
+if nativeVLAN == dataVLAN:
+    print("The native VLAN and the data VLAN are the same.")
+else:
+    print("The native VLAN and the data VLAN are different.")
+devasc@labvm:~/labs/devnet-src/python$ python3 if-vlan.py
+The native VLAN and the data VLAN are different.
+devasc@labvm:~/labs/devnet-src/python$ cat if-vlan.py
+nativeVLAN = 1
+dataVLAN = 1
+if nativeVLAN == dataVLAN:
+    print("The native VLAN and the data VLAN are the same.")
+else:
+    print("The native VLAN and the data VLAN are different.")
+devasc@labvm:~/labs/devnet-src/python$ python3 if-vlan.py
+The native VLAN and the data VLAN are the same.
+devasc@labvm:~/labs/devnet-src/python$ cat if-acl.py
+aclNum = int(input("What is the IPv4 ACL number? "))
+if aclNum >= 1 and aclNum <= 99:
+    print("This is a standard IPv4 ACL.")
+elif aclNum >=100 and aclNum <= 199:
+    print("This is an extended IPv4 ACL.")
+else:
+    print("This is not a standard or extended IPv4 ACL.")
+devasc@labvm:~/labs/devnet-src/python$ python3 if-acl.py
+What is the IPv4 ACL number? 10
+This is a standard IPv4 ACL.
+devasc@labvm:~/labs/devnet-src/python$ python3 if-acl.py
+What is the IPv4 ACL number? 110
+This is an extended IPv4 ACL.
+devasc@labvm:~/labs/devnet-src/python$ python3 if-acl.py
+What is the IPv4 ACL number? 200
+This is not a standard or extended IPv4 ACL.
+devasc@labvm:~/labs/devnet-src/python$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> devices=["R1","R2","R3","S1","S2"]
+>>> for item in devices:
+...     print(item)
+...
+R1
+R2
+R3
+S1
+S2
+>>> for item in devices:
+...     if "R" in item:
+...         print(item)
+...
+R1
+R2
+R3
+>>> switches=[]
+>>> for item in devices:
+...     if "S" in item:
+...         switches.append(item)
+...
+>>> switches
+['S1', 'S2']
+>>> quit()
+devasc@labvm:~/labs/devnet-src/python$ cat while-loop.py
+x=input("Enter a number to count to: ")
+x=int(x)
+y=1
+while y<=x:
+    print(y)
+    y=y+1
+devasc@labvm:~/labs/devnet-src/python$ python3 while-loop.py
+Enter a number to count to: 10
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+devasc@labvm:~/labs/devnet-src/python$ cat while-loop.py
+x=input("Enter a number to count to: ")
+x=int(x)
+y=1
+while True:
+    print(y)
+    y=y+1
+    if y>x:
+        break
+devasc@labvm:~/labs/devnet-src/python$ python3 while-loop.py
+Enter a number to count to: 10
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+devasc@labvm:~/labs/devnet-src/python$ cat while-loop.py
+while True:
+    x=input("Enter a number to count to: ")
+    if x == 'q' or x == 'quit':
+        break
+
+    x=int(x)
+    y=1
+    while True:
+        print(y)
+        y=y+1
+        if y>x:
+            break
+devasc@labvm:~/labs/devnet-src/python$ python3 while-loop.py
+Enter a number to count to: 3
+1
+2
+3
+Enter a number to count to: 5
+1
+2
+3
+4
+5
+Enter a number to count to: quit
+devasc@labvm:~/labs/devnet-src/python$ ls -l
+total 24
+-rw-r--r-- 1 devasc devasc 373 Nov 14 10:18 devices.txt
+-rw-r--r-- 1 devasc devasc  22 Nov 14 10:18 hello-world.py
+-rw-r--r-- 1 devasc devasc 272 Nov 14 10:18 if-acl.py
+-rw-r--r-- 1 devasc devasc 184 Nov 14 10:18 if-vlan.py
+-rw-r--r-- 1 devasc devasc 280 Nov 14 10:18 personal-info.py
+-rw-r--r-- 1 devasc devasc 205 Nov 14 10:18 while-loop.py
+devasc@labvm:~/labs/devnet-src/python$ cat file-access.py
+file=open("devices.txt","r")
+for item in file:
+    print(item)
+file.close()
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access.py
+Cisco 819 Router
+
+Cisco 881 Router
+
+Cisco 888 Router
+
+Cisco 1100 Router
+
+Cisco 4321 Router
+
+Cisco 4331 Router
+
+Cisco 4351 Router
+
+Cisco 2960 Catalyst Switch
+
+Cisco 3850 Catalyst Switch
+
+Cisco 7700 Nexus Switch
+
+Cisco Meraki MS220-8 Cloud Managed Switch
+
+Cisco Meraki MX64W Security Appliance
+
+Cisco Meraki MX84 Security Appliance
+
+Cisco Meraki MC74 VoIP Phone
+
+Cisco 3860 Catalyst Switch
+devasc@labvm:~/labs/devnet-src/python$ cat file-access.py
+file=open("devices.txt","r")
+for item in file:
+   item=item.strip()
+   print(item)
+file.close()
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access.py
+Cisco 819 Router
+Cisco 881 Router
+Cisco 888 Router
+Cisco 1100 Router
+Cisco 4321 Router
+Cisco 4331 Router
+Cisco 4351 Router
+Cisco 2960 Catalyst Switch
+Cisco 3850 Catalyst Switch
+Cisco 7700 Nexus Switch
+Cisco Meraki MS220-8 Cloud Managed Switch
+Cisco Meraki MX64W Security Appliance
+Cisco Meraki MX84 Security Appliance
+Cisco Meraki MC74 VoIP Phone
+Cisco 3860 Catalyst Switch
+devasc@labvm:~/labs/devnet-src/python$ cat file-access.py
+devices=[]
+file=open("devices.txt","r")
+for item in file:
+   item=item.strip()
+   devices.append(item)
+file.close()
+print(devices)
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access.py
+['Cisco 819 Router', 'Cisco 881 Router', 'Cisco 888 Router', 'Cisco 1100 Router', 'Cisco 4321 Router
+', 'Cisco 4331 Router', 'Cisco 4351 Router', 'Cisco 2960 Catalyst Switch', 'Cisco 3850 Catalyst Swit
+ch', 'Cisco 7700 Nexus Switch', 'Cisco Meraki MS220-8 Cloud Managed Switch', 'Cisco Meraki MX64W Sec
+urity Appliance', 'Cisco Meraki MX84 Security Appliance', 'Cisco Meraki MC74 VoIP Phone', 'Cisco 386
+0 Catalyst Switch']
+devasc@labvm:~/labs/devnet-src/python$ cat file-access-input.py
+file = open("devices.txt", "a")
+while True:
+    newItem = input("Enter device name: ")
+    if newItem == "exit":
+        print("All done!")
+        break
+    file.write(newItem + "\n")
+file.close()
+devasc@labvm:~/labs/devnet-src/python$ cp devices.txt devices.txt.bak
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access-input.py
+Enter device name: Cisco 1941 Router
+Enter device name: Cisco 2950 Catalyst Switch
+Enter device name: exit
+All done!
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access.py
+['Cisco 819 Router', 'Cisco 881 Router', 'Cisco 888 Router', 'Cisco 1100 Router', 'Cisco 4321 Router
+', 'Cisco 4331 Router', 'Cisco 4351 Router', 'Cisco 2960 Catalyst Switch', 'Cisco 3850 Catalyst Swit
+ch', 'Cisco 7700 Nexus Switch', 'Cisco Meraki MS220-8 Cloud Managed Switch', 'Cisco Meraki MX64W Sec
+urity Appliance', 'Cisco Meraki MX84 Security Appliance', 'Cisco Meraki MC74 VoIP Phone', 'Cisco 386
+0 Catalyst SwitchCisco 1941 Router', 'Cisco 2950 Catalyst Switch']
+devasc@labvm:~/labs/devnet-src/python$ tail -c 27 devices.txt.bak | od -c
+0000000  \n   C   i   s   c   o       3   8   6   0       C   a   t   a
+0000020   l   y   s   t       S   w   i   t   c   h
+0000033
+devasc@labvm:~/labs/devnet-src/python$ cp devices.txt.bak devices.txt && echo >> devices.txt
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access-input.py
+Enter device name: Cisco 1941 Router
+Enter device name: Cisco 2950 Catalyst Switch
+Enter device name: exit
+All done!
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access.py
+['Cisco 819 Router', 'Cisco 881 Router', 'Cisco 888 Router', 'Cisco 1100 Router', 'Cisco 4321 Router
+', 'Cisco 4331 Router', 'Cisco 4351 Router', 'Cisco 2960 Catalyst Switch', 'Cisco 3850 Catalyst Swit
+ch', 'Cisco 7700 Nexus Switch', 'Cisco Meraki MS220-8 Cloud Managed Switch', 'Cisco Meraki MX64W Sec
+urity Appliance', 'Cisco Meraki MX84 Security Appliance', 'Cisco Meraki MC74 VoIP Phone', 'Cisco 386
+0 Catalyst Switch', 'Cisco 1941 Router', 'Cisco 2950 Catalyst Switch']
+devasc@labvm:~/labs/devnet-src/python$

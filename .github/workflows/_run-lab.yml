@@ -13,6 +13,14 @@ on:
         required: false
         type: string
         default: container
+      scenario:
+        required: false
+        type: string
+        default: scenario.yml
+      artifact:
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -37,14 +45,14 @@ jobs:
           MAPQUEST_KEY: ${{ secrets.MAPQUEST_KEY }}
         run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then bash "labs/${{ inputs.lab }}/prepare.sh"; fi
       - name: Выполнение лабораторной
-        run: python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
+        run: python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/${{ inputs.scenario }}" --out "out/${{ inputs.lab }}"
       - name: Протокол сессии
         if: always()
         run: cat "out/${{ inputs.lab }}/transcript.txt" || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ inputs.lab }}
+          name: ${{ inputs.artifact || inputs.lab }}
           path: out/${{ inputs.lab }}
           retention-days: 30
 
@@ -62,7 +70,7 @@ jobs:
           MAPQUEST_KEY: ${{ secrets.MAPQUEST_KEY }}
         run: if [ -f "labs/${{ inputs.lab }}/prepare.sh" ]; then sudo -E bash "labs/${{ inputs.lab }}/prepare.sh"; fi
       - name: Выполнение лабораторной
-        run: sudo python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/scenario.yml" --out "out/${{ inputs.lab }}"
+        run: sudo python3 tools/labrun/labrun.py "labs/${{ inputs.lab }}/${{ inputs.scenario }}" --out "out/${{ inputs.lab }}"
       - name: Права на результаты
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" out || true
@@ -72,6 +80,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ${{ inputs.lab }}
+          name: ${{ inputs.artifact || inputs.lab }}
           path: out/${{ inputs.lab }}
           retention-days: 30

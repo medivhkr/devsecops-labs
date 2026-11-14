@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 file-access-input.py
+Enter device name: Cisco 1941 Router
+Enter device name: Cisco 2950 Catalyst Switch
+Enter device name: exit
+All done!

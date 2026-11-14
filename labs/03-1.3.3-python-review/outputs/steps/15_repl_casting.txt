@@ -1,0 +1,23 @@
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> x=3
+>>> print("The value of x is " + x)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: can only concatenate str (not "int") to str
+>>> print("The value of x is " + str(x))
+The value of x is 3
+>>> type(x)
+<class 'int'>
+>>> x=str(x)
+>>> type(x)
+<class 'str'>
+>>> num = 22/7
+>>> f"The value of num is {num}"
+'The value of num is 3.142857142857143'
+>>> pi = "{:.2f}".format(num)
+>>> f"The value of pi is {pi}."
+'The value of pi is 3.14.'
+>>> quit()

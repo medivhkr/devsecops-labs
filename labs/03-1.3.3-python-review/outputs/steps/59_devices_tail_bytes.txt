@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/python$ tail -c 27 devices.txt.bak | od -c
+0000000  \n   C   i   s   c   o       3   8   6   0       C   a   t   a
+0000020   l   y   s   t       S   w   i   t   c   h
+0000033

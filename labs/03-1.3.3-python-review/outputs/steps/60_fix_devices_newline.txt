@@ -1,0 +1,1 @@
+devasc@labvm:~/labs/devnet-src/python$ cp devices.txt.bak devices.txt && echo >> devices.txt

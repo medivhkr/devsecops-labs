@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/python$ ls -l
+total 24
+-rw-r--r-- 1 devasc devasc 373 Nov 14 10:18 devices.txt
+-rw-r--r-- 1 devasc devasc  22 Nov 14 10:18 hello-world.py
+-rw-r--r-- 1 devasc devasc 272 Nov 14 10:18 if-acl.py
+-rw-r--r-- 1 devasc devasc 184 Nov 14 10:18 if-vlan.py
+-rw-r--r-- 1 devasc devasc 280 Nov 14 10:18 personal-info.py
+-rw-r--r-- 1 devasc devasc 205 Nov 14 10:18 while-loop.py

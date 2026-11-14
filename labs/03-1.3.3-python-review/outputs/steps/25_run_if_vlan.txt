@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/python$ python3 if-vlan.py
+The native VLAN and the data VLAN are different.

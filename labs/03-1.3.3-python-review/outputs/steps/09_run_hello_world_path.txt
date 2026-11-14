@@ -1,0 +1,2 @@
+devasc@labvm:~$ python3 ~/labs/devnet-src/python/hello-world.py
+Hello World!

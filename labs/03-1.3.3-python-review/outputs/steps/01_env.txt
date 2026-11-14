@@ -1,0 +1,7 @@
+devasc@labvm:~$ cat /etc/os-release | head -4 && hostname && whoami
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+labvm
+devasc

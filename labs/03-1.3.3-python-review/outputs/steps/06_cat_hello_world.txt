@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/python$ cat hello-world.py
+print("Hello World!")

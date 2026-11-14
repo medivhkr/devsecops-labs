@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/python$ cat file-access.py
+file=open("devices.txt","r")
+for item in file:
+    print(item)
+file.close()

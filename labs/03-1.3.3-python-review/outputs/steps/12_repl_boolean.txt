@@ -1,0 +1,19 @@
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 1<2
+True
+>>> 1<1
+False
+>>> 1==1
+True
+>>> 1>=1
+True
+>>> 1<=1
+True
+>>> 1>2
+False
+>>> 1!=1
+False
+>>> quit()

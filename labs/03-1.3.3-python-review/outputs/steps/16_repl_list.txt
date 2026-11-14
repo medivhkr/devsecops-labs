@@ -1,0 +1,22 @@
+devasc@labvm:~/labs/devnet-src$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> hostnames=["R1","R2","R3","S1","S2"]
+>>> type(hostnames)
+<class 'list'>
+>>> len(hostnames)
+5
+>>> hostnames
+['R1', 'R2', 'R3', 'S1', 'S2']
+>>> hostnames[0]
+'R1'
+>>> hostnames[-1]
+'S2'
+>>> hostnames[0]="RTR1"
+>>> hostnames
+['RTR1', 'R2', 'R3', 'S1', 'S2']
+>>> del hostnames[3]
+>>> hostnames
+['RTR1', 'R2', 'R3', 'S2']
+>>> quit()
