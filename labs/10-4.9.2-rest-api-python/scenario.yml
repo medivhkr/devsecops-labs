@@ -1,0 +1,597 @@
+lab: "4.9.2"
+title: "Integrate a REST API in a Python Application"
+# Ключ MapQuest не хранится ни в коде, ни в сценарии: prepare.sh кладёт его из секрета
+# репозитория MAPQUEST_KEY в ~/.mapquest_env (600), а оболочка студента подключает файл.
+shell_init:
+  - "[ -f ~/.mapquest_env ] && . ~/.mapquest_env"
+collect:
+  - ~/labs/devnet-src/mapquest
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env_os_python
+    title: "Part 1: стенд, версия ОС и Python 3"
+    cmd: "grep PRETTY_NAME /etc/os-release && python3 --version"
+  - id: env_requests
+    title: "Part 1: модуль requests установлен"
+    cmd: 'python3 -c "import requests; print(requests.__version__)"'
+
+  # ---------- Part 2: демонстрация приложения преподавателем (действий студента нет) ----------
+
+  # ---------- Part 3: Get a MapQuest API Key ----------
+  # Регистрация на developer.mapquest.com выполняется вручную в браузере; ключ хранится
+  # в секрете репозитория. Здесь только проверка, что ключ доступен (значение не выводится).
+  - id: key_file
+    title: "Part 3: файл ~/.mapquest_env с ключом из секрета репозитория (права 600)"
+    cmd: "ls -l ~/.mapquest_env"
+  - id: key_env
+    title: "Part 3: ключ доступен через os.environ (значение не выводится)"
+    cmd: "python3 -c 'import os; print(\"MAPQUEST_KEY set:\", bool(os.environ.get(\"MAPQUEST_KEY\")))'"
+
+  # ---------- Part 4: Build the Basic MapQuest Direction Application ----------
+  - id: cd_mapquest
+    title: "Part 4 Step 1: рабочий каталог ~/labs/devnet-src/mapquest"
+    cmd: "cd labs/devnet-src/mapquest"
+  - id: ls_mapquest
+    title: "Part 4 Step 1: содержимое каталога до начала работы"
+    cmd: "ls -l"
+  - id: v1_imports
+    title: "Part 4 Step 2a: mapquest_parse-json_1.py, импорт модулей"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_1.py
+      content: |
+        import urllib.parse
+        import requests
+  - id: run_v1_imports
+    title: "Part 4 Step 2b: запуск, вывода и ошибок нет"
+    cmd: "python3 mapquest_parse-json_1.py"
+    timeout: 60
+    expect_exit: 0
+  - id: v1_url
+    title: "Part 4 Step 3: URL запроса и GET-запрос, ключ из переменной окружения"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_1.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        orig = "Washington, D.C."
+        dest = "Baltimore, Md"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+
+        json_data = requests.get(url).json()
+        # the reply repeats the key in its mapUrl links, so every key=... is masked
+        print(re.sub(r"key=[^&'\"]*", "key=***", str(json_data)))
+  - id: cat_v1
+    title: "Part 4 Step 3d: проверка текста скрипта"
+    cmd: "cat mapquest_parse-json_1.py"
+  - id: run_v1
+    title: "Part 4 Step 4: ответ API в виде словаря Python (ключ замаскирован)"
+    cmd: "python3 mapquest_parse-json_1.py"
+    timeout: 120
+    expect_exit: 0
+  - id: v2_status
+    title: "Part 4 Step 5: mapquest_parse-json_2.py, вывод URL и проверка statuscode"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_2.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        orig = "Washington, D.C."
+        dest = "Baltimore, Md"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+        # the URL is printed with the API key masked
+        print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+
+        json_data = requests.get(url).json()
+        json_status = json_data["info"]["statuscode"]
+
+        if json_status == 0:
+            print("API Status: " + str(json_status) + " = A successful route call.\n")
+  - id: run_v2
+    title: "Part 4 Step 6: запуск, URL и состояние API"
+    cmd: "python3 mapquest_parse-json_2.py"
+    timeout: 120
+    expect_exit: 0
+  - id: v3_input
+    title: "Part 4 Step 7: mapquest_parse-json_3.py, ввод мест в цикле while"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_3.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            dest = input("Destination: ")
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+  - id: run_v3_ctrl_c
+    title: "Part 4 Step 8: ввод мест, повторный запрос и остановка по Ctrl+C"
+    cmd: "python3 mapquest_parse-json_3.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        delay: 0.5
+        sendcontrol: "c"
+        timeout: 60
+  - id: v4_quit
+    title: "Part 4 Step 9: mapquest_parse-json_4.py, выход по quit или q"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_4.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+  - id: run_v4_q_start
+    title: "Part 4 Step 10: q в запросе Starting Location"
+    cmd: "python3 mapquest_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 30
+  - id: run_v4_quit_start
+    title: "Part 4 Step 10: quit в запросе Starting Location"
+    cmd: "python3 mapquest_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "quit"
+        timeout: 30
+  - id: run_v4_q_dest
+    title: "Part 4 Step 10: q в запросе Destination"
+    cmd: "python3 mapquest_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C"
+        timeout: 30
+      - expect: "Destination: "
+        send: "q"
+        timeout: 30
+  - id: run_v4_quit_dest
+    title: "Part 4 Step 10: quit в запросе Destination"
+    cmd: "python3 mapquest_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "quit"
+        timeout: 30
+  - id: run_v4_valid
+    title: "Part 4 Step 11a: запуск с допустимой парой мест, URL для просмотра JSON"
+    cmd: "python3 mapquest_parse-json_4.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  # Вместо Chromium + JSONView: тот же URL (*** заменено на ключ из $MAPQUEST_KEY) загружается
+  # curl в /tmp, структура JSON просматривается jq. Выводятся только ключи и нужные поля:
+  # ссылки mapUrl в ответе содержат ключ, поэтому ответ целиком на экран не выводится.
+  - id: api_base_var
+    title: "Part 4 Step 11b: базовый адрес API в переменной оболочки"
+    cmd: 'API="https://www.mapquestapi.com/directions/v2/route"'
+  - id: curl_route_json
+    title: "Part 4 Step 11b: JSON по URL из шага 11a (curl вместо Chromium), ключ из $MAPQUEST_KEY"
+    cmd: 'curl -s "$API?key=$MAPQUEST_KEY&from=Washington%2C+D.C.&to=Baltimore%2C+Md" -o /tmp/route.json'
+    timeout: 120
+    expect_exit: 0
+  - id: jq_root_keys
+    title: "Part 4 Step 11c: ключи корня JSON (route свёрнут)"
+    cmd: "jq 'keys' /tmp/route.json"
+  - id: jq_info
+    title: "Part 4 Step 11c: объект info и statuscode"
+    cmd: "jq '.info' /tmp/route.json"
+  - id: jq_route_keys
+    title: "Part 4 Step 11d: ключи объекта route (route развёрнут)"
+    cmd: "jq '.route | keys_unsorted' /tmp/route.json"
+  - id: jq_route_summary
+    title: "Part 4 Step 11d: hasTollRoad, hasBridge, distance, formattedTime, time, fuelUsed"
+    cmd: "jq '.route | {hasTollRoad, hasBridge, distance, formattedTime, time, fuelUsed}' /tmp/route.json"
+  - id: key_in_reply
+    title: "DevSecOps: сколько раз ключ API встречается в ответе (значение не выводится)"
+    cmd: 'grep -oF "key=$MAPQUEST_KEY" /tmp/route.json | wc -l'
+
+  # ---------- Part 5: Upgrade the MapQuest Directions Application ----------
+  - id: v5_imperial
+    title: "Part 5 Step 1a-b: mapquest_parse-json_5.py, сводка поездки (мили, галлоны)"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_5.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + json_data["route"]["formattedTime"])
+                print("Miles:           " + str(json_data["route"]["distance"]))
+                print("Fuel Used (Gal): " + str(json_data["route"]["fuelUsed"]))
+                print("=============================================")
+  - id: run_v5_imperial
+    title: "Part 5 Step 1c: запуск, сводка в милях и галлонах"
+    cmd: "python3 mapquest_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  - id: v5_metric
+    title: "Part 5 Step 1d: перевод в километры и литры"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_5.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + json_data["route"]["formattedTime"])
+                print("Kilometers:      " + str(json_data["route"]["distance"] * 1.61))
+                print("Fuel Used (Ltr): " + str(json_data["route"]["fuelUsed"] * 3.78))
+                print("=============================================")
+  - id: run_v5_metric
+    title: "Part 5 Step 1e: запуск, значения без округления"
+    cmd: "python3 mapquest_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  - id: v5_rounded
+    title: "Part 5 Step 1f: округление до двух знаков методом format()"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_5.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + json_data["route"]["formattedTime"])
+                print("Kilometers:      " + "{:.2f}".format(json_data["route"]["distance"] * 1.61))
+                print("Fuel Used (Ltr): " + "{:.2f}".format(json_data["route"]["fuelUsed"] * 3.78))
+                print("=============================================")
+  - id: run_v5_rounded
+    title: "Part 5 Step 2: запуск, сводка в метрических единицах с округлением"
+    cmd: "python3 mapquest_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  # Part 5 Step 3: просмотр maneuvers в сохранённом ответе (вместо вкладки Chromium с JSONView)
+  - id: jq_maneuvers_count
+    title: "Part 5 Step 3b: число манёвров в route.legs[0].maneuvers"
+    cmd: "jq '.route.legs[0].maneuvers | length' /tmp/route.json"
+  - id: jq_maneuver_keys
+    title: "Part 5 Step 3c: ключи первого манёвра"
+    cmd: "jq '.route.legs[0].maneuvers[0] | keys_unsorted' /tmp/route.json"
+  - id: jq_maneuver_first
+    title: "Part 5 Step 3c: narrative и distance первого манёвра"
+    cmd: "jq '.route.legs[0].maneuvers[0] | {narrative, distance}' /tmp/route.json"
+  - id: v6_maneuvers
+    title: "Part 5 Step 4: mapquest_parse-json_6.py, цикл for по маршруту"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_6.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + json_data["route"]["formattedTime"])
+                print("Kilometers:      " + "{:.2f}".format(json_data["route"]["distance"] * 1.61))
+                print("Fuel Used (Ltr): " + "{:.2f}".format(json_data["route"]["fuelUsed"] * 3.78))
+                print("=============================================")
+                for each in json_data["route"]["legs"][0]["maneuvers"]:
+                    print(each["narrative"] + " (" + "{:.2f}".format(each["distance"] * 1.61) + " km)")
+                print("=============================================\n")
+  - id: run_v6
+    title: "Part 5 Step 5: запуск, пошаговый маршрут"
+    cmd: "python3 mapquest_parse-json_6.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  - id: run_v6_invalid
+    title: "Part 5 Step 6a: недопустимые места (Beijing, China и Bal)"
+    cmd: "python3 mapquest_parse-json_6.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 60
+      - expect: "Destination: "
+        send: "Bal"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 60
+  # Part 5 Step 6b: JSON ответа с ошибкой (вместо Chromium + JSONView)
+  - id: curl_error_json
+    title: "Part 5 Step 6b: JSON для Washington, D.C. -> Beijing, China"
+    cmd: 'curl -s "$API?key=$MAPQUEST_KEY&from=Washington%2C+D.C.&to=Beijing%2C+China" -o /tmp/err.json'
+    timeout: 120
+    expect_exit: 0
+  - id: jq_error_route
+    title: "Part 5 Step 6b: содержимое route в ответе с ошибкой"
+    cmd: "jq '.route | keys' /tmp/err.json"
+  - id: jq_error_info
+    title: "Part 5 Step 6b: statuscode и сообщение в info"
+    cmd: "jq '.info' /tmp/err.json"
+  - id: v7_errors
+    title: "Part 5 Step 6c-d: mapquest_parse-json_7.py, обработка кодов 402, 611 и прочих"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/mapquest_parse-json_7.py
+      content: |
+        import os
+        import re
+        import urllib.parse
+        import requests
+
+        main_api = "https://www.mapquestapi.com/directions/v2/route?"
+        key = os.environ.get("MAPQUEST_KEY")   # API key from the environment
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            url = main_api + urllib.parse.urlencode({"key": key, "from": orig, "to": dest})
+            # the URL is printed with the API key masked
+            print("URL: " + re.sub(r"key=[^&]*", "key=***", url))
+            json_data = requests.get(url).json()
+            json_status = json_data["info"]["statuscode"]
+            if json_status == 0:
+                print("API Status: " + str(json_status) + " = A successful route call.\n")
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + json_data["route"]["formattedTime"])
+                print("Kilometers:      " + "{:.2f}".format(json_data["route"]["distance"] * 1.61))
+                print("Fuel Used (Ltr): " + "{:.2f}".format(json_data["route"]["fuelUsed"] * 3.78))
+                print("=============================================")
+                for each in json_data["route"]["legs"][0]["maneuvers"]:
+                    print(each["narrative"] + " (" + "{:.2f}".format(each["distance"] * 1.61) + " km)")
+                print("=============================================\n")
+            elif json_status == 402:
+                print("**********************************************")
+                print("Status Code: " + str(json_status) + "; Invalid user inputs for one or both locations.")
+                print("**********************************************\n")
+            elif json_status == 611:
+                print("**********************************************")
+                print("Status Code: " + str(json_status) + "; Missing an entry for one or both locations.")
+                print("**********************************************\n")
+            else:
+                print("************************************************************************")
+                print("For Status Code: " + str(json_status) + "; Refer to:")
+                print("https://developer.mapquest.com/documentation/directions-api/status-codes")
+                print("************************************************************************\n")
+
+  # ---------- Part 6: Test Full Application Functionality ----------
+  - id: run_v7_all
+    title: "Part 6: все ветви mapquest_parse-json_7.py (0, 402, 611, quit)"
+    cmd: "python3 mapquest_parse-json_7.py"
+    timeout: 180
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Moscow, Russia"
+        timeout: 60
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 180
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 60
+      - expect: "Destination: "
+        send: "Bal"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 60
+      - expect: "Destination: "
+        send: ""
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "quit"
+        timeout: 60
+
+  # ---------- DevSecOps: итоговая проверка обращения с ключом ----------
+  - id: rm_saved_json
+    title: "DevSecOps: удаление сохранённых ответов API (в ссылках mapUrl есть ключ)"
+    cmd: "rm -f /tmp/route.json /tmp/err.json"
+  - id: ls_final
+    title: "Итог: файлы mapquest_parse-json_1.py ... mapquest_parse-json_7.py"
+    cmd: "ls -l"
+  - id: grep_key_handling
+    title: "DevSecOps: ключ читается из окружения и маскируется при выводе во всех версиях"
+    cmd: 'grep -nF -e "key = " -e "key=***" mapquest_parse-json_*.py'
+  # Служебная проверка от root (в протокол не попадает, результат в steps.json): значения ключа
+  # нет в сыром потоке терминала out/<lab>/raw.log, из которого строится transcript.txt.
+  - id: key_leak_check
+    title: "DevSecOps: служебная проверка, что значения ключа нет в raw.log"
+    host: |
+      [ -f /home/devasc/.mapquest_env ] || { echo "no key file, check skipped"; exit 0; }
+      . /home/devasc/.mapquest_env
+      [ -n "$MAPQUEST_KEY" ] || { echo "empty key, check skipped"; exit 0; }
+      for f in out/*/raw.log; do
+        [ -f "$f" ] || continue
+        if grep -qF -- "$MAPQUEST_KEY" "$f"; then echo "MAPQUEST_KEY FOUND in $f"; exit 1; fi
+        echo "MAPQUEST_KEY not found in $f"
+      done
+    timeout: 60

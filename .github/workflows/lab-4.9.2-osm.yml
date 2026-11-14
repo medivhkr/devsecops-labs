@@ -1,0 +1,21 @@
+name: "Лаб. 4.9.2: REST API в Python (вариант OpenStreetMap)"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/10-4.9.2-rest-api-python/scenario-osm.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lab:
+    uses: ./.github/workflows/_run-lab.yml
+    secrets: inherit
+    with:
+      lab: 10-4.9.2-rest-api-python
+      env: container
+      scenario: scenario-osm.yml
+      artifact: 10-4.9.2-rest-api-python-osm

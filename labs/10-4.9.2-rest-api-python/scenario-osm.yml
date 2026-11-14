@@ -1,0 +1,889 @@
+lab: "4.9.2"
+title: "Integrate a REST API in a Python Application (вариант без ключа: OpenStreetMap)"
+# Вариант без ключа MapQuest: место -> координаты через Nominatim (OpenStreetMap), маршрут через
+# публичный демо-сервер OSRM. Ключи и секреты не нужны. Правила публичных серверов: заголовок
+# User-Agent с названием приложения, не больше 1 запроса в секунду (скрипты ждут 1 с перед каждым
+# запросом к Nominatim). Шаги и вводы те же, что в scenario.yml (MapQuest). prepare.sh общий: ставит
+# requests, curl, jq и создаёт ~/labs/devnet-src/mapquest; без MAPQUEST_KEY только предупреждает.
+# Запуск: .github/workflows/_run-lab.yml с параметром scenario: scenario-osm.yml (см. NOTES-osm.md).
+collect:
+  - ~/labs/devnet-src/mapquest
+steps:
+  # ---------- Part 1: Launch the DEVASC VM ----------
+  - id: env_os_python
+    title: "Part 1: стенд, версия ОС и Python 3"
+    cmd: "grep PRETTY_NAME /etc/os-release && python3 --version"
+  - id: env_requests
+    title: "Part 1: модуль requests установлен"
+    cmd: 'python3 -c "import requests; print(requests.__version__)"'
+
+  # ---------- Part 2: демонстрация приложения преподавателем (действий студента нет) ----------
+
+  # ---------- Part 3: Get a MapQuest API Key -> замена: ключ не нужен ----------
+  # Nominatim и OSRM работают без регистрации и ключа. Вместо ключа приложение называет себя
+  # в заголовке User-Agent (стандартный User-Agent библиотек Nominatim отклоняет с HTTP 403).
+  - id: ua_var
+    title: "Part 3 (замена): ключ API не нужен, приложение называет себя в заголовке User-Agent"
+    cmd: 'UA="DEVASC-lab-4.9.2 student script (education)"'
+  - id: nominatim_status
+    title: "Part 3 (замена): Nominatim отвечает без ключа (status API)"
+    cmd: 'curl -s -A "$UA" "https://nominatim.openstreetmap.org/status?format=json"; echo'
+    timeout: 60
+    expect_exit: 0
+  - id: osrm_nearest
+    title: "Part 3 (замена): демо-сервер OSRM отвечает без ключа (ближайшая к точке дорога)"
+    cmd: 'curl -s -A "$UA" "https://router.project-osrm.org/nearest/v1/driving/-77.0364,38.8951"; echo'
+    timeout: 60
+    expect_exit: 0
+
+  # ---------- Part 4: Build the Basic MapQuest Direction Application (OSM) ----------
+  - id: cd_mapquest
+    title: "Part 4 Step 1: рабочий каталог лабораторной ~/labs/devnet-src/mapquest"
+    cmd: "cd labs/devnet-src/mapquest"
+  - id: ls_mapquest
+    title: "Part 4 Step 1: содержимое каталога до начала работы"
+    cmd: "ls -l"
+  - id: v1_imports
+    title: "Part 4 Step 2a: osm_parse-json_1.py, импорт модулей"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_1.py
+      content: |
+        import urllib.parse
+        import requests
+  - id: run_v1_imports
+    title: "Part 4 Step 2b: запуск, вывода и ошибок нет"
+    cmd: "python3 osm_parse-json_1.py"
+    timeout: 60
+    expect_exit: 0
+  - id: v1_url
+    title: "Part 4 Step 3: URL запросов (urlencode) к Nominatim и OSRM, вывод URL и HTTP-кодов"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_1.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+        orig = "Washington, D.C."
+        dest = "Baltimore, Md"
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            replydata = requests.get(url, headers=headers, timeout=20)
+            print("HTTP Status: " + str(replydata.status_code))
+            place = replydata.json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        points = geocode(orig) + ";" + geocode(dest)
+        url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+        print("URL: " + url)
+        replydata = requests.get(url, headers=headers, timeout=20)
+        print("HTTP Status: " + str(replydata.status_code))
+
+        json_data = replydata.json()
+        print(json_data)
+  - id: cat_v1
+    title: "Part 4 Step 3d: проверка текста скрипта"
+    cmd: "cat osm_parse-json_1.py"
+  - id: run_v1
+    title: "Part 4 Step 4: URL и HTTP-коды запросов, ответ OSRM в виде словаря Python"
+    cmd: "python3 osm_parse-json_1.py"
+    timeout: 120
+    expect_exit: 0
+  - id: v2_status
+    title: "Part 4 Step 5: osm_parse-json_2.py, вывод URL и проверка code в ответе OSRM"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_2.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+        orig = "Washington, D.C."
+        dest = "Baltimore, Md"
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        points = geocode(orig) + ";" + geocode(dest)
+        url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+        print("URL: " + url)
+
+        json_data = requests.get(url, headers=headers, timeout=20).json()
+        json_status = json_data["code"]
+
+        if json_status == "Ok":
+            print("API Status: " + json_status + " = A successful route call.\n")
+  - id: run_v2
+    title: "Part 4 Step 6: запуск, URL и состояние API"
+    cmd: "python3 osm_parse-json_2.py"
+    timeout: 120
+    expect_exit: 0
+  - id: v3_input
+    title: "Part 4 Step 7: osm_parse-json_3.py, ввод мест в цикле while"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_3.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        while True:
+            orig = input("Starting Location: ")
+            dest = input("Destination: ")
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+  - id: run_v3_ctrl_c
+    title: "Part 4 Step 8: ввод мест, повторный запрос и остановка по Ctrl+C"
+    cmd: "python3 osm_parse-json_3.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        delay: 0.5
+        sendcontrol: "c"
+        timeout: 90
+  - id: v4_quit
+    title: "Part 4 Step 9: osm_parse-json_4.py, выход по quit или q"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_4.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+  - id: run_v4_q_start
+    title: "Part 4 Step 10: q в запросе Starting Location"
+    cmd: "python3 osm_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 30
+  - id: run_v4_quit_start
+    title: "Part 4 Step 10: quit в запросе Starting Location"
+    cmd: "python3 osm_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "quit"
+        timeout: 30
+  - id: run_v4_q_dest
+    title: "Part 4 Step 10: q в запросе Destination"
+    cmd: "python3 osm_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C"
+        timeout: 30
+      - expect: "Destination: "
+        send: "q"
+        timeout: 30
+  - id: run_v4_quit_dest
+    title: "Part 4 Step 10: quit в запросе Destination"
+    cmd: "python3 osm_parse-json_4.py"
+    timeout: 60
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "quit"
+        timeout: 30
+  - id: run_v4_valid
+    title: "Part 4 Step 11a: запуск с допустимой парой мест, URL для просмотра JSON"
+    cmd: "python3 osm_parse-json_4.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  # Вместо Chromium + JSONView: тот же URL маршрута, что напечатал шаг 11a, загружается curl в /tmp,
+  # структура JSON просматривается jq. Координаты в URL взяты из ответа Nominatim для
+  # "Washington, D.C." и "Baltimore, Md" (если OSM-данные изменятся, они могут немного отличаться).
+  - id: api_base_var
+    title: "Part 4 Step 11b: базовый адрес OSRM в переменной оболочки"
+    cmd: 'API="https://router.project-osrm.org/route/v1/driving"'
+  - id: opts_var
+    title: "Part 4 Step 11b: параметры запроса маршрута (как в скрипте) в переменной оболочки"
+    cmd: 'Q="overview=false&steps=true&radiuses=50000;50000"'
+  - id: curl_route_json
+    title: "Part 4 Step 11b: JSON по URL из шага 11a (curl вместо Chromium)"
+    cmd: 'curl -s -A "$UA" "$API/-77.0363849,38.8950982;-76.6107590,39.2908816?$Q" -o /tmp/route.json'
+    timeout: 120
+    expect_exit: 0
+  - id: jq_root_keys
+    title: "Part 4 Step 11c: ключи корня JSON (routes свёрнут)"
+    cmd: "jq 'keys' /tmp/route.json"
+  - id: jq_code_waypoints
+    title: "Part 4 Step 11c: состояние code и точки waypoints (куда OSRM привязал места, distance в м)"
+    cmd: "jq '{code, waypoints: [.waypoints[] | {name, location, distance}]}' /tmp/route.json"
+  - id: jq_route_keys
+    title: "Part 4 Step 11d: ключи маршрута routes[0] (routes развёрнут)"
+    cmd: "jq '.routes[0] | keys_unsorted' /tmp/route.json"
+  - id: jq_route_summary
+    title: "Part 4 Step 11d: distance (м), duration (с) и summary; расхода топлива в ответе OSRM нет"
+    cmd: "jq '.routes[0] | {distance, duration, summary: .legs[0].summary}' /tmp/route.json"
+
+  # ---------- Part 5: Upgrade the MapQuest Directions Application (OSM) ----------
+  - id: v5_imperial
+    title: "Part 5 Step 1a-b: osm_parse-json_5.py, сводка поездки (время ЧЧ:ММ:СС, мили, топливо)"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_5.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+                # OSRM gives the duration in seconds and the distance in meters
+                secs = round(json_data["routes"][0]["duration"])
+                trip_time = "{:02d}:{:02d}:{:02d}".format(secs // 3600, secs // 60 % 60, secs % 60)
+                km = json_data["routes"][0]["distance"] / 1000
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + trip_time)
+                print("Miles:           " + str(km / 1.61))
+                print("Fuel Used:       not provided by OSRM")
+                print("=============================================")
+  - id: run_v5_imperial
+    title: "Part 5 Step 1c: запуск, сводка в милях (без округления)"
+    cmd: "python3 osm_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  - id: v5_metric
+    title: "Part 5 Step 1d: добавлены километры"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_5.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+                # OSRM gives the duration in seconds and the distance in meters
+                secs = round(json_data["routes"][0]["duration"])
+                trip_time = "{:02d}:{:02d}:{:02d}".format(secs // 3600, secs // 60 % 60, secs % 60)
+                km = json_data["routes"][0]["distance"] / 1000
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + trip_time)
+                print("Kilometers:      " + str(km))
+                print("Miles:           " + str(km / 1.61))
+                print("Fuel Used:       not provided by OSRM")
+                print("=============================================")
+  - id: run_v5_metric
+    title: "Part 5 Step 1e: запуск, значения без округления"
+    cmd: "python3 osm_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  - id: v5_rounded
+    title: "Part 5 Step 1f: округление до двух знаков методом format()"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_5.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+                # OSRM gives the duration in seconds and the distance in meters
+                secs = round(json_data["routes"][0]["duration"])
+                trip_time = "{:02d}:{:02d}:{:02d}".format(secs // 3600, secs // 60 % 60, secs % 60)
+                km = json_data["routes"][0]["distance"] / 1000
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + trip_time)
+                print("Kilometers:      " + "{:.2f}".format(km))
+                print("Miles:           " + "{:.2f}".format(km / 1.61))
+                print("Fuel Used:       not provided by OSRM")
+                print("=============================================")
+  - id: run_v5_rounded
+    title: "Part 5 Step 2: запуск, сводка в километрах и милях с округлением"
+    cmd: "python3 osm_parse-json_5.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  # Part 5 Step 3: просмотр шагов маршрута в сохранённом ответе (вместо вкладки Chromium с JSONView).
+  # У OSRM нет поля narrative: текст указаний строится из maneuver.type, maneuver.modifier и name.
+  - id: jq_maneuvers_count
+    title: "Part 5 Step 3b: число шагов маршрута в routes[0].legs[0].steps"
+    cmd: "jq '.routes[0].legs[0].steps | length' /tmp/route.json"
+  - id: jq_maneuver_keys
+    title: "Part 5 Step 3c: ключи первого шага (готового текста narrative нет)"
+    cmd: "jq '.routes[0].legs[0].steps[0] | keys_unsorted' /tmp/route.json"
+  - id: jq_maneuver_first
+    title: "Part 5 Step 3c: name, distance (м) и maneuver первого шага"
+    cmd: "jq '.routes[0].legs[0].steps[0] | {name, distance, maneuver}' /tmp/route.json"
+  - id: jq_maneuver_list
+    title: "Part 5 Step 3c (OSM): type, modifier и name всех шагов, из них строится текст указаний"
+    cmd: "jq -c '.routes[0].legs[0].steps[] | [(.maneuver | .type, .modifier), .name]' /tmp/route.json"
+  - id: v6_maneuvers
+    title: "Part 5 Step 4: osm_parse-json_6.py, функция narrative() и цикл for по шагам маршрута"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_6.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first)
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            place = requests.get(url, headers=headers, timeout=20).json()[0]
+            return place["lon"] + "," + place["lat"]
+
+
+        def narrative(step):
+            # OSRM sends no ready-made text: build it from the maneuver type, modifier and road name
+            kind = step["maneuver"]["type"]
+            modifier = step["maneuver"].get("modifier", "straight")
+            side = ""
+            if "left" in modifier:
+                side = "left"
+            elif "right" in modifier:
+                side = "right"
+            road = step.get("name", "")
+            if step.get("ref") and step["ref"] != road:    # road number, e.g. "US 50" or "I 95"
+                road = road + " (" + step["ref"] + ")" if road else step["ref"]
+            onto = " onto " + road if road else ""
+            if step.get("destinations"):                   # text of the road signs
+                onto = onto + " toward " + step["destinations"]
+            if kind == "depart":
+                compass = ["north", "northeast", "east", "southeast",
+                           "south", "southwest", "west", "northwest"]
+                heading = compass[int((step["maneuver"]["bearing_after"] + 22.5) // 45) % 8]
+                return "Start out going " + heading + (" on " + road if road else "")
+            if kind == "arrive":
+                return "You have arrived at your destination" + (", on the " + side if side else "")
+            if step.get("mode") == "ferry":
+                return "Take the ferry" + onto
+            if kind in ("roundabout", "rotary"):
+                return "Enter the roundabout and take exit " + str(step["maneuver"].get("exit", 1)) + onto
+            if kind in ("exit roundabout", "exit rotary"):
+                return "Exit the roundabout" + onto
+            if kind == "fork":
+                return "Keep " + (side or "straight") + " at the fork" + onto
+            if kind == "merge":
+                return "Merge" + onto
+            if kind == "on ramp":
+                return "Take the ramp" + (" on the " + side if side else "") + onto
+            if kind == "off ramp":
+                return "Take the exit" + (" on the " + side if side else "") + onto
+            if kind == "end of road":
+                return "At the end of the road turn " + (side or "straight") + onto
+            if modifier == "uturn":
+                return "Make a U-turn" + onto
+            if modifier == "straight":
+                return "Continue" + onto
+            if modifier.startswith("slight"):
+                return "Bear " + side + onto
+            return "Turn " + modifier + onto
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            points = geocode(orig) + ";" + geocode(dest)
+            url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+            print("URL: " + url)
+            json_data = requests.get(url, headers=headers, timeout=20).json()
+            json_status = json_data["code"]
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+                # OSRM gives the duration in seconds and the distance in meters
+                secs = round(json_data["routes"][0]["duration"])
+                trip_time = "{:02d}:{:02d}:{:02d}".format(secs // 3600, secs // 60 % 60, secs % 60)
+                km = json_data["routes"][0]["distance"] / 1000
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + trip_time)
+                print("Kilometers:      " + "{:.2f}".format(km))
+                print("Miles:           " + "{:.2f}".format(km / 1.61))
+                print("Fuel Used:       not provided by OSRM")
+                print("=============================================")
+                for each in json_data["routes"][0]["legs"][0]["steps"]:
+                    print(narrative(each) + " (" + "{:.2f}".format(each["distance"] / 1000) + " km)")
+                print("=============================================\n")
+  - id: run_v6
+    title: "Part 5 Step 5: запуск, пошаговый маршрут"
+    cmd: "python3 osm_parse-json_6.py"
+    timeout: 120
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  - id: run_v6_invalid
+    title: "Part 5 Step 6a: недопустимые места (Beijing, China и Bal)"
+    cmd: "python3 osm_parse-json_6.py"
+    timeout: 180
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 90
+      - expect: "Destination: "
+        send: "Bal"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "q"
+        timeout: 90
+  # Part 5 Step 6b: JSON ответа с ошибкой (вместо Chromium + JSONView)
+  - id: curl_error_json
+    title: "Part 5 Step 6b: JSON для Washington, D.C. -> Beijing, China"
+    cmd: 'curl -s -A "$UA" "$API/-77.0363849,38.8950982;116.3912972,39.9057136?$Q" -o /tmp/err.json'
+    timeout: 120
+    expect_exit: 0
+  - id: jq_error_keys
+    title: "Part 5 Step 6b: ключи ответа с ошибкой (routes нет)"
+    cmd: "jq 'keys' /tmp/err.json"
+  - id: jq_error_body
+    title: "Part 5 Step 6b: code и message в ответе с ошибкой"
+    cmd: "jq '.' /tmp/err.json"
+  # Почему в запросе есть radiuses: без него демо-сервер OSRM привязывает точку к ближайшей дороге,
+  # связанной с другой точкой, даже за тысячи км (Вашингтон -> Португалия), и отвечает code Ok.
+  - id: curl_snap_json
+    title: "Part 5 Step 6b (OSM): тот же маршрут без параметра radiuses"
+    cmd: 'curl -s -A "$UA" "$API/-77.0363849,38.8950982;116.3912972,39.9057136" -o /tmp/snap.json'
+    timeout: 120
+    expect_exit: 0
+  - id: jq_snap
+    title: "Part 5 Step 6b (OSM): без radiuses code и точки привязки waypoints (distance в м)"
+    cmd: "jq '{code, waypoints: [.waypoints[] | {name, location, distance}]}' /tmp/snap.json"
+  - id: v7_errors
+    title: "Part 5 Step 6c-d: osm_parse-json_7.py, обработка ошибок ввода, ответов OSRM и сети"
+    write_file:
+      path: ~/labs/devnet-src/mapquest/osm_parse-json_7.py
+      content: |
+        import time
+        import urllib.parse
+        import requests
+
+        geocode_api = "https://nominatim.openstreetmap.org/search?"
+        main_api = "https://router.project-osrm.org/route/v1/driving/"
+        # Nominatim usage policy: the User-Agent header must name the application (no API key needed)
+        headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+        # OSRM options: overview=false - no route geometry, steps=true - turn-by-turn steps,
+        # radiuses - snap each point to a road at most 50 km away ("50000;50000", one value per point)
+        route_options = {"overview": "false", "steps": "true", "radiuses": "50000;50000"}
+
+
+        def geocode(location):
+            # Nominatim: place name -> "lon,lat" (OSRM expects the longitude first), None if not found
+            time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+            url = geocode_api + urllib.parse.urlencode({"format": "json", "limit": 1, "q": location})
+            print("Geocoding URL: " + url)
+            replydata = requests.get(url, headers=headers, timeout=20)
+            replydata.raise_for_status()   # HTTP 4xx/5xx (for example 403 or 429) raises an exception
+            places = replydata.json()
+            if len(places) == 0:           # Nominatim answers [] when it knows no such place
+                return None
+            return places[0]["lon"] + "," + places[0]["lat"]
+
+
+        def narrative(step):
+            # OSRM sends no ready-made text: build it from the maneuver type, modifier and road name
+            kind = step["maneuver"]["type"]
+            modifier = step["maneuver"].get("modifier", "straight")
+            side = ""
+            if "left" in modifier:
+                side = "left"
+            elif "right" in modifier:
+                side = "right"
+            road = step.get("name", "")
+            if step.get("ref") and step["ref"] != road:    # road number, e.g. "US 50" or "I 95"
+                road = road + " (" + step["ref"] + ")" if road else step["ref"]
+            onto = " onto " + road if road else ""
+            if step.get("destinations"):                   # text of the road signs
+                onto = onto + " toward " + step["destinations"]
+            if kind == "depart":
+                compass = ["north", "northeast", "east", "southeast",
+                           "south", "southwest", "west", "northwest"]
+                heading = compass[int((step["maneuver"]["bearing_after"] + 22.5) // 45) % 8]
+                return "Start out going " + heading + (" on " + road if road else "")
+            if kind == "arrive":
+                return "You have arrived at your destination" + (", on the " + side if side else "")
+            if step.get("mode") == "ferry":
+                return "Take the ferry" + onto
+            if kind in ("roundabout", "rotary"):
+                return "Enter the roundabout and take exit " + str(step["maneuver"].get("exit", 1)) + onto
+            if kind in ("exit roundabout", "exit rotary"):
+                return "Exit the roundabout" + onto
+            if kind == "fork":
+                return "Keep " + (side or "straight") + " at the fork" + onto
+            if kind == "merge":
+                return "Merge" + onto
+            if kind == "on ramp":
+                return "Take the ramp" + (" on the " + side if side else "") + onto
+            if kind == "off ramp":
+                return "Take the exit" + (" on the " + side if side else "") + onto
+            if kind == "end of road":
+                return "At the end of the road turn " + (side or "straight") + onto
+            if modifier == "uturn":
+                return "Make a U-turn" + onto
+            if modifier == "straight":
+                return "Continue" + onto
+            if modifier.startswith("slight"):
+                return "Bear " + side + onto
+            return "Turn " + modifier + onto
+
+
+        while True:
+            orig = input("Starting Location: ")
+            if orig == "quit" or orig == "q":
+                break
+            dest = input("Destination: ")
+            if dest == "quit" or dest == "q":
+                break
+            if orig == "" or dest == "":
+                print("**********************************************")
+                print("Missing an entry for one or both locations.")
+                print("**********************************************\n")
+                continue
+            try:
+                orig_point = geocode(orig)
+                dest_point = geocode(dest)
+                if orig_point is None or dest_point is None:
+                    print("**********************************************")
+                    if orig_point is None:
+                        print("Unknown location: " + orig + " (Nominatim found no such place)")
+                    if dest_point is None:
+                        print("Unknown location: " + dest + " (Nominatim found no such place)")
+                    print("**********************************************\n")
+                    continue
+                points = orig_point + ";" + dest_point
+                url = main_api + points + "?" + urllib.parse.urlencode(route_options, safe=";")
+                print("URL: " + url)
+                replydata = requests.get(url, headers=headers, timeout=20)
+                if replydata.status_code not in (200, 400):   # OSRM sends its own errors with HTTP 400
+                    replydata.raise_for_status()
+                json_data = replydata.json()
+            except (requests.exceptions.RequestException, ValueError) as error:
+                print("**********************************************")
+                print("Request failed: " + str(error))
+                print("**********************************************\n")
+                continue
+            json_status = json_data.get("code", "unknown")
+            if json_status == "Ok":
+                print("API Status: " + json_status + " = A successful route call.\n")
+                # OSRM gives the duration in seconds and the distance in meters
+                secs = round(json_data["routes"][0]["duration"])
+                trip_time = "{:02d}:{:02d}:{:02d}".format(secs // 3600, secs // 60 % 60, secs % 60)
+                km = json_data["routes"][0]["distance"] / 1000
+                print("=============================================")
+                print("Directions from " + orig + " to " + dest)
+                print("Trip Duration:   " + trip_time)
+                print("Kilometers:      " + "{:.2f}".format(km))
+                print("Miles:           " + "{:.2f}".format(km / 1.61))
+                print("Fuel Used:       not provided by OSRM")
+                print("=============================================")
+                for each in json_data["routes"][0]["legs"][0]["steps"]:
+                    print(narrative(each) + " (" + "{:.2f}".format(each["distance"] / 1000) + " km)")
+                print("=============================================\n")
+            elif json_status == "NoSegment":
+                print("**********************************************")
+                print("Status Code: " + json_status + "; No road route between the locations.")
+                print("OSRM: " + json_data.get("message", "") + " (0 = start, 1 = destination)")
+                print("**********************************************\n")
+            elif json_status == "NoRoute":
+                print("**********************************************")
+                print("Status Code: " + json_status + "; No route found between the locations.")
+                print("**********************************************\n")
+            else:
+                print("************************************************************************")
+                print("For Status Code: " + json_status + "; Refer to:")
+                print("https://project-osrm.org/docs/v5.24.0/api/#responses")
+                print("************************************************************************\n")
+
+  # ---------- Part 6: Test Full Application Functionality ----------
+  # Вводы методички; добавлена пара Washington, D.C. -> Xyzzy Qwerty 0000 для ветки "неизвестное
+  # место": "Bal" Nominatim находит (провинция Балх, Афганистан), маршрута туда нет (NoSegment).
+  - id: run_v7_all
+    title: "Part 6: все ветви osm_parse-json_7.py (Ok, NoSegment, неизвестное место, пустой ввод, quit)"
+    cmd: "python3 osm_parse-json_7.py"
+    timeout: 300
+    interact:
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 30
+      - expect: "Destination: "
+        send: "Baltimore, Md"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Moscow, Russia"
+        timeout: 90
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 180
+      - expect: "Destination: "
+        send: "Beijing, China"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 90
+      - expect: "Destination: "
+        send: "Bal"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 90
+      - expect: "Destination: "
+        send: "Xyzzy Qwerty 0000"
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "Washington, D.C."
+        timeout: 90
+      - expect: "Destination: "
+        send: ""
+        timeout: 30
+      - expect: "Starting Location: "
+        send: "quit"
+        timeout: 60
+
+  # ---------- Итог ----------
+  - id: ls_final
+    title: "Итог: файлы osm_parse-json_1.py ... osm_parse-json_7.py"
+    cmd: "ls -l"
+  - id: grep_policy
+    title: "Итог: правила публичных серверов (User-Agent, пауза 1 с) соблюдаются во всех версиях"
+    cmd: 'grep -nF -e "headers = " -e "time.sleep(1)" osm_parse-json_*.py'
