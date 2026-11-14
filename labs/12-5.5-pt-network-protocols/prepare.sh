@@ -68,11 +68,10 @@ for ns in $NSLIST; do
 done
 
 link() {  # link NS1 IF1 NS2 IF2 - кабель между устройствами
-  ip link add lab-a type veth peer name lab-b
-  ip link set lab-a netns "$1"
-  ip link set lab-b netns "$3"
-  ip -n "$1" link set lab-a name "$2"
-  ip -n "$3" link set lab-b name "$4"
+  # Пара veth создаётся сразу внутри пространств имён. Если создавать её в корневом
+  # пространстве под временными именами, systemd (MACAddressPolicy=persistent) выдаёт
+  # одинаковые MAC-адреса всем кабелям с одним и тем же именем, и мосты S2/S3 не работают.
+  ip link add "$2" netns "$1" type veth peer name "$4" netns "$3"
   ip -n "$1" link set "$2" up
   ip -n "$3" link set "$4" up
 }
