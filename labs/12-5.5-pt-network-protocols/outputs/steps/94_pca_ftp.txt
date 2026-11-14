@@ -1,0 +1,65 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A ftp 192.168.1.3
+Connected to 192.168.1.3.
+220 Welcome to Corporate FTP server
+Name (192.168.1.3:devasc): Student
+331 Username ok, send password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ?
+Commands may be abbreviated.  Commands are:
+
+!               edit            lpage           nlist           rcvbuf          struct
+$               epsv            lpwd            nmap            recv            sunique
+account         epsv4           ls              ntrans          reget           system
+append          epsv6           macdef          open            remopts         tenex
+ascii           exit            mdelete         page            rename          throttle
+bell            features        mdir            passive         reset           trace
+binary          fget            mget            pdir            restart         type
+bye             form            mkdir           pls             rhelp           umask
+case            ftp             mls             pmlsd           rmdir           unset
+cd              gate            mlsd            preserve        rstatus         usage
+cdup            get             mlst            progress        runique         user
+chmod           glob            mode            prompt          send            verbose
+close           hash            modtime         proxy           sendport        xferbuf
+cr              help            more            put             set             ?
+debug           idle            mput            pwd             site
+delete          image           mreget          quit            size
+dir             lcd             msend           quote           sndbuf
+disconnect      less            newer           rate            status
+ftp> dir
+229 Entering extended passive mode (|||59397|).
+125 Data connection already open. Transfer starting.
+-rw-r--r--   1 root     root      5571584 Nov 14 11:35 asa842-k8.bin
+-rw-r--r--   1 root     root     30468096 Nov 14 11:35 asa923-k8.bin
+-rw-r--r--   1 root     root     33591768 Nov 14 11:35 c1841-advipservicesk9-mz.124-15.T1.bin
+-rw-r--r--   1 root     root     13832032 Nov 14 11:35 c1841-ipbase-mz.123-14.T7.bin
+226 Transfer complete.
+ftp> put sampleFile.txt
+local: sampleFile.txt remote: sampleFile.txt
+229 Entering extended passive mode (|||46401|).
+125 Data connection already open. Transfer starting.
+100% |*******************************************************|    26      651.04 KiB/s    00:00 ETA
+226 Transfer complete.
+26 bytes sent in 00:00 (85.77 KiB/s)
+ftp> dir
+229 Entering extended passive mode (|||50437|).
+125 Data connection already open. Transfer starting.
+-rw-r--r--   1 root     root      5571584 Nov 14 11:35 asa842-k8.bin
+-rw-r--r--   1 root     root     30468096 Nov 14 11:35 asa923-k8.bin
+-rw-r--r--   1 root     root     33591768 Nov 14 11:35 c1841-advipservicesk9-mz.124-15.T1.bin
+-rw-r--r--   1 root     root     13832032 Nov 14 11:35 c1841-ipbase-mz.123-14.T7.bin
+-rw-r--r--   1 root     root           26 Nov 14 11:36 sampleFile.txt
+226 Transfer complete.
+ftp> get asa842-k8.bin
+local: asa842-k8.bin remote: asa842-k8.bin
+229 Entering extended passive mode (|||51141|).
+125 Data connection already open. Transfer starting.
+100% |*******************************************************|  5441 KiB    2.20 GiB/s    00:00 ETA
+226 Transfer complete.
+5571584 bytes received in 00:00 (2.14 GiB/s)
+ftp> delete sampleFile.txt
+250 File removed.
+ftp> quit
+221 Goodbye.

@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo journalctl -t dnsmasq -o cat --no-pager -g 'from 1
+92.168.1.2'
+query[A] www.example.com from 192.168.1.2
+query[AAAA] www.example.com from 192.168.1.2
+query[PTR] 10.0.100.64.in-addr.arpa from 192.168.1.2

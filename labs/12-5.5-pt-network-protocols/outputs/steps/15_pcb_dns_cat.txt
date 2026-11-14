@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/netns/PC-B/resolv.conf
+# PC-B > Config > DNS Server
+nameserver 64.100.0.10

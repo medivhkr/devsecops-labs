@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server nginx -s
+ reload -c /etc/nginx/DEVASC-Server.conf
+2026/11/14 11:36:09 [notice] 5247#5247: signal process started

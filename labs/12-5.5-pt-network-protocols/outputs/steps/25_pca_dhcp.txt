@@ -1,0 +1,9 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A busybox udhcpc -i eth0 -fqn -t
+5 -x hostname:PC-A -s /opt/labnet/dhcp.sh
+udhcpc: started, v1.36.1
+udhcpc: broadcasting discover
+udhcpc: broadcasting discover
+udhcpc: broadcasting select for 192.168.1.10, server 192.168.1.3
+udhcpc: lease of 192.168.1.10 obtained from 192.168.1.3, lease time 86400
+PC-A: bound IP 192.168.1.10/24 (mask 255.255.255.0), gateway 192.168.1.1, DNS 192.168.1.3, lease 864
+00 s from DHCP server 192.168.1.3

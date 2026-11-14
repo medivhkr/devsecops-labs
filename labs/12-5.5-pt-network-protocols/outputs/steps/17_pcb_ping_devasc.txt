@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B ping -c 4 www.devasc-netacad.pk
+a
+PING www.devasc-netacad.pka (209.165.200.227) 56(84) bytes of data.
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=1 ttl=60 time=0.065 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=2 ttl=60 time=0.085 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=3 ttl=60 time=0.082 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=4 ttl=60 time=0.110 ms
+
+--- www.devasc-netacad.pka ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3072ms
+rtt min/avg/max/mdev = 0.065/0.085/0.110/0.016 ms

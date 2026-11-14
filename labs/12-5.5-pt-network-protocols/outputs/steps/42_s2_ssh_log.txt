@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo grep -E 'telnet|SSH|enable' /var/log/pt-lab/S2.log
+2026-11-14 11:35:43,148 s2 S2 emulator: SSH on 192.168.1.4:22, user administrator
+2026-11-14 11:35:43,912 s2 SSH negotiation failed from 192.168.1.4: Error reading SSH protocol banne
+r
+2026-11-14 11:36:02,350 csr1kv [console console] exec: enable
+2026-11-14 11:36:02,401 s2 [console console] enable: privilege level 15
+2026-11-14 11:36:07,979 s2 telnet from 192.168.1.10: vty lines accept SSH only (transport input ssh)
+, connection closed
+2026-11-14 11:36:08,292 s2 SSH session opened: administrator from 192.168.1.10
+2026-11-14 11:36:08,383 csr1kv [192.168.1.10 administrator] exec: enable
+2026-11-14 11:36:08,441 s2 [192.168.1.10 administrator] enable: privilege level 15

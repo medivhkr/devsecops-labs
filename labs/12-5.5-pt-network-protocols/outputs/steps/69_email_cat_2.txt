@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/labnet/Example-Server-email.ini
+# Example Server > Services > EMAIL
+[email]
+smtp = on
+pop3 = on
+domain = www.example.com
+address = 64.100.0.10
+
+[users]
+Student1 = class
+Student2 = class

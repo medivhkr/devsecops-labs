@@ -1,0 +1,20 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/nginx/DEVASC-Server.conf
+# DEVASC-Server (www.devasc-netacad.pka): веб-сервер nginx. В Packet Tracer: Services > HTTP, HTTP O
+n, HTTPS Off
+user www-data;
+worker_processes 1;
+pid /run/nginx-DEVASC-Server.pid;
+error_log /var/log/pt-lab/nginx-DEVASC-Server.error.log;
+events {
+    worker_connections 64;
+}
+http {
+    include /etc/nginx/mime.types;
+    access_log /var/log/pt-lab/nginx-DEVASC-Server.access.log;
+    server {
+        listen 192.168.2.3:80;
+        server_name www.devasc-netacad.pka;
+        root /srv/labnet/DEVASC-Server/www;
+        index index.html;
+    }
+}

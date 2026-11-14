@@ -1,0 +1,89 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo cat /var/log/pt-lab/email.log
+2026-11-14 11:36:22,431 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:22,431 mail.log Peer: ('64.100.0.10', 47182)
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) handling connection
+2026-11-14 11:36:22,432 email SMTP listening on 64.100.0.10:25 (domain www.example.com)
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) EOF received
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) Connection lost during _handle_client()
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) connection lost
+2026-11-14 11:36:22,432 email POP3 listening on 64.100.0.10:110
+2026-11-14 11:36:22,433 email EMAIL service is on: SMTP 64.100.0.10:25, POP3 64.100.0.10:110; domain
+ www.example.com; users: Student1, Student2
+2026-11-14 11:36:22,586 email POP3 209.165.200.226: connection
+2026-11-14 11:36:22,587 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: user Student1 logged in, 0 message(s)
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: LIST
+2026-11-14 11:36:22,669 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:22,669 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:22,748 email POP3 172.16.3.2: connection
+2026-11-14 11:36:22,748 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:22,789 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: user Student2 logged in, 0 message(s)
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: LIST
+2026-11-14 11:36:22,831 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:22,831 email POP3 172.16.3.2: connection closed
+2026-11-14 11:36:23,013 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:23,014 mail.log Peer: ('172.16.3.2', 38914)
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) handling connection
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) >> b'EHLO PC-B'
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) >> b'MAIL FROM:<Student2@www.example.com> SIZ
+E=182'
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) sender: Student2@www.example.com
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) >> b'RCPT TO:<Student1@www.example.com>'
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) recip: Student1@www.example.com
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) >> b'DATA'
+2026-11-14 11:36:23,015 email SMTP 172.16.3.2: message from <Student2@www.example.com> delivered to
+mailbox Student1 (189 bytes, 1794656183015898533.15b82fcd.eml)
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) >> b'QUIT'
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) connection lost
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) Connection lost during _handle_client()
+2026-11-14 11:36:23,138 email POP3 209.165.200.226: connection
+2026-11-14 11:36:23,139 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: user Student1 logged in, 1 message(s)
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: LIST
+2026-11-14 11:36:23,221 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:23,221 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:23,288 email POP3 209.165.200.226: connection
+2026-11-14 11:36:23,289 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: user Student1 logged in, 1 message(s)
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: RETR 1
+2026-11-14 11:36:23,371 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:23,371 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:23,500 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:23,500 mail.log Peer: ('209.165.200.226', 36518)
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) handling connection
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) >> b'EHLO PC-A'
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) >> b'MAIL FROM:<Student1@www.example.com
+> SIZE=295'
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) sender: Student1@www.example.com
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) >> b'RCPT TO:<Student2@www.example.com>'
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) recip: Student2@www.example.com
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) >> b'DATA'
+2026-11-14 11:36:23,502 email SMTP 209.165.200.226: message from <Student1@www.example.com> delivere
+d to mailbox Student2 (306 bytes, 1794656183501910943.efbb3a21.eml)
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) >> b'QUIT'
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) connection lost
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) Connection lost during _handle_client()
+2026-11-14 11:36:23,625 email POP3 172.16.3.2: connection
+2026-11-14 11:36:23,625 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: user Student2 logged in, 1 message(s)
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: LIST
+2026-11-14 11:36:23,707 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:23,707 email POP3 172.16.3.2: connection closed
+2026-11-14 11:36:23,774 email POP3 172.16.3.2: connection
+2026-11-14 11:36:23,774 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: user Student2 logged in, 1 message(s)
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: RETR 1
+2026-11-14 11:36:23,856 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:23,856 email POP3 172.16.3.2: connection closed

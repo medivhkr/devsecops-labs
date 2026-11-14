@@ -1,0 +1,6 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ openssl x509 -in devasc.crt -noout -subje
+ct -issuer -dates
+subject=CN = www.devasc-netacad.pka
+issuer=CN = www.devasc-netacad.pka
+notBefore=Nov 14 11:36:09 2026 GMT
+notAfter=Dec 14 11:36:09 2026 GMT

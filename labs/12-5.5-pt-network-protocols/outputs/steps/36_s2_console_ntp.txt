@@ -1,0 +1,36 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo pt-console S2
+
+S2 con0 is now available
+
+
+
+
+
+Press RETURN to get started.
+
+S2>enable
+Password:
+S2#show clock detail
+*00:00:19.304 UTC Mon Mar 1 1993
+Time source is hardware calendar
+S2#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#ntp server 192.168.1.3
+S2(config)#exit
+S2#show clock detail
+11:36:07.656 UTC Sat Nov 14 2026
+Time source is NTP
+S2#show ntp associations
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~192.168.1.3     127.127.1.1      8      5     64     1  0.151  -0.003  0.000
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+S2#exit
+
+S2 con0 is now available
+
+
+
+
+
+Press RETURN to get started.
+[S2 console disconnected]

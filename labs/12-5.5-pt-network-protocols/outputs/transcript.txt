@@ -1,0 +1,948 @@
+devasc@labvm:~$ ip netns list
+Example-Server
+DEVASC-Server
+PC-B
+PC-A
+Corporate
+S3
+S2
+FIREWALL
+R3
+R1
+Internet
+devasc@labvm:~$ for d in $(ip netns list | cut -d' ' -f1); do echo "== $d"; sudo ip -n $d -4 -br add
+r show up; done
+== Example-Server
+lo               UNKNOWN        127.0.0.1/8
+eth0@if4         UP             64.100.0.10/24
+== DEVASC-Server
+lo               UNKNOWN        127.0.0.1/8
+eth0@if4         UP             192.168.2.3/24
+== PC-B
+lo               UNKNOWN        127.0.0.1/8
+eth0@if3         UP             172.16.3.2/24
+== PC-A
+lo               UNKNOWN        127.0.0.1/8
+eth0@if4         UP             192.168.1.2/24
+== Corporate
+lo               UNKNOWN        127.0.0.1/8
+eth0@if3         UP             192.168.1.3/24
+== S3
+lo               UNKNOWN        127.0.0.1/8
+== S2
+lo               UNKNOWN        127.0.0.1/8
+vlan1            UP             192.168.1.4/24
+== FIREWALL
+lo               UNKNOWN        127.0.0.1/8
+vlan2@if3        UP             209.165.200.226/29 209.165.200.227/29
+vlan1@if2        UP             192.168.1.1/24
+vlan3@if2        UP             192.168.2.1/24
+== R3
+lo               UNKNOWN        127.0.0.1/8
+Gi0-0-0@if3      UP             10.2.2.2/30
+Gi0-0-1@if2      UP             172.16.3.1/24
+== R1
+lo               UNKNOWN        127.0.0.1/8
+Gi0-0-1@if2      UP             10.1.1.2/30
+Gi0-0-0@if2      UP             209.165.200.225/29
+== Internet
+lo               UNKNOWN        127.0.0.1/8
+to-R1@if2        UP             10.1.1.1/30
+to-R3@if2        UP             10.2.2.1/30
+to-Example@if2   UP             64.100.0.1/24
+devasc@labvm:~$ cd ~/labs/devnet-src/pt-protocols && ls -lR
+.:
+total 12
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 DEVASC-Server
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 PC-A
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 PC-B
+
+./DEVASC-Server:
+total 0
+
+./PC-A:
+total 4
+-rw-rw-r--+ 1 devasc devasc 26 Nov 14 11:35 sampleFile.txt
+
+./PC-B:
+total 0
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/dnsmasq.d/Corporate-dns.conf
+# Corporate > Services > DNS: DNS Service On
+# Name: www.example.com, Address: 64.100.0.10 (A Record), Add
+port=53
+listen-address=192.168.1.3
+bind-interfaces
+no-resolv
+no-hosts
+host-record=www.example.com,64.100.0.10
+log-queries
+pid-file
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate dnsmasq -C /etc/dnsmasq.d/
+Corporate-dns.conf
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate dig @192.168.1.3 www.examp
+le.com +noall +answer
+www.example.com.        0       IN      A       64.100.0.10
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ip -4 addr show eth0
+2: eth0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 10
+00 link-netns S2
+    inet 192.168.1.2/24 scope global eth0
+       valid_lft forever preferred_lft forever
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/netns/PC-A/resolv.conf
+# PC-A > Config > DNS Server
+nameserver 192.168.1.3
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ping -c 4 www.example.com
+PING www.example.com (64.100.0.10) 56(84) bytes of data.
+64 bytes from www.example.com (64.100.0.10): icmp_seq=1 ttl=61 time=0.078 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=2 ttl=61 time=0.078 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=3 ttl=61 time=0.079 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=4 ttl=61 time=0.050 ms
+
+--- www.example.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3067ms
+rtt min/avg/max/mdev = 0.050/0.071/0.079/0.012 ms
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo journalctl -t dnsmasq -o cat --no-pager -g 'from 1
+92.168.1.2'
+query[A] www.example.com from 192.168.1.2
+query[AAAA] www.example.com from 192.168.1.2
+query[PTR] 10.0.100.64.in-addr.arpa from 192.168.1.2
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/dnsmasq.d/Example-Server-dns.conf
+# Example Server (www.example.com): DNS-сервер, которым пользуется PC-B (в PT уже работает)
+port=53
+listen-address=64.100.0.10
+bind-interfaces
+no-resolv
+no-hosts
+host-record=www.example.com,64.100.0.10
+host-record=www.devasc-netacad.pka,209.165.200.227
+log-queries
+pid-file
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/netns/PC-B/resolv.conf
+# PC-B > Config > DNS Server
+nameserver 64.100.0.10
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B ping -c 4 www.example.com
+PING www.example.com (64.100.0.10) 56(84) bytes of data.
+64 bytes from www.example.com (64.100.0.10): icmp_seq=1 ttl=62 time=0.018 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=2 ttl=62 time=0.060 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=3 ttl=62 time=0.057 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=4 ttl=62 time=0.059 ms
+
+--- www.example.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3087ms
+rtt min/avg/max/mdev = 0.018/0.048/0.060/0.017 ms
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B ping -c 4 www.devasc-netacad.pk
+a
+PING www.devasc-netacad.pka (209.165.200.227) 56(84) bytes of data.
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=1 ttl=60 time=0.065 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=2 ttl=60 time=0.085 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=3 ttl=60 time=0.082 ms
+64 bytes from www.devasc-netacad.pka (209.165.200.227): icmp_seq=4 ttl=60 time=0.110 ms
+
+--- www.devasc-netacad.pka ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3072ms
+rtt min/avg/max/mdev = 0.065/0.085/0.110/0.016 ms
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -i http://www.example.com
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 14 Nov 2026 11:35:56 GMT
+Content-Type: text/html
+Content-Length: 150
+Last-Modified: Sat, 14 Nov 2026 11:35:42 GMT
+Connection: keep-alive
+ETag: "6af8478e-96"
+Accept-Ranges: bytes
+
+<!DOCTYPE html>
+<html>
+<head><title>www.example.com</title></head>
+<body>
+<h1>www.example.com</h1>
+<p>Example Server, 64.100.0.10</p>
+</body>
+</html>
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -i http://www.devasc-netac
+ad.pka
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 14 Nov 2026 11:35:56 GMT
+Content-Type: text/html
+Content-Length: 194
+Last-Modified: Sat, 14 Nov 2026 11:35:42 GMT
+Connection: keep-alive
+ETag: "6af8478e-c2"
+Accept-Ranges: bytes
+
+<!DOCTYPE html>
+<html>
+<head><title>DevNet Associate</title></head>
+<body>
+<h1>DevNet Associate</h1>
+<p>www.devasc-netacad.pka (DEVASC Server, 192.168.2.3 / 209.165.200.227)</p>
+</body>
+</html>
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/dnsmasq.d/Corporate-dhcp.conf
+# Corporate > Services > DHCP: Service On, Pool Name serverPool
+port=0
+interface=eth0
+dhcp-authoritative
+dhcp-sequential-ip
+# Start IP Address 192.168.1.10, Subnet Mask 255.255.255.0, Maximum number of users 245
+dhcp-range=set:serverPool,192.168.1.10,192.168.1.254,255.255.255.0,24h
+dhcp-lease-max=245
+# Default Gateway 192.168.1.1, DNS Server 192.168.1.3
+dhcp-option=tag:serverPool,option:router,192.168.1.1
+dhcp-option=tag:serverPool,option:dns-server,192.168.1.3
+dhcp-leasefile=/var/lib/misc/dnsmasq.leases
+log-dhcp
+pid-file
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate dnsmasq -C /etc/dnsmasq.d/
+Corporate-dhcp.conf
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate ss -ulpn
+State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port Process
+UNCONN  0       0          192.168.1.3:53          0.0.0.0:*     users:(("dnsmasq",pid=5082,fd=4))
+UNCONN  0       0              0.0.0.0:67          0.0.0.0:*     users:(("dnsmasq",pid=5125,fd=4))
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ip addr flush dev eth0
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A busybox udhcpc -i eth0 -fqn -t
+5 -x hostname:PC-A -s /opt/labnet/dhcp.sh
+udhcpc: started, v1.36.1
+udhcpc: broadcasting discover
+udhcpc: broadcasting discover
+udhcpc: broadcasting select for 192.168.1.10, server 192.168.1.3
+udhcpc: lease of 192.168.1.10 obtained from 192.168.1.3, lease time 86400
+PC-A: bound IP 192.168.1.10/24 (mask 255.255.255.0), gateway 192.168.1.1, DNS 192.168.1.3, lease 864
+00 s from DHCP server 192.168.1.3
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ip -4 addr show eth0
+2: eth0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 10
+00 link-netns S2
+    inet 192.168.1.10/24 scope global eth0
+       valid_lft forever preferred_lft forever
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ip route
+default via 192.168.1.1 dev eth0
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.10
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A cat /etc/resolv.conf
+nameserver 192.168.1.3
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo cat /var/lib/misc/dnsmasq.leases
+1794742559 ba:75:00:4a:d5:ac 192.168.1.10 PC-A 01:ba:75:00:4a:d5:ac
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo journalctl -t dnsmasq-dhcp -o cat --no-pager -g 'D
+HCP(DISCOVER|OFFER|REQUEST|ACK)'
+333399352 DHCPDISCOVER(eth0) ba:75:00:4a:d5:ac
+333399352 DHCPOFFER(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPDISCOVER(eth0) ba:75:00:4a:d5:ac
+333399352 DHCPOFFER(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPREQUEST(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPACK(eth0) 192.168.1.10 ba:75:00:4a:d5:ac PC-A
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/chrony/Corporate-chrony.conf
+# Corporate > Services > NTP: Service On
+# Внешнего источника времени нет: сервер сам служит эталоном для сети 192.168.1.0/24
+local stratum 8
+allow 192.168.1.0/24
+bindaddress 192.168.1.3
+bindcmdaddress 127.0.0.1
+bindcmdaddress /run/chrony/Corporate.sock
+pidfile /run/chrony/Corporate.pid
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate chronyd -4 -x -f /etc/chro
+ny/Corporate-chrony.conf
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate chronyc -h 127.0.0.1 track
+ing
+Reference ID    : 7F7F0101 ()
+Stratum         : 8
+Ref time (UTC)  : Sat Nov 14 11:36:00 2026
+System time     : 0.000000000 seconds fast of NTP time
+Last offset     : +0.000000000 seconds
+RMS offset      : 0.000000000 seconds
+Frequency       : 0.000 ppm slow
+Residual freq   : +0.000 ppm
+Skew            : 0.000 ppm
+Root delay      : 0.000000000 seconds
+Root dispersion : 0.000000000 seconds
+Update interval : 0.0 seconds
+Leap status     : Normal
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate ss -ulpn 'sport = :123'
+State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
+UNCONN     0          0                192.168.1.3:123                 0.0.0.0:*         users:(("ch
+ronyd",pid=5168,fd=6))
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo pt-console S2
+
+S2 con0 is now available
+
+
+
+
+
+Press RETURN to get started.
+
+S2>enable
+Password:
+S2#show clock detail
+*00:00:19.304 UTC Mon Mar 1 1993
+Time source is hardware calendar
+S2#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+S2(config)#ntp server 192.168.1.3
+S2(config)#exit
+S2#show clock detail
+11:36:07.656 UTC Sat Nov 14 2026
+Time source is NTP
+S2#show ntp associations
+  address         ref clock       st   when   poll reach  delay  offset   disp
+*~192.168.1.3     127.127.1.1      8      5     64     1  0.151  -0.003  0.000
+ * sys.peer, # selected, + candidate, - outlyer, x falseticker, ~ configured
+S2#exit
+
+S2 con0 is now available
+
+
+
+
+
+Press RETURN to get started.
+[S2 console disconnected]
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate chronyc -h /run/chrony/Cor
+porate.sock -n clients
+Hostname                      NTP   Drop Int IntL Last     Cmd   Drop Int  Last
+===============================================================================
+127.0.0.1                       0      0   -   -     -       1      0   -     5
+192.168.1.4                     1      0   -   -     5       0      0   -     -
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo grep -E 'ntp|NTP' /var/log/pt-lab/S2.log
+2026-11-14 11:36:02,554 csr1kv [console console] config: ntp server 192.168.1.3
+2026-11-14 11:36:02,554 s2 ntp server 192.168.1.3 configured
+2026-11-14 11:36:02,555 s2 NTP: clock synchronized to 192.168.1.3 (stratum 8, refid 127.127.1.1, off
+set -0.003 ms, delay 0.151 ms)
+2026-11-14 11:36:07,707 csr1kv [console console] exec: show ntp associations
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A telnet 192.168.1.4
+Trying 192.168.1.4...
+Connected to 192.168.1.4.
+Escape character is '^]'.
+Connection closed by foreign host.
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ssh
+usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface] [-b bind_address]
+           [-c cipher_spec] [-D [bind_address:]port] [-E log_file]
+           [-e escape_char] [-F configfile] [-I pkcs11] [-i identity_file]
+           [-J destination] [-L address] [-l login_name] [-m mac_spec]
+           [-O ctl_cmd] [-o option] [-P tag] [-p port] [-R address]
+           [-S ctl_path] [-W host:port] [-w local_tun[:remote_tun]]
+           destination [command [argument ...]]
+       ssh [-Q query_option]
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ssh -l administrator 192.168.1.
+4
+The authenticity of host '192.168.1.4 (192.168.1.4)' can't be established.
+RSA key fingerprint is SHA256:hm8Haj57Lt8y1iR9qBJsv+Gvpq6MBXAYKfg2GYs1Q/8.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.4' (RSA) to the list of known hosts.
+(administrator@192.168.1.4) Password:
+
+S2>enable
+Password:
+S2#exit
+Connection to 192.168.1.4 closed.
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo grep -E 'telnet|SSH|enable' /var/log/pt-lab/S2.log
+2026-11-14 11:35:43,148 s2 S2 emulator: SSH on 192.168.1.4:22, user administrator
+2026-11-14 11:35:43,912 s2 SSH negotiation failed from 192.168.1.4: Error reading SSH protocol banne
+r
+2026-11-14 11:36:02,350 csr1kv [console console] exec: enable
+2026-11-14 11:36:02,401 s2 [console console] enable: privilege level 15
+2026-11-14 11:36:07,979 s2 telnet from 192.168.1.10: vty lines accept SSH only (transport input ssh)
+, connection closed
+2026-11-14 11:36:08,292 s2 SSH session opened: administrator from 192.168.1.10
+2026-11-14 11:36:08,383 csr1kv [192.168.1.10 administrator] exec: enable
+2026-11-14 11:36:08,441 s2 [192.168.1.10 administrator] enable: privilege level 15
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/snmp/R3-snmpd.conf
+# R3: SNMP-агент net-snmp (в Packet Tracer на R3 заранее созданы community read и write)
+agentAddress udp:172.16.3.1:161,udp:10.2.2.2:161
+rocommunity read
+rwcommunity write
+sysName R3
+sysLocation R3, LAN 172.16.3.0/24
+include_ifmib_iface_prefix Gi Vlan
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.
+1 1.3.6.1.2.1.1
+iso.3.6.1.2.1.1.1.0 = STRING: "Linux labvm 7.0.0-1017-azure #17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 2
+4 18:46:57 UTC 2026 x86_64"
+iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10
+iso.3.6.1.2.1.1.3.0 = Timeticks: (2589) 0:00:25.89
+iso.3.6.1.2.1.1.4.0 = STRING: "root"
+iso.3.6.1.2.1.1.5.0 = STRING: "R3"
+iso.3.6.1.2.1.1.6.0 = STRING: "R3, LAN 172.16.3.0/24"
+iso.3.6.1.2.1.1.8.0 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.2.1 = OID: iso.3.6.1.6.3.10.3.1.1
+iso.3.6.1.2.1.1.9.1.2.2 = OID: iso.3.6.1.6.3.11.3.1.1
+iso.3.6.1.2.1.1.9.1.2.3 = OID: iso.3.6.1.6.3.15.2.1.1
+iso.3.6.1.2.1.1.9.1.2.4 = OID: iso.3.6.1.6.3.1
+iso.3.6.1.2.1.1.9.1.2.5 = OID: iso.3.6.1.6.3.16.2.2.1
+iso.3.6.1.2.1.1.9.1.2.6 = OID: iso.3.6.1.2.1.49
+iso.3.6.1.2.1.1.9.1.2.7 = OID: iso.3.6.1.2.1.50
+iso.3.6.1.2.1.1.9.1.2.8 = OID: iso.3.6.1.2.1.4
+iso.3.6.1.2.1.1.9.1.2.9 = OID: iso.3.6.1.6.3.13.3.1.3
+iso.3.6.1.2.1.1.9.1.2.10 = OID: iso.3.6.1.2.1.92
+iso.3.6.1.2.1.1.9.1.3.1 = STRING: "The SNMP Management Architecture MIB."
+iso.3.6.1.2.1.1.9.1.3.2 = STRING: "The MIB for Message Processing and Dispatching."
+iso.3.6.1.2.1.1.9.1.3.3 = STRING: "The management information definitions for the SNMP User-based Se
+curity Model."
+iso.3.6.1.2.1.1.9.1.3.4 = STRING: "The MIB module for SNMPv2 entities"
+iso.3.6.1.2.1.1.9.1.3.5 = STRING: "View-based Access Control Model for SNMP."
+iso.3.6.1.2.1.1.9.1.3.6 = STRING: "The MIB module for managing TCP implementations"
+iso.3.6.1.2.1.1.9.1.3.7 = STRING: "The MIB module for managing UDP implementations"
+iso.3.6.1.2.1.1.9.1.3.8 = STRING: "The MIB module for managing IP and ICMP implementations"
+iso.3.6.1.2.1.1.9.1.3.9 = STRING: "The MIB modules for managing SNMP Notification, plus filtering."
+iso.3.6.1.2.1.1.9.1.3.10 = STRING: "The MIB module for logging SNMP Notifications."
+iso.3.6.1.2.1.1.9.1.4.1 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.2 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.3 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.4 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.5 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.6 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.7 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.8 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.9 = Timeticks: (0) 0:00:00.00
+iso.3.6.1.2.1.1.9.1.4.10 = Timeticks: (0) 0:00:00.00
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B snmpget -v2c -c read 172.16.3.1
+ 1.3.6.1.2.1.1.5.0
+iso.3.6.1.2.1.1.5.0 = STRING: "R3"
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.
+1 1.3.6.1.2.1.2.2.1.2
+iso.3.6.1.2.1.2.2.1.2.1 = STRING: "lo"
+iso.3.6.1.2.1.2.2.1.2.2 = STRING: "Gi0-0-0"
+iso.3.6.1.2.1.2.2.1.2.3 = STRING: "Gi0-0-1"
+iso.3.6.1.2.1.2.2.1.2.4 = STRING: "Vlan1"
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B snmpwalk -v2c -c read 172.16.3.
+1 1.3.6.1.2.1.2.2.1.8
+iso.3.6.1.2.1.2.2.1.8.1 = INTEGER: 2
+iso.3.6.1.2.1.2.2.1.8.2 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.8.3 = INTEGER: 1
+iso.3.6.1.2.1.2.2.1.8.4 = INTEGER: 2
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -sI http://www.devasc-neta
+cad.pka
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 14 Nov 2026 11:36:08 GMT
+Content-Type: text/html
+Content-Length: 194
+Last-Modified: Sat, 14 Nov 2026 11:35:42 GMT
+Connection: keep-alive
+ETag: "6af8478e-c2"
+Accept-Ranges: bytes
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -S
+-P INPUT ACCEPT
+-P FORWARD DROP
+-P OUTPUT ACCEPT
+-N OUTSIDE-DMZ
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i vlan1 -o vlan2 -j ACCEPT
+-A FORWARD -i vlan1 -o vlan3 -j ACCEPT
+-A FORWARD -i vlan3 -o vlan2 -j ACCEPT
+-A FORWARD -i vlan2 -j OUTSIDE-DMZ
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p icmp -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 80 -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 443 -j ACCEPT
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -t nat -S
+-P PREROUTING ACCEPT
+-P INPUT ACCEPT
+-P OUTPUT ACCEPT
+-P POSTROUTING ACCEPT
+-A PREROUTING -d 209.165.200.227/32 -i vlan2 -j DNAT --to-destination 192.168.2.3
+-A POSTROUTING -s 192.168.2.3/32 -o vlan2 -j SNAT --to-source 209.165.200.227
+-A POSTROUTING -s 192.168.1.0/24 -o vlan2 -j SNAT --to-source 209.165.200.226
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -D OUTSIDE-DMZ -d
+192.168.2.3/32 -p tcp -m tcp --dport 80 -j ACCEPT
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -S OUTSIDE-DMZ
+-N OUTSIDE-DMZ
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p icmp -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 443 -j ACCEPT
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/nginx/DEVASC-Server.conf
+# DEVASC-Server (www.devasc-netacad.pka): веб-сервер nginx. В Packet Tracer: Services > HTTP, HTTP O
+n, HTTPS Off
+user www-data;
+worker_processes 1;
+pid /run/nginx-DEVASC-Server.pid;
+error_log /var/log/pt-lab/nginx-DEVASC-Server.error.log;
+events {
+    worker_connections 64;
+}
+http {
+    include /etc/nginx/mime.types;
+    access_log /var/log/pt-lab/nginx-DEVASC-Server.access.log;
+    server {
+        listen 192.168.2.3:80;
+        server_name www.devasc-netacad.pka;
+        root /srv/labnet/DEVASC-Server/www;
+        index index.html;
+    }
+}
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cd DEVASC-Server
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ openssl genrsa -out devasc.key 2048
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ openssl req -new -x509 -key devasc.key -o
+ut devasc.crt -subj /CN=www.devasc-netacad.pka
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ openssl x509 -in devasc.crt -noout -subje
+ct -issuer -dates
+subject=CN = www.devasc-netacad.pka
+issuer=CN = www.devasc-netacad.pka
+notBefore=Nov 14 11:36:09 2026 GMT
+notAfter=Dec 14 11:36:09 2026 GMT
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ cat /etc/nginx/DEVASC-Server.conf
+# DEVASC Server (www.devasc-netacad.pka): Services > HTTP - HTTP Off, HTTPS On
+user www-data;
+worker_processes 1;
+pid /run/nginx-DEVASC-Server.pid;
+error_log /var/log/pt-lab/nginx-DEVASC-Server.error.log;
+events {
+    worker_connections 64;
+}
+http {
+    include /etc/nginx/mime.types;
+    access_log /var/log/pt-lab/nginx-DEVASC-Server.access.log;
+    # блока server с listen 80 больше нет: HTTP выключен
+    server {
+        listen 192.168.2.3:443 ssl;
+        server_name www.devasc-netacad.pka;
+        ssl_certificate     /home/devasc/labs/devnet-src/pt-protocols/DEVASC-Server/devasc.crt;
+        ssl_certificate_key /home/devasc/labs/devnet-src/pt-protocols/DEVASC-Server/devasc.key;
+        root /srv/labnet/DEVASC-Server/www;
+        index index.html;
+    }
+}
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server nginx -t
+ -c /etc/nginx/DEVASC-Server.conf
+nginx: the configuration file /etc/nginx/DEVASC-Server.conf syntax is ok
+nginx: configuration file /etc/nginx/DEVASC-Server.conf test is successful
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server nginx -s
+ reload -c /etc/nginx/DEVASC-Server.conf
+2026/11/14 11:36:09 [notice] 5247#5247: signal process started
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server ss -tlnp
+State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
+LISTEN     0          511              192.168.2.3:443                 0.0.0.0:*         users:(("ng
+inx",pid=5248,fd=10),("nginx",pid=4992,fd=10))
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ cd ..
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -m 10 http://www.devasc-ne
+tacad.pka
+curl: (28) Connection timed out after 10001 milliseconds
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -vk https://www.devasc-net
+acad.pka
+* Host www.devasc-netacad.pka:443 was resolved.
+* IPv6: (none)
+* IPv4: 209.165.200.227
+*   Trying 209.165.200.227:443...
+* Connected to www.devasc-netacad.pka (209.165.200.227) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / RSASSA-PSS
+* ALPN: server accepted http/1.1
+* Server certificate:
+*  subject: CN=www.devasc-netacad.pka
+*  start date: Nov 14 11:36:09 2026 GMT
+*  expire date: Dec 14 11:36:09 2026 GMT
+*  issuer: CN=www.devasc-netacad.pka
+*  SSL certificate verify result: self-signed certificate (18), continuing anyway.
+*   Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncr
+yption
+* using HTTP/1.x
+> GET / HTTP/1.1
+> Host: www.devasc-netacad.pka
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* old SSL session ID is stale, removing
+< HTTP/1.1 200 OK
+< Server: nginx/1.24.0 (Ubuntu)
+< Date: Sat, 14 Nov 2026 11:36:22 GMT
+< Content-Type: text/html
+< Content-Length: 194
+< Last-Modified: Sat, 14 Nov 2026 11:35:42 GMT
+< Connection: keep-alive
+< ETag: "6af8478e-c2"
+< Accept-Ranges: bytes
+<
+<!DOCTYPE html>
+<html>
+<head><title>DevNet Associate</title></head>
+<body>
+<h1>DevNet Associate</h1>
+<p>www.devasc-netacad.pka (DEVASC Server, 192.168.2.3 / 209.165.200.227)</p>
+</body>
+</html>
+* Connection #0 to host www.devasc-netacad.pka left intact
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/labnet/Example-Server-email.ini
+# Example Server > Services > EMAIL
+[email]
+smtp = on
+pop3 = on
+domain = www.example.com
+address = 64.100.0.10
+
+[users]
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/labnet/Example-Server-email.ini
+# Example Server > Services > EMAIL
+[email]
+smtp = on
+pop3 = on
+domain = www.example.com
+address = 64.100.0.10
+
+[users]
+Student1 = class
+Student2 = class
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Example-Server python3 /opt/labnet/e
+mail_server.py -c /etc/labnet/Example-Server-email.ini --daemon
+EMAIL service is on: SMTP 64.100.0.10:25, POP3 64.100.0.10:110; domain www.example.com; users: Stude
+nt1, Student2
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Example-Server ss -tlnp
+State        Recv-Q       Send-Q             Local Address:Port             Peer Address:Port
+Process
+LISTEN       0            511                  64.100.0.10:80                    0.0.0.0:*
+ users:(("nginx",pid=4990,fd=5),("nginx",pid=4989,fd=5))
+LISTEN       0            5                    64.100.0.10:110                   0.0.0.0:*
+ users:(("python3",pid=5272,fd=10))
+LISTEN       0            100                  64.100.0.10:25                    0.0.0.0:*
+ users:(("python3",pid=5272,fd=9))
+LISTEN       0            32                   64.100.0.10:53                    0.0.0.0:*
+ users:(("dnsmasq",pid=4981,fd=5))
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A curl -v -u Student1:class pop3:
+//64.100.0.10/
+*   Trying 64.100.0.10:110...
+* Connected to 64.100.0.10 (64.100.0.10) port 110
+< +OK www.example.com POP3 server ready
+> CAPA
+< +OK Capability list follows
+< USER
+< UIDL
+< TOP
+< IMPLEMENTATION labnet-pop3
+< .
+> USER Student1
+< +OK send PASS
+> PASS class
+< +OK Student1 has 0 message(s) (0 octets)
+> LIST
+< +OK
+
+* Connection #0 to host 64.100.0.10 left intact
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -v -u Student2:class pop3:
+//64.100.0.10/
+*   Trying 64.100.0.10:110...
+* Connected to 64.100.0.10 (64.100.0.10) port 110
+< +OK www.example.com POP3 server ready
+> CAPA
+< +OK Capability list follows
+< USER
+< UIDL
+< TOP
+< IMPLEMENTATION labnet-pop3
+< .
+> USER Student2
+< +OK send PASS
+> PASS class
+< +OK Student2 has 0 message(s) (0 octets)
+> LIST
+< +OK
+
+* Connection #0 to host 64.100.0.10 left intact
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cd PC-B
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ cat email-to-Student1.eml
+From: Student2 <Student2@www.example.com>
+To: Student1@www.example.com
+Subject: Email
+Message-ID: <pcb-email-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+How are you?
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -v --crlf -T email-to
+-Student1.eml smtp://64.100.0.10/PC-B --mail-from Student2@www.example.com --mail-rcpt Student1@www.
+example.com
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 64.100.0.10
+:25...
+* Connected to 64.100.0.10 (64.100.0.10) port 25
+< 220 www.example.com Python SMTP 1.4.4.post2
+> EHLO PC-B
+< 250-www.example.com
+< 250-SIZE 33554432
+< 250-8BITMIME
+< 250-SMTPUTF8
+< 250 HELP
+> MAIL FROM:<Student2@www.example.com> SIZE=182
+< 250 OK
+> RCPT TO:<Student1@www.example.com>
+< 250 2.1.5 OK
+> DATA
+< 354 End data with <CR><LF>.<CR><LF>
+} [189 bytes data]
+< 250 2.0.0 OK: message accepted for delivery
+103   182    0     0  103   189      0  58369 --:--:-- --:--:-- --:--:-- 63000
+* Connection #0 to host 64.100.0.10 left intact
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ cd ../PC-A
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A curl -u Student1:class pop
+3://64.100.0.10/
+1 328
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A curl -u Student1:class pop
+3://64.100.0.10/1
+Return-Path: <Student2@www.example.com>
+Received: from PC-B ([172.16.3.2]) by www.example.com with SMTP; Sat, 14 Nov 2026 11:36:23 -0000
+From: Student2 <Student2@www.example.com>
+To: Student1@www.example.com
+Subject: Email
+Message-ID: <pcb-email-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+How are you?
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ cat reply-to-Student2.eml
+From: Student1 <Student1@www.example.com>
+To: Student2@www.example.com
+Subject: Re: Email
+In-Reply-To: <pcb-email-1@www.example.com>
+References: <pcb-email-1@www.example.com>
+Message-ID: <pca-reply-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+I'm fine, thank you!
+
+> How are you?
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A curl -v --crlf -T reply-to
+-Student2.eml smtp://64.100.0.10/PC-A --mail-from Student1@www.example.com --mail-rcpt Student2@www.
+example.com
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 64.100.0.10
+:25...
+* Connected to 64.100.0.10 (64.100.0.10) port 25
+< 220 www.example.com Python SMTP 1.4.4.post2
+> EHLO PC-A
+< 250-www.example.com
+< 250-SIZE 33554432
+< 250-8BITMIME
+< 250-SMTPUTF8
+< 250 HELP
+> MAIL FROM:<Student1@www.example.com> SIZE=295
+< 250 OK
+> RCPT TO:<Student2@www.example.com>
+< 250 2.1.5 OK
+> DATA
+< 354 End data with <CR><LF>.<CR><LF>
+} [306 bytes data]
+< 250 2.0.0 OK: message accepted for delivery
+103   295    0     0  103   306      0   101k --:--:-- --:--:-- --:--:--  149k
+* Connection #0 to host 64.100.0.10 left intact
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ cd ../PC-B
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -u Student2:class pop
+3://64.100.0.10/
+1 450
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -u Student2:class pop
+3://64.100.0.10/1
+Return-Path: <Student1@www.example.com>
+Received: from PC-A ([209.165.200.226]) by www.example.com with SMTP; Sat, 14 Nov 2026 11:36:23 -000
+0
+From: Student1 <Student1@www.example.com>
+To: Student2@www.example.com
+Subject: Re: Email
+In-Reply-To: <pcb-email-1@www.example.com>
+References: <pcb-email-1@www.example.com>
+Message-ID: <pca-reply-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+I'm fine, thank you!
+
+> How are you?
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo cat /var/log/pt-lab/email.log
+2026-11-14 11:36:22,431 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:22,431 mail.log Peer: ('64.100.0.10', 47182)
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) handling connection
+2026-11-14 11:36:22,432 email SMTP listening on 64.100.0.10:25 (domain www.example.com)
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) EOF received
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) Connection lost during _handle_client()
+2026-11-14 11:36:22,432 mail.log ('64.100.0.10', 47182) connection lost
+2026-11-14 11:36:22,432 email POP3 listening on 64.100.0.10:110
+2026-11-14 11:36:22,433 email EMAIL service is on: SMTP 64.100.0.10:25, POP3 64.100.0.10:110; domain
+ www.example.com; users: Student1, Student2
+2026-11-14 11:36:22,586 email POP3 209.165.200.226: connection
+2026-11-14 11:36:22,587 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: user Student1 logged in, 0 message(s)
+2026-11-14 11:36:22,628 email POP3 209.165.200.226: LIST
+2026-11-14 11:36:22,669 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:22,669 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:22,748 email POP3 172.16.3.2: connection
+2026-11-14 11:36:22,748 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:22,789 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: user Student2 logged in, 0 message(s)
+2026-11-14 11:36:22,790 email POP3 172.16.3.2: LIST
+2026-11-14 11:36:22,831 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:22,831 email POP3 172.16.3.2: connection closed
+2026-11-14 11:36:23,013 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:23,014 mail.log Peer: ('172.16.3.2', 38914)
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) handling connection
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) >> b'EHLO PC-B'
+2026-11-14 11:36:23,014 mail.log ('172.16.3.2', 38914) >> b'MAIL FROM:<Student2@www.example.com> SIZ
+E=182'
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) sender: Student2@www.example.com
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) >> b'RCPT TO:<Student1@www.example.com>'
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) recip: Student1@www.example.com
+2026-11-14 11:36:23,015 mail.log ('172.16.3.2', 38914) >> b'DATA'
+2026-11-14 11:36:23,015 email SMTP 172.16.3.2: message from <Student2@www.example.com> delivered to
+mailbox Student1 (189 bytes, 1794656183015898533.15b82fcd.eml)
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) >> b'QUIT'
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) connection lost
+2026-11-14 11:36:23,016 mail.log ('172.16.3.2', 38914) Connection lost during _handle_client()
+2026-11-14 11:36:23,138 email POP3 209.165.200.226: connection
+2026-11-14 11:36:23,139 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: user Student1 logged in, 1 message(s)
+2026-11-14 11:36:23,180 email POP3 209.165.200.226: LIST
+2026-11-14 11:36:23,221 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:23,221 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:23,288 email POP3 209.165.200.226: connection
+2026-11-14 11:36:23,289 email POP3 209.165.200.226: CAPA
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: USER Student1
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: PASS ****
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: user Student1 logged in, 1 message(s)
+2026-11-14 11:36:23,330 email POP3 209.165.200.226: RETR 1
+2026-11-14 11:36:23,371 email POP3 209.165.200.226: QUIT
+2026-11-14 11:36:23,371 email POP3 209.165.200.226: connection closed
+2026-11-14 11:36:23,500 mail.log Available AUTH mechanisms: LOGIN(builtin) PLAIN(builtin)
+2026-11-14 11:36:23,500 mail.log Peer: ('209.165.200.226', 36518)
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) handling connection
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) >> b'EHLO PC-A'
+2026-11-14 11:36:23,500 mail.log ('209.165.200.226', 36518) >> b'MAIL FROM:<Student1@www.example.com
+> SIZE=295'
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) sender: Student1@www.example.com
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) >> b'RCPT TO:<Student2@www.example.com>'
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) recip: Student2@www.example.com
+2026-11-14 11:36:23,501 mail.log ('209.165.200.226', 36518) >> b'DATA'
+2026-11-14 11:36:23,502 email SMTP 209.165.200.226: message from <Student1@www.example.com> delivere
+d to mailbox Student2 (306 bytes, 1794656183501910943.efbb3a21.eml)
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) >> b'QUIT'
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) connection lost
+2026-11-14 11:36:23,502 mail.log ('209.165.200.226', 36518) Connection lost during _handle_client()
+2026-11-14 11:36:23,625 email POP3 172.16.3.2: connection
+2026-11-14 11:36:23,625 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: user Student2 logged in, 1 message(s)
+2026-11-14 11:36:23,666 email POP3 172.16.3.2: LIST
+2026-11-14 11:36:23,707 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:23,707 email POP3 172.16.3.2: connection closed
+2026-11-14 11:36:23,774 email POP3 172.16.3.2: connection
+2026-11-14 11:36:23,774 email POP3 172.16.3.2: CAPA
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: USER Student2
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: PASS ****
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: user Student2 logged in, 1 message(s)
+2026-11-14 11:36:23,815 email POP3 172.16.3.2: RETR 1
+2026-11-14 11:36:23,856 email POP3 172.16.3.2: QUIT
+2026-11-14 11:36:23,856 email POP3 172.16.3.2: connection closed
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ cd ..
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/labnet/Corporate-ftp.ini
+# Corporate > Services > FTP: Service On
+[ftp]
+service = on
+address = 192.168.1.3
+root = /srv/labnet/Corporate/ftp
+banner = Welcome to Corporate FTP server
+
+# Username: Student, Password: class; Write, Read, Delete, Rename, List; Add
+[user Student]
+password = class
+permissions = write, read, delete, rename, list
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate python3 /opt/labnet/ftp_se
+rver.py -c /etc/labnet/Corporate-ftp.ini --daemon
+FTP service is on: 192.168.1.3:21, root /srv/labnet/Corporate/ftp, users: Student (perm wamrdfel)
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cd PC-A
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ ls -l
+total 8
+-rw-rw-r--+ 1 devasc devasc 295 Nov 14 11:36 reply-to-Student2.eml
+-rw-rw-r--+ 1 devasc devasc  26 Nov 14 11:35 sampleFile.txt
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A ftp 192.168.1.3
+Connected to 192.168.1.3.
+220 Welcome to Corporate FTP server
+Name (192.168.1.3:devasc): Student
+331 Username ok, send password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> ?
+Commands may be abbreviated.  Commands are:
+
+!               edit            lpage           nlist           rcvbuf          struct
+$               epsv            lpwd            nmap            recv            sunique
+account         epsv4           ls              ntrans          reget           system
+append          epsv6           macdef          open            remopts         tenex
+ascii           exit            mdelete         page            rename          throttle
+bell            features        mdir            passive         reset           trace
+binary          fget            mget            pdir            restart         type
+bye             form            mkdir           pls             rhelp           umask
+case            ftp             mls             pmlsd           rmdir           unset
+cd              gate            mlsd            preserve        rstatus         usage
+cdup            get             mlst            progress        runique         user
+chmod           glob            mode            prompt          send            verbose
+close           hash            modtime         proxy           sendport        xferbuf
+cr              help            more            put             set             ?
+debug           idle            mput            pwd             site
+delete          image           mreget          quit            size
+dir             lcd             msend           quote           sndbuf
+disconnect      less            newer           rate            status
+ftp> dir
+229 Entering extended passive mode (|||59397|).
+125 Data connection already open. Transfer starting.
+-rw-r--r--   1 root     root      5571584 Nov 14 11:35 asa842-k8.bin
+-rw-r--r--   1 root     root     30468096 Nov 14 11:35 asa923-k8.bin
+-rw-r--r--   1 root     root     33591768 Nov 14 11:35 c1841-advipservicesk9-mz.124-15.T1.bin
+-rw-r--r--   1 root     root     13832032 Nov 14 11:35 c1841-ipbase-mz.123-14.T7.bin
+226 Transfer complete.
+ftp> put sampleFile.txt
+local: sampleFile.txt remote: sampleFile.txt
+229 Entering extended passive mode (|||46401|).
+125 Data connection already open. Transfer starting.
+100% |*******************************************************|    26      651.04 KiB/s    00:00 ETA
+226 Transfer complete.
+26 bytes sent in 00:00 (85.77 KiB/s)
+ftp> dir
+229 Entering extended passive mode (|||50437|).
+125 Data connection already open. Transfer starting.
+-rw-r--r--   1 root     root      5571584 Nov 14 11:35 asa842-k8.bin
+-rw-r--r--   1 root     root     30468096 Nov 14 11:35 asa923-k8.bin
+-rw-r--r--   1 root     root     33591768 Nov 14 11:35 c1841-advipservicesk9-mz.124-15.T1.bin
+-rw-r--r--   1 root     root     13832032 Nov 14 11:35 c1841-ipbase-mz.123-14.T7.bin
+-rw-r--r--   1 root     root           26 Nov 14 11:36 sampleFile.txt
+226 Transfer complete.
+ftp> get asa842-k8.bin
+local: asa842-k8.bin remote: asa842-k8.bin
+229 Entering extended passive mode (|||51141|).
+125 Data connection already open. Transfer starting.
+100% |*******************************************************|  5441 KiB    2.20 GiB/s    00:00 ETA
+226 Transfer complete.
+5571584 bytes received in 00:00 (2.14 GiB/s)
+ftp> delete sampleFile.txt
+250 File removed.
+ftp> quit
+221 Goodbye.
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ ls -l
+total 5452
+-rw-rw-r--+ 1 root   root   5571584 Nov 14 11:35 asa842-k8.bin
+-rw-rw-r--+ 1 devasc devasc     295 Nov 14 11:36 reply-to-Student2.eml
+-rw-rw-r--+ 1 devasc devasc      26 Nov 14 11:35 sampleFile.txt
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo cat /var/log/pt-lab/ftp.log
+2026-11-14 11:36:24,199 pyftpdlib FTP service is on: 192.168.1.3:21, root /srv/labnet/Corporate/ftp,
+ users: Student (perm wamrdfel)
+2026-11-14 11:36:24,199 pyftpdlib concurrency model: multi-thread
+2026-11-14 11:36:24,199 pyftpdlib masquerade (NAT) address: None
+2026-11-14 11:36:24,199 pyftpdlib passive ports: None
+2026-11-14 11:36:24,408 pyftpdlib 192.168.1.10:54376-[] FTP session opened (connect)
+2026-11-14 11:36:24,510 pyftpdlib 192.168.1.10:54376-[Student] USER 'Student' logged in.
+2026-11-14 11:36:24,666 pyftpdlib 192.168.1.10:54376-[Student] STOR /srv/labnet/Corporate/ftp/sample
+File.txt completed=1 bytes=26 seconds=0.001
+2026-11-14 11:36:24,771 pyftpdlib 192.168.1.10:54376-[Student] RETR /srv/labnet/Corporate/ftp/asa842
+-k8.bin completed=1 bytes=5571584 seconds=0.002
+2026-11-14 11:36:24,823 pyftpdlib 192.168.1.10:54376-[Student] DELE /srv/labnet/Corporate/ftp/sample
+File.txt 250
+2026-11-14 11:36:24,874 pyftpdlib 192.168.1.10:54376-[Student] FTP session closed (disconnect).
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$

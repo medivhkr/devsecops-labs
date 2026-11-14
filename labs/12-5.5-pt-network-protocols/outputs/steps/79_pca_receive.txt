@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A curl -u Student1:class pop
+3://64.100.0.10/
+1 328

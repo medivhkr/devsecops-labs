@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate python3 /opt/labnet/ftp_se
+rver.py -c /etc/labnet/Corporate-ftp.ini --daemon
+FTP service is on: 192.168.1.3:21, root /srv/labnet/Corporate/ftp, users: Student (perm wamrdfel)

@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -S
+-P INPUT ACCEPT
+-P FORWARD DROP
+-P OUTPUT ACCEPT
+-N OUTSIDE-DMZ
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i vlan1 -o vlan2 -j ACCEPT
+-A FORWARD -i vlan1 -o vlan3 -j ACCEPT
+-A FORWARD -i vlan3 -o vlan2 -j ACCEPT
+-A FORWARD -i vlan2 -j OUTSIDE-DMZ
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p icmp -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 80 -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 443 -j ACCEPT

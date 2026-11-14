@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server nginx -t
+ -c /etc/nginx/DEVASC-Server.conf
+nginx: the configuration file /etc/nginx/DEVASC-Server.conf syntax is ok
+nginx: configuration file /etc/nginx/DEVASC-Server.conf test is successful

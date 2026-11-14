@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ip -4 addr show eth0
+2: eth0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 10
+00 link-netns S2
+    inet 192.168.1.10/24 scope global eth0
+       valid_lft forever preferred_lft forever

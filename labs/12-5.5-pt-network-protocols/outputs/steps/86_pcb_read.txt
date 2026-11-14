@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -u Student2:class pop
+3://64.100.0.10/1
+Return-Path: <Student1@www.example.com>
+Received: from PC-A ([209.165.200.226]) by www.example.com with SMTP; Sat, 14 Nov 2026 11:36:23 -000
+0
+From: Student1 <Student1@www.example.com>
+To: Student2@www.example.com
+Subject: Re: Email
+In-Reply-To: <pcb-email-1@www.example.com>
+References: <pcb-email-1@www.example.com>
+Message-ID: <pca-reply-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+I'm fine, thank you!
+
+> How are you?

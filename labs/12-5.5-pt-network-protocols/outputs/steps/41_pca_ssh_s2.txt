@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-A ssh -l administrator 192.168.1.
+4
+The authenticity of host '192.168.1.4 (192.168.1.4)' can't be established.
+RSA key fingerprint is SHA256:hm8Haj57Lt8y1iR9qBJsv+Gvpq6MBXAYKfg2GYs1Q/8.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.4' (RSA) to the list of known hosts.
+(administrator@192.168.1.4) Password:
+
+S2>enable
+Password:
+S2#exit
+Connection to 192.168.1.4 closed.

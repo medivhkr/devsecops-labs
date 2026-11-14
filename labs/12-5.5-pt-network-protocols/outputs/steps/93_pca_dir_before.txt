@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ ls -l
+total 8
+-rw-rw-r--+ 1 devasc devasc 295 Nov 14 11:36 reply-to-Student2.eml
+-rw-rw-r--+ 1 devasc devasc  26 Nov 14 11:35 sampleFile.txt

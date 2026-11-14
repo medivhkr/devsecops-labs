@@ -1,0 +1,25 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -v --crlf -T email-to
+-Student1.eml smtp://64.100.0.10/PC-B --mail-from Student2@www.example.com --mail-rcpt Student1@www.
+example.com
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 64.100.0.10
+:25...
+* Connected to 64.100.0.10 (64.100.0.10) port 25
+< 220 www.example.com Python SMTP 1.4.4.post2
+> EHLO PC-B
+< 250-www.example.com
+< 250-SIZE 33554432
+< 250-8BITMIME
+< 250-SMTPUTF8
+< 250 HELP
+> MAIL FROM:<Student2@www.example.com> SIZE=182
+< 250 OK
+> RCPT TO:<Student1@www.example.com>
+< 250 2.1.5 OK
+> DATA
+< 354 End data with <CR><LF>.<CR><LF>
+} [189 bytes data]
+< 250 2.0.0 OK: message accepted for delivery
+103   182    0     0  103   189      0  58369 --:--:-- --:--:-- --:--:-- 63000
+* Connection #0 to host 64.100.0.10 left intact

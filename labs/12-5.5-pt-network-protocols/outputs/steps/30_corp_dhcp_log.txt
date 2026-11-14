@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo journalctl -t dnsmasq-dhcp -o cat --no-pager -g 'D
+HCP(DISCOVER|OFFER|REQUEST|ACK)'
+333399352 DHCPDISCOVER(eth0) ba:75:00:4a:d5:ac
+333399352 DHCPOFFER(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPDISCOVER(eth0) ba:75:00:4a:d5:ac
+333399352 DHCPOFFER(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPREQUEST(eth0) 192.168.1.10 ba:75:00:4a:d5:ac
+333399352 DHCPACK(eth0) 192.168.1.10 ba:75:00:4a:d5:ac PC-A

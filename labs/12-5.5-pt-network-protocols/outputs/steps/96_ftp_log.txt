@@ -1,0 +1,15 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo cat /var/log/pt-lab/ftp.log
+2026-11-14 11:36:24,199 pyftpdlib FTP service is on: 192.168.1.3:21, root /srv/labnet/Corporate/ftp,
+ users: Student (perm wamrdfel)
+2026-11-14 11:36:24,199 pyftpdlib concurrency model: multi-thread
+2026-11-14 11:36:24,199 pyftpdlib masquerade (NAT) address: None
+2026-11-14 11:36:24,199 pyftpdlib passive ports: None
+2026-11-14 11:36:24,408 pyftpdlib 192.168.1.10:54376-[] FTP session opened (connect)
+2026-11-14 11:36:24,510 pyftpdlib 192.168.1.10:54376-[Student] USER 'Student' logged in.
+2026-11-14 11:36:24,666 pyftpdlib 192.168.1.10:54376-[Student] STOR /srv/labnet/Corporate/ftp/sample
+File.txt completed=1 bytes=26 seconds=0.001
+2026-11-14 11:36:24,771 pyftpdlib 192.168.1.10:54376-[Student] RETR /srv/labnet/Corporate/ftp/asa842
+-k8.bin completed=1 bytes=5571584 seconds=0.002
+2026-11-14 11:36:24,823 pyftpdlib 192.168.1.10:54376-[Student] DELE /srv/labnet/Corporate/ftp/sample
+File.txt 250
+2026-11-14 11:36:24,874 pyftpdlib 192.168.1.10:54376-[Student] FTP session closed (disconnect).

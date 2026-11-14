@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Example-Server python3 /opt/labnet/e
+mail_server.py -c /etc/labnet/Example-Server-email.ini --daemon
+EMAIL service is on: SMTP 64.100.0.10:25, POP3 64.100.0.10:110; domain www.example.com; users: Stude
+nt1, Student2

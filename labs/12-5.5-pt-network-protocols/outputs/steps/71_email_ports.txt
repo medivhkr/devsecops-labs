@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Example-Server ss -tlnp
+State        Recv-Q       Send-Q             Local Address:Port             Peer Address:Port
+Process
+LISTEN       0            511                  64.100.0.10:80                    0.0.0.0:*
+ users:(("nginx",pid=4990,fd=5),("nginx",pid=4989,fd=5))
+LISTEN       0            5                    64.100.0.10:110                   0.0.0.0:*
+ users:(("python3",pid=5272,fd=10))
+LISTEN       0            100                  64.100.0.10:25                    0.0.0.0:*
+ users:(("python3",pid=5272,fd=9))
+LISTEN       0            32                   64.100.0.10:53                    0.0.0.0:*
+ users:(("dnsmasq",pid=4981,fd=5))

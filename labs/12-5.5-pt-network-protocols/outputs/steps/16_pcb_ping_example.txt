@@ -1,0 +1,10 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B ping -c 4 www.example.com
+PING www.example.com (64.100.0.10) 56(84) bytes of data.
+64 bytes from www.example.com (64.100.0.10): icmp_seq=1 ttl=62 time=0.018 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=2 ttl=62 time=0.060 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=3 ttl=62 time=0.057 ms
+64 bytes from www.example.com (64.100.0.10): icmp_seq=4 ttl=62 time=0.059 ms
+
+--- www.example.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3087ms
+rtt min/avg/max/mdev = 0.018/0.048/0.060/0.017 ms

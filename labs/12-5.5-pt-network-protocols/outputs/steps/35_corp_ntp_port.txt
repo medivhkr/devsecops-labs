@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate ss -ulpn 'sport = :123'
+State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
+UNCONN     0          0                192.168.1.3:123                 0.0.0.0:*         users:(("ch
+ronyd",pid=5168,fd=6))

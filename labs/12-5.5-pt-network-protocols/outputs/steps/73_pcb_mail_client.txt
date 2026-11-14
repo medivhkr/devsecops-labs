@@ -1,0 +1,20 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -v -u Student2:class pop3:
+//64.100.0.10/
+*   Trying 64.100.0.10:110...
+* Connected to 64.100.0.10 (64.100.0.10) port 110
+< +OK www.example.com POP3 server ready
+> CAPA
+< +OK Capability list follows
+< USER
+< UIDL
+< TOP
+< IMPLEMENTATION labnet-pop3
+< .
+> USER Student2
+< +OK send PASS
+> PASS class
+< +OK Student2 has 0 message(s) (0 octets)
+> LIST
+< +OK
+
+* Connection #0 to host 64.100.0.10 left intact

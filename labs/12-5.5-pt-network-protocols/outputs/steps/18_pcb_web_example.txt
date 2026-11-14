@@ -1,0 +1,19 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec PC-B curl -i http://www.example.com
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 14 Nov 2026 11:35:56 GMT
+Content-Type: text/html
+Content-Length: 150
+Last-Modified: Sat, 14 Nov 2026 11:35:42 GMT
+Connection: keep-alive
+ETag: "6af8478e-96"
+Accept-Ranges: bytes
+
+<!DOCTYPE html>
+<html>
+<head><title>www.example.com</title></head>
+<body>
+<h1>www.example.com</h1>
+<p>Example Server, 64.100.0.10</p>
+</body>
+</html>

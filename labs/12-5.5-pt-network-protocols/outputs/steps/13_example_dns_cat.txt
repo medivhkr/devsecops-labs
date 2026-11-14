@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/dnsmasq.d/Example-Server-dns.conf
+# Example Server (www.example.com): DNS-сервер, которым пользуется PC-B (в PT уже работает)
+port=53
+listen-address=64.100.0.10
+bind-interfaces
+no-resolv
+no-hosts
+host-record=www.example.com,64.100.0.10
+host-record=www.devasc-netacad.pka,209.165.200.227
+log-queries
+pid-file

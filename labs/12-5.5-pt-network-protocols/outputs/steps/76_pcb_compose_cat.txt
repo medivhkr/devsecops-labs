@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ cat email-to-Student1.eml
+From: Student2 <Student2@www.example.com>
+To: Student1@www.example.com
+Subject: Email
+Message-ID: <pcb-email-1@www.example.com>
+Content-Type: text/plain; charset=utf-8
+
+How are you?

@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec FIREWALL iptables -S OUTSIDE-DMZ
+-N OUTSIDE-DMZ
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p icmp -j ACCEPT
+-A OUTSIDE-DMZ -d 192.168.2.3/32 -p tcp -m tcp --dport 443 -j ACCEPT

@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo cat /var/lib/misc/dnsmasq.leases
+1794742559 ba:75:00:4a:d5:ac 192.168.1.10 PC-A 01:ba:75:00:4a:d5:ac

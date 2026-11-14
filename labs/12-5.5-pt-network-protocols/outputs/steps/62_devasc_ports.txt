@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ sudo ip netns exec DEVASC-Server ss -tlnp
+State      Recv-Q     Send-Q         Local Address:Port           Peer Address:Port     Process
+LISTEN     0          511              192.168.2.3:443                 0.0.0.0:*         users:(("ng
+inx",pid=5248,fd=10),("nginx",pid=4992,fd=10))

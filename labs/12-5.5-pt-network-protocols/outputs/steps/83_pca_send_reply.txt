@@ -1,0 +1,25 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-A$ sudo ip netns exec PC-A curl -v --crlf -T reply-to
+-Student2.eml smtp://64.100.0.10/PC-A --mail-from Student1@www.example.com --mail-rcpt Student2@www.
+example.com
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 64.100.0.10
+:25...
+* Connected to 64.100.0.10 (64.100.0.10) port 25
+< 220 www.example.com Python SMTP 1.4.4.post2
+> EHLO PC-A
+< 250-www.example.com
+< 250-SIZE 33554432
+< 250-8BITMIME
+< 250-SMTPUTF8
+< 250 HELP
+> MAIL FROM:<Student1@www.example.com> SIZE=295
+< 250 OK
+> RCPT TO:<Student2@www.example.com>
+< 250 2.1.5 OK
+> DATA
+< 354 End data with <CR><LF>.<CR><LF>
+} [306 bytes data]
+< 250 2.0.0 OK: message accepted for delivery
+103   295    0     0  103   306      0   101k --:--:-- --:--:-- --:--:--  149k
+* Connection #0 to host 64.100.0.10 left intact

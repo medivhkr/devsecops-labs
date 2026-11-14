@@ -1,0 +1,12 @@
+devasc@labvm:~$ ip netns list
+Example-Server
+DEVASC-Server
+PC-B
+PC-A
+Corporate
+S3
+S2
+FIREWALL
+R3
+R1
+Internet

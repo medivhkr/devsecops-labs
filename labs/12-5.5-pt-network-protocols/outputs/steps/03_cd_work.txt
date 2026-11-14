@@ -1,0 +1,16 @@
+devasc@labvm:~$ cd ~/labs/devnet-src/pt-protocols && ls -lR
+.:
+total 12
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 DEVASC-Server
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 PC-A
+drwxrwxr-x+ 2 devasc devasc 4096 Nov 14 11:35 PC-B
+
+./DEVASC-Server:
+total 0
+
+./PC-A:
+total 4
+-rw-rw-r--+ 1 devasc devasc 26 Nov 14 11:35 sampleFile.txt
+
+./PC-B:
+total 0

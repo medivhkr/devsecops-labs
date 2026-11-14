@@ -1,0 +1,6 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo ip netns exec Corporate chronyc -h /run/chrony/Cor
+porate.sock -n clients
+Hostname                      NTP   Drop Int IntL Last     Cmd   Drop Int  Last
+===============================================================================
+127.0.0.1                       0      0   -   -     -       1      0   -     5
+192.168.1.4                     1      0   -   -     5       0      0   -     -

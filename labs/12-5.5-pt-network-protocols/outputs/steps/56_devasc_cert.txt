@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/DEVASC-Server$ openssl req -new -x509 -key devasc.key -o
+ut devasc.crt -subj /CN=www.devasc-netacad.pka

@@ -1,0 +1,6 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ sudo grep -E 'ntp|NTP' /var/log/pt-lab/S2.log
+2026-11-14 11:36:02,554 csr1kv [console console] config: ntp server 192.168.1.3
+2026-11-14 11:36:02,554 s2 ntp server 192.168.1.3 configured
+2026-11-14 11:36:02,555 s2 NTP: clock synchronized to 192.168.1.3 (stratum 8, refid 127.127.1.1, off
+set -0.003 ms, delay 0.151 ms)
+2026-11-14 11:36:07,707 csr1kv [console console] exec: show ntp associations

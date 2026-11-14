@@ -1,0 +1,15 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/dnsmasq.d/Corporate-dhcp.conf
+# Corporate > Services > DHCP: Service On, Pool Name serverPool
+port=0
+interface=eth0
+dhcp-authoritative
+dhcp-sequential-ip
+# Start IP Address 192.168.1.10, Subnet Mask 255.255.255.0, Maximum number of users 245
+dhcp-range=set:serverPool,192.168.1.10,192.168.1.254,255.255.255.0,24h
+dhcp-lease-max=245
+# Default Gateway 192.168.1.1, DNS Server 192.168.1.3
+dhcp-option=tag:serverPool,option:router,192.168.1.1
+dhcp-option=tag:serverPool,option:dns-server,192.168.1.3
+dhcp-leasefile=/var/lib/misc/dnsmasq.leases
+log-dhcp
+pid-file

@@ -1,0 +1,12 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols$ cat /etc/labnet/Corporate-ftp.ini
+# Corporate > Services > FTP: Service On
+[ftp]
+service = on
+address = 192.168.1.3
+root = /srv/labnet/Corporate/ftp
+banner = Welcome to Corporate FTP server
+
+# Username: Student, Password: class; Write, Read, Delete, Rename, List; Add
+[user Student]
+password = class
+permissions = write, read, delete, rename, list

@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/pt-protocols/PC-B$ sudo ip netns exec PC-B curl -u Student2:class pop
+3://64.100.0.10/
+1 450
