@@ -1,0 +1,23 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '{code, waypoints: [.waypoints[] | {name, location, dist
+ance}]}' /tmp/route.json
+{
+  "code": "Ok",
+  "waypoints": [
+    {
+      "name": "15th Street Northwest",
+      "location": [
+        -77.033624,
+        38.895103
+      ],
+      "distance": 239.5964048
+    },
+    {
+      "name": "Guilford Avenue",
+      "location": [
+        -76.611075,
+        39.290868
+      ],
+      "distance": 27.31192723
+    }
+  ]
+}

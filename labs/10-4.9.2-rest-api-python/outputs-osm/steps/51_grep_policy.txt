@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ grep -nF -e "headers = " -e "time.sleep(1)" osm_parse-json_
+*.py
+osm_parse-json_1.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_1.py:18:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_2.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_2.py:18:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_3.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_3.py:16:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_4.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_4.py:16:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_5.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_5.py:16:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_6.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_6.py:16:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second
+osm_parse-json_7.py:8:headers = {"User-Agent": "DEVASC-lab-4.9.2 student script (education)"}
+osm_parse-json_7.py:16:    time.sleep(1)   # Nominatim usage policy: at most 1 request per second

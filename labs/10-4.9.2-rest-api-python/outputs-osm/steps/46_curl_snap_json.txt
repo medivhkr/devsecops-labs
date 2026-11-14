@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ curl -s -A "$UA" "$API/-77.0363849,38.8950982;116.3912972,3
+9.9057136" -o /tmp/snap.json

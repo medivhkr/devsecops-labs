@@ -1,0 +1,5 @@
+devasc@labvm:~$ curl -s -A "$UA" "https://router.project-osrm.org/nearest/v1/driving/-77.0364,38.895
+1"; echo
+{"code":"Ok","waypoints":[{"nodes":[2998909904,3027855115],"hint":"vN2ihT-L7IoEAAAAEwAAADIAAAAHAAAAg
+5DxQMF34kGjq5lCAgQnQQQAAAATAAAAMgAAAAcAAAAEgAAAaI9o-wF-UQKQhGj7_H1RAgIAfxYAAAAA","location":[-77.033
+624,38.895105],"name":"15th Street Northwest","distance":240.8980806}]}

@@ -33,14 +33,20 @@ def lab_rows():
         pdf = "reports/lab-{}.pdf".format(lab)
         docx = "reports/lab-{}.docx".format(lab)
         has_pdf = os.path.exists(os.path.join(REPO, pdf))
-        wf = "lab-{}.yml".format(lab)
+        wfdir = os.path.join(REPO, ".github", "workflows")
+        wfs = sorted(f for f in os.listdir(wfdir) if f == "lab-{}.yml".format(lab) or f.startswith("lab-{}-".format(lab)))
+        badges = " ".join("[![{0}]({1}/actions/workflows/{2}/badge.svg)]({1}/actions/workflows/{2})".format(lab, GH, wf)
+                          for wf in wfs)
+        protos = []
+        for out in sorted(os.listdir(os.path.join(REPO, "labs", folder))):
+            if out.startswith("outputs") and os.path.exists(os.path.join(REPO, "labs", folder, out, "transcript.txt")):
+                label = "протокол" if out == "outputs" else "протокол ({})".format(out.split("-", 1)[1].upper())
+                protos.append("[{}](labs/{}/{}/transcript.txt)".format(label, folder, out))
         rows.append({
             "lab": lab, "folder": folder, "title": title, "module": lab.split(".")[0],
             "report": "[PDF]({}) · [DOCX]({})".format(pdf, docx) if has_pdf else "в работе",
-            "protocol": "[протокол](labs/{}/outputs/transcript.txt)".format(folder)
-            if os.path.exists(os.path.join(REPO, "labs", folder, "outputs", "transcript.txt")) else "—",
-            "badge": "[![{0}]({1}/actions/workflows/{2}/badge.svg)]({1}/actions/workflows/{2})".format(lab, GH, wf)
-            if os.path.exists(os.path.join(REPO, ".github", "workflows", wf)) else "",
+            "protocol": "<br>".join(protos) if protos else "—",
+            "badge": badges,
         })
     return rows
 

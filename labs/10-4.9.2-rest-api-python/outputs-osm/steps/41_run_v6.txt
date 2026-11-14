@@ -1,0 +1,39 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_6.py
+Starting Location: Washington, D.C.
+Destination: Baltimore, Md
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Baltimore%2C+Md
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;-76.6107590,39.2908816?
+overview=false&steps=true&radiuses=50000;50000
+API Status: Ok = A successful route call.
+
+=============================================
+Directions from Washington, D.C. to Baltimore, Md
+Trip Duration:   01:01:02
+Kilometers:      62.67
+Miles:           38.93
+Fuel Used:       not provided by OSRM
+=============================================
+Start out going north on 15th Street Northwest (0.41 km)
+Turn right onto New York Avenue Northwest (0.91 km)
+Continue onto K Street Northwest (0.18 km)
+Turn left onto 7th Street Northwest (0.05 km)
+Turn right onto K Street Northwest (1.11 km)
+Continue onto K Street Northeast (0.92 km)
+Turn left onto 6th Street Northeast (0.85 km)
+Bear right onto Brentwood Parkway Northeast (0.45 km)
+Turn right onto Mount Olivet Road Northeast (0.12 km)
+Turn left (0.14 km)
+Turn right onto New York Avenue Northeast (US 50; US 1 Alternate) (4.46 km)
+Continue onto John Hanson Highway (US 50) (0.22 km)
+Keep left at the fork onto Baltimore-Washington Parkway toward Baltimore (49.54 km)
+Continue onto Russell Street (MD 295) (1.66 km)
+Continue onto South Paca Street (MD 295) (0.44 km)
+Turn right onto West Baltimore Street (0.62 km)
+Turn left onto North Charles Street (0.17 km)
+Turn right onto East Lexington Street (0.36 km)
+Turn right onto Guilford Avenue (0.04 km)
+You have arrived at your destination, on the left (0.00 km)
+=============================================
+
+Starting Location: q

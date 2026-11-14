@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '.routes[0].legs[0].steps | length' /tmp/route.json
+20

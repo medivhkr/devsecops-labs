@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '.' /tmp/err.json
+{
+  "message": "Could not find a matching segment for coordinate 0",
+  "code": "NoSegment"
+}

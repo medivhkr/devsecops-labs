@@ -1,0 +1,387 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_1.py
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+HTTP Status: 200
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Baltimore%2C+Md
+HTTP Status: 200
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;-76.6107590,39.2908816?
+overview=false&steps=true&radiuses=50000;50000
+HTTP Status: 200
+{'code': 'Ok', 'routes': [{'legs': [{'steps': [{'intersections': [{'out': 0, 'entry': [True], 'beari
+ngs': [0], 'location': [-77.033624, 38.895103]}, {'lanes': [{'valid': True, 'indications': ['straigh
+t']}, {'valid': True, 'indications': ['straight', 'right']}], 'out': 0, 'in': 2, 'entry': [True, Tru
+e, False], 'bearings': [0, 90, 180], 'location': [-77.033622, 38.895454]}, {'out': 0, 'in': 2, 'entr
+y': [True, False, False], 'bearings': [0, 90, 180], 'location': [-77.033623, 38.895555]}, {'out': 0,
+ 'in': 2, 'entry': [True, False, False, False], 'bearings': [0, 90, 180, 270], 'location': [-77.0336
+19, 38.896413]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 90, 180], 'locati
+on': [-77.033624, 38.897358]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 90,
+ 180], 'location': [-77.033626, 38.89832]}], 'driving_side': 'right', 'geometry': 'kuklFbsduMs@@QAK?
+I?Q?_C?W?Y?iC?Y?W?sC@S?cA?]?', 'maneuver': {'bearing_after': 0, 'bearing_before': 0, 'location': [-7
+7.033624, 38.895103], 'modifier': 'left', 'type': 'depart'}, 'name': '15th Street Northwest', 'mode'
+: 'driving', 'weight': 39.4, 'duration': 39.4, 'distance': 411.1}, {'intersections': [{'lanes': [{'v
+alid': False, 'indications': ['none']}, {'valid': False, 'indications': ['none']}, {'valid': True, '
+indications': ['right']}], 'out': 1, 'in': 2, 'entry': [True, True, False, True], 'bearings': [0, 60
+, 180, 255], 'location': [-77.033627, 38.898806]}, {'out': 1, 'in': 3, 'entry': [True, True, True, F
+alse], 'bearings': [0, 60, 180, 240], 'location': [-77.031948, 38.899359]}, {'out': 0, 'in': 2, 'ent
+ry': [True, True, False, False], 'bearings': [60, 135, 240, 315], 'location': [-77.03033, 38.899921]
+}, {'out': 0, 'in': 2, 'entry': [True, False, False, True], 'bearings': [60, 120, 240, 315], 'locati
+on': [-77.030187, 38.899974]}, {'out': 1, 'in': 3, 'entry': [False, True, True, False], 'bearings':
+[0, 60, 180, 240], 'location': [-77.029622, 38.900163]}, {'out': 1, 'in': 3, 'entry': [True, True, F
+alse, False], 'bearings': [0, 60, 180, 240], 'location': [-77.028104, 38.900671]}, {'out': 0, 'in':
+2, 'entry': [True, True, False], 'bearings': [60, 90, 240], 'location': [-77.027604, 38.900844]}, {'
+out': 1, 'in': 3, 'entry': [False, True, False, False], 'bearings': [0, 60, 180, 240], 'location': [
+-77.027033, 38.901045]}, {'out': 1, 'in': 3, 'entry': [True, True, True, False], 'bearings': [0, 60,
+ 180, 240], 'location': [-77.025983, 38.901405]}], 'driving_side': 'right', 'geometry': 'qlllFdsduMC
+a@{AeGMg@Kc@{AgGGWI[I[Qq@Ic@Ic@sAsFGWI]WeA[mACKIWESCKs@uCI[GUQu@S{@qAeFK[', 'maneuver': {'bearing_af
+ter': 63, 'bearing_before': 358, 'location': [-77.033627, 38.898806], 'modifier': 'right', 'type': '
+turn'}, 'name': 'New York Avenue Northwest', 'mode': 'driving', 'weight': 68.1, 'duration': 68.1, 'd
+istance': 911.7}, {'intersections': [{'out': 1, 'in': 3, 'entry': [False, True, True, False], 'beari
+ngs': [0, 90, 180, 270], 'location': [-77.02401, 38.902109]}, {'out': 1, 'in': 2, 'entry': [False, T
+rue, False], 'bearings': [0, 90, 270], 'location': [-77.023914, 38.90211]}], 'driving_side': 'right'
+, 'geometry': 'eamlF`wbuM?I?I?A?Q?W?eI?]', 'maneuver': {'bearing_after': 88, 'bearing_before': 85, '
+location': [-77.02401, 38.902109], 'modifier': 'straight', 'type': 'new name'}, 'name': 'K Street No
+rthwest', 'mode': 'driving', 'weight': 17.4, 'duration': 17.4, 'distance': 181.9}, {'intersections':
+ [{'out': 0, 'in': 3, 'entry': [True, True, True, False], 'bearings': [0, 105, 180, 270], 'location'
+: [-77.021912, 38.902105]}], 'driving_side': 'right', 'geometry': 'eamlF|ibuM[?w@?', 'maneuver': {'b
+earing_after': 358, 'bearing_before': 90, 'location': [-77.021912, 38.902105], 'modifier': 'left', '
+type': 'turn'}, 'name': '7th Street Northwest', 'mode': 'driving', 'weight': 6.7, 'duration': 6.7, '
+distance': 47.3}, {'intersections': [{'lanes': [{'valid': False, 'indications': ['left']}, {'valid':
+ False, 'indications': ['straight']}, {'valid': False, 'indications': ['straight']}, {'valid': True,
+ 'indications': ['straight', 'right']}], 'out': 1, 'in': 2, 'entry': [True, True, False], 'bearings'
+: [0, 90, 180], 'location': [-77.021914, 38.902531]}, {'lanes': [{'valid': False, 'indications': ['l
+eft']}, {'valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'entry': [True, True, True, Fa
+lse], 'bearings': [0, 90, 180, 270], 'location': [-77.019907, 38.902521]}, {'lanes': [{'valid': Fals
+e, 'indications': ['left']}, {'valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'entry':
+[True, True, True, False], 'bearings': [0, 90, 180, 270], 'location': [-77.01893, 38.902521]}, {'lan
+es': [{'valid': False, 'indications': ['left']}, {'valid': True, 'indications': ['none']}], 'out': 1
+, 'in': 3, 'entry': [True, True, True, False], 'bearings': [0, 90, 180, 270], 'location': [-77.01617
+6, 38.902519]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [90, 180, 270], 'locat
+ion': [-77.015177, 38.902522]}, {'lanes': [{'valid': False, 'indications': ['left']}, {'valid': True
+, 'indications': ['none']}], 'out': 0, 'in': 2, 'entry': [True, True, False, True], 'bearings': [90,
+ 165, 270, 345], 'location': [-77.01372, 38.902521]}, {'lanes': [{'valid': False, 'indications': ['l
+eft']}, {'valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'entry': [True, True, True, Fa
+lse], 'bearings': [0, 90, 180, 270], 'location': [-77.012162, 38.902519]}], 'driving_side': 'right',
+ 'geometry': 'ycmlF|ibuM?_@?oAAuD?U?w@B[?c@?_@?K?E?O?M?u@?Y?U?oA?uC?K?E?a@?sC?mA?S?U?]?i@?w@?O?a@?i@
+?_E?]?[?M?M?q@?]?}B?a@?Q?Y?Q?}@?O?iA?M?Q?kE?_A?c@?oA?W', 'maneuver': {'bearing_after': 88, 'bearing_
+before': 358, 'location': [-77.021914, 38.902531], 'modifier': 'right', 'type': 'turn'}, 'name': 'K
+Street Northwest', 'mode': 'driving', 'weight': 86.4, 'duration': 86.4, 'distance': 1110.7}, {'inter
+sections': [{'out': 1, 'in': 3, 'entry': [False, True, True, False], 'bearings': [0, 90, 180, 270],
+'location': [-77.009107, 38.902515]}, {'lanes': [{'valid': False, 'indications': ['left']}, {'valid'
+: True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'ent
+ry': [True, True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-77.009018, 38.902515]}
+, {'lanes': [{'valid': False, 'indications': ['left']}, {'valid': True, 'indications': ['none']}, {'
+valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'entry': [True, True, True, False], 'bea
+rings': [0, 90, 180, 270], 'location': [-77.005888, 38.902517]}, {'out': 1, 'in': 3, 'entry': [True,
+ True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-77.003558, 38.902515]}, {'out': 1
+, 'in': 3, 'entry': [True, True, True, False], 'bearings': [0, 90, 180, 270], 'location': [-77.00203
+7, 38.902514]}, {'out': 1, 'in': 3, 'entry': [False, True, True, False], 'bearings': [0, 90, 180, 27
+0], 'location': [-77.00057, 38.902515]}, {'out': 1, 'in': 3, 'entry': [True, True, True, False], 'be
+arings': [0, 90, 180, 270], 'location': [-76.99951, 38.90252]}], 'driving_side': 'right', 'geometry'
+: 'wcmlF|y_uM?Q?W?kA?Y?}@?K?[?y@?gA?q@?c@?wA?cA?Y?I?M?uB?kH?I?M?Q?kA?wC@c@?U?S?mA?o@?q@AoA?Q?Q?oD?Q?
+Q?oA?_B?G?I', 'maneuver': {'bearing_after': 90, 'bearing_before': 90, 'location': [-77.009107, 38.90
+2515], 'modifier': 'straight', 'type': 'new name'}, 'name': 'K Street Northeast', 'mode': 'driving',
+ 'weight': 77.7, 'duration': 77.7, 'distance': 924.4}, {'intersections': [{'lanes': [{'valid': True,
+ 'indications': ['left']}, {'valid': False, 'indications': ['straight']}], 'out': 0, 'in': 3, 'entry
+': [True, True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-76.998447, 38.902521]},
+{'out': 0, 'in': 2, 'entry': [True, True, False, True], 'bearings': [0, 90, 180, 270], 'location': [
+-76.998445, 38.903733]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 90, 180],
+ 'location': [-76.998443, 38.904404]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings'
+: [0, 90, 180], 'location': [-76.998443, 38.904974]}, {'out': 0, 'in': 2, 'entry': [True, True, Fals
+e, False], 'bearings': [0, 90, 180, 270], 'location': [-76.998443, 38.905646]}, {'out': 0, 'in': 2,
+'entry': [True, True, False, True], 'bearings': [30, 120, 195, 300], 'location': [-76.998343, 38.906
+237]}, {'out': 0, 'in': 1, 'entry': [True, False, True], 'bearings': [30, 210, 300], 'location': [-7
+6.997832, 38.906951]}], 'driving_side': 'right', 'geometry': 'wcmlFhw}tMG?G?qA?}@?E?_A?K?MA}@?E?i@?I
+?M?wA?K?M?g@?C?_A?M?A?K?C?q@?E?CACAGAA?CAIEKEMIGEIEWOQMcAq@WMwA_AuA}@]WIEGEKIm@_@UOmBsAwAaAOQ', 'man
+euver': {'bearing_after': 0, 'bearing_before': 88, 'location': [-76.998447, 38.902521], 'modifier':
+'left', 'type': 'turn'}, 'name': '6th Street Northeast', 'mode': 'driving', 'weight': 69.2, 'duratio
+n': 69.2, 'distance': 852.5}, {'intersections': [{'out': 0, 'in': 1, 'entry': [True, False, True], '
+bearings': [60, 225, 300], 'location': [-76.995816, 38.909654]}], 'driving_side': 'right', 'geometry
+': 'ipnlFzf}tMGSEMEWSmAQs@Q}@Y{AIc@K[GUCICGKWUe@U_@W_@[]WY[[]]KGEEEEGCKEKEICKAKCMAM?K?IAG?G@G?', 'ma
+neuver': {'bearing_after': 66, 'bearing_before': 42, 'location': [-76.995816, 38.909654], 'modifier'
+: 'slight right', 'type': 'new name'}, 'name': 'Brentwood Parkway Northeast', 'mode': 'driving', 'we
+ight': 28.5, 'duration': 28.5, 'distance': 452.9}, {'intersections': [{'lanes': [{'valid': False, 'i
+ndications': ['none']}, {'valid': False, 'indications': ['none']}, {'valid': True, 'indications': ['
+right']}], 'out': 0, 'in': 1, 'entry': [True, False, False, True], 'bearings': [75, 180, 255, 345],
+'location': [-76.992151, 38.912119]}, {'lanes': [{'valid': True, 'indications': ['left']}, {'valid':
+ True, 'indications': ['left']}, {'valid': False, 'indications': ['none']}, {'valid': False, 'indica
+tions': ['none']}], 'out': 0, 'in': 1, 'entry': [True, False, False], 'bearings': [75, 255, 345], 'l
+ocation': [-76.990886, 38.912327]}], 'driving_side': 'right', 'geometry': 'w_olF|o|tMCYSyBO_BAGC[',
+'maneuver': {'bearing_after': 77, 'bearing_before': 354, 'location': [-76.992151, 38.912119], 'modif
+ier': 'right', 'type': 'turn'}, 'name': 'Mount Olivet Road Northeast', 'mode': 'driving', 'weight':
+13.4, 'duration': 13.4, 'distance': 124.1}, {'intersections': [{'lanes': [{'valid': True, 'indicatio
+ns': ['left']}, {'valid': True, 'indications': ['left']}, {'valid': False, 'indications': ['none']},
+ {'valid': False, 'indications': ['none']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'beari
+ngs': [0, 75, 255], 'location': [-76.99075, 38.912349]}, {'out': 0, 'in': 2, 'entry': [True, False,
+False, True], 'bearings': [0, 90, 180, 270], 'location': [-76.990763, 38.912474]}], 'driving_side':
+'right', 'geometry': 'eaolFdg|tMG@G?G?M@m@?s@@I?I?G@G@GBGBIDUJEBSJ', 'maneuver': {'bearing_after': 3
+54, 'bearing_before': 77, 'location': [-76.99075, 38.912349], 'modifier': 'left', 'type': 'turn'}, '
+name': '', 'mode': 'driving', 'weight': 16.8, 'duration': 16.8, 'distance': 140.3}, {'intersections'
+: [{'lanes': [{'valid': False, 'indications': ['left']}, {'valid': False, 'indications': ['left']},
+{'valid': True, 'indications': ['right']}, {'valid': True, 'indications': ['right']}], 'out': 0, 'in
+': 1, 'entry': [True, False, False, True], 'bearings': [60, 150, 240, 330], 'location': [-76.991006,
+ 38.913578]}, {'out': 0, 'in': 2, 'entry': [True, True, False, True], 'bearings': [60, 150, 240, 330
+], 'location': [-76.989103, 38.914222]}, {'out': 0, 'in': 2, 'entry': [True, True, False, True], 'be
+arings': [60, 150, 240, 330], 'location': [-76.987889, 38.914635]}, {'out': 0, 'in': 2, 'entry': [Tr
+ue, True, False, True], 'bearings': [60, 150, 240, 330], 'location': [-76.985188, 38.915573]}, {'out
+': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [60, 150, 240], 'location': [-76.983863, 38
+.916033]}, {'out': 0, 'in': 2, 'entry': [True, True, False, False], 'bearings': [60, 150, 240, 330],
+ 'location': [-76.982955, 38.916348]}, {'out': 0, 'in': 2, 'entry': [True, True, False, True], 'bear
+ings': [60, 150, 240, 330], 'location': [-76.981532, 38.916842]}, {'lanes': [{'valid': True, 'indica
+tions': ['straight']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['no
+ne']}], 'out': 1, 'in': 3, 'entry': [False, True, True, False], 'bearings': [0, 90, 165, 270], 'loca
+tion': [-76.978524, 38.917174]}, {'lanes': [{'valid': True, 'indications': ['straight']}, {'valid':
+True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}], 'out': 1, 'in': 3, 'entry
+': [False, True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-76.977806, 38.917188]},
+ {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [90, 240, 270], 'location': [-76.977
+353, 38.917198]}, {'out': 1, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 90, 270], 'locat
+ion': [-76.976238, 38.917218]}, {'out': 1, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 90
+, 270], 'location': [-76.975411, 38.917236]}, {'out': 1, 'in': 2, 'entry': [True, True, False], 'bea
+rings': [0, 90, 270], 'location': [-76.974445, 38.917237]}, {'out': 1, 'in': 2, 'entry': [True, True
+, False], 'bearings': [75, 90, 270], 'location': [-76.974301, 38.917236]}, {'out': 2, 'in': 4, 'entr
+y': [False, False, True, True, False], 'bearings': [45, 60, 90, 210, 270], 'location': [-76.972624,
+38.917233]}, {'out': 1, 'in': 3, 'entry': [True, True, False, False], 'bearings': [30, 90, 210, 270]
+, 'location': [-76.972503, 38.917238]}, {'out': 1, 'in': 3, 'entry': [False, True, True, False], 'be
+arings': [30, 90, 195, 270], 'location': [-76.971359, 38.917273]}, {'lanes': [{'valid': True, 'indic
+ations': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['strai
+ght', 'slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [90, 97, 268],
+ 'location': [-76.970097, 38.917312]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings'
+: [90, 255, 270], 'location': [-76.962837, 38.916958]}, {'lanes': [{'valid': True, 'indications': ['
+none']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid
+': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'beari
+ngs': [87, 97, 267], 'location': [-76.95866, 38.916794]}, {'out': 0, 'in': 2, 'entry': [True, False,
+ False], 'bearings': [60, 210, 240], 'location': [-76.957417, 38.917024]}, {'lanes': [{'valid': True
+, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications':
+ ['none']}, {'valid': False, 'indications': ['right']}], 'out': 0, 'in': 2, 'entry': [True, True, Fa
+lse], 'bearings': [60, 75, 240], 'location': [-76.953712, 38.918796]}, {'out': 0, 'in': 2, 'entry':
+[True, False, False], 'bearings': [102, 278, 282], 'location': [-76.948142, 38.918701]}], 'driving_s
+ide': 'right', 'maneuver': {'bearing_after': 66, 'bearing_before': 334, 'location': [-76.991006, 38.
+913578], 'modifier': 'right', 'type': 'turn'}, 'geometry': '{holFxh|tMKe@s@wCw@cDG[GSCMUaAg@qBAGGSES
+gDcNCIAGEQEQuAwFq@kCMg@yAaGAIEQGSEQI]GYEWEWE_@C[ASAUAW?SAUA}B?m@?UAk@?Q?G?[AaAA}@?M?OAkAC}ECeD?_AAa@
+@_@?]?_@?]@I@uB?y@AiA?a@?K?]AW?]AW?Q?_@Ai@Ai@?g@EcDAk@?k@Ai@?e@?i@?k@@k@@g@@i@NiJ@i@@i@Bk@@i@NaE@g@B
+i@Bi@@i@@k@@g@@k@DkC\\{S@[@]?Y?]?Y?[A[AYCUAWCUCSCUCSEUGSEUe@uASk@_BaEmA}CUi@}@aCIWM]Oa@K_@I_@I]Ga@Ea
+@Gc@Ec@Ci@Cc@Cg@Ai@?i@?a@@i@Bc@@g@Dk@De@hA{LZaDlAeNFk@Dc@Bi@Be@Bg@Be@@]@W?o@@e@?g@?e@Ai@?g@Ai@Ac@Ca@
+Ae@', 'ref': 'US 50; US 1 Alternate', 'name': 'New York Avenue Northeast', 'mode': 'driving', 'weigh
+t': 340.3, 'duration': 340.3, 'distance': 4459.2}, {'intersections': [{'out': 0, 'in': 1, 'entry': [
+True, False], 'bearings': [75, 270], 'location': [-76.941459, 38.918052]}], 'driving_side': 'right',
+ 'maneuver': {'bearing_after': 81, 'bearing_before': 82, 'location': [-76.941459, 38.918052], 'modif
+ier': 'straight', 'type': 'new name'}, 'geometry': 'ydplFbsrtMC]A]CYC]Gu@Iu@Iw@Iu@Iu@Ku@Kw@', 'ref':
+ 'US 50', 'name': 'John Hanson Highway', 'mode': 'driving', 'weight': 15.4, 'duration': 15.4, 'dista
+nce': 220.7}, {'intersections': [{'lanes': [{'valid': True, 'indications': ['slight left']}, {'valid
+': True, 'indications': ['slight left', 'slight right']}, {'valid': False, 'indications': ['slight r
+ight']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [72, 76, 255], 'location': [-
+76.938974, 38.918475]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [32, 208, 215
+], 'location': [-76.93048, 38.923817]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid
+': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indic
+ations': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [53, 65, 2
+43], 'location': [-76.919252, 38.93346]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearin
+gs': [30, 210, 225], 'location': [-76.917111, 38.934848]}, {'lanes': [{'valid': True, 'indications':
+ ['none']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'va
+lid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'be
+arings': [15, 30, 210], 'location': [-76.915808, 38.936261]}, {'out': 0, 'in': 2, 'entry': [True, Fa
+lse, False], 'bearings': [45, 210, 225], 'location': [-76.911994, 38.94129]}, {'lanes': [{'valid': T
+rue, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indicatio
+ns': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [15, 30, 210],
+ 'location': [-76.90543, 38.957691]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings':
+ [18, 189, 194], 'location': [-76.904111, 38.963916]}, {'lanes': [{'valid': True, 'indications': ['n
+one']}, {'valid': True, 'indications': ['straight', 'slight right']}], 'out': 0, 'in': 2, 'entry': [
+True, True, False], 'bearings': [30, 45, 210], 'location': [-76.88934, 38.988023]}, {'out': 0, 'in':
+ 2, 'entry': [True, False, False], 'bearings': [45, 210, 225], 'location': [-76.886689, 38.99091]},
+{'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'val
+id': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bea
+rings': [45, 60, 225], 'location': [-76.885488, 38.991914]}, {'out': 0, 'in': 2, 'entry': [True, Fal
+se, False], 'bearings': [60, 225, 240], 'location': [-76.882075, 38.99419]}, {'lanes': [{'valid': Tr
+ue, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indication
+s': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [69, 74, 249],
+'location': [-76.878857, 38.995439]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings':
+ [60, 240, 255], 'location': [-76.874866, 38.996528]}, {'lanes': [{'valid': True, 'indications': ['n
+one']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications': ['slight right']}]
+, 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [15, 30, 210], 'location': [-76.86369
+8, 39.004201]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [11, 192, 198], 'loca
+tion': [-76.862115, 39.0079]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True,
+'indications': ['straight', 'slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bea
+rings': [15, 30, 195], 'location': [-76.853398, 39.030495]}, {'out': 0, 'in': 1, 'entry': [True, Fal
+se, False], 'bearings': [30, 195, 210], 'location': [-76.850263, 39.036592]}, {'lanes': [{'valid': T
+rue, 'indications': ['none']}, {'valid': True, 'indications': ['straight', 'slight right']}, {'valid
+': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'beari
+ngs': [15, 45, 195], 'location': [-76.841392, 39.051552]}, {'out': 0, 'in': 2, 'entry': [True, False
+, False], 'bearings': [15, 195, 210], 'location': [-76.836824, 39.060827]}, {'lanes': [{'valid': Tru
+e, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications
+': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [30, 45, 225], '
+location': [-76.805534, 39.092655]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings':
+[43, 218, 223], 'location': [-76.801962, 39.095987]}, {'lanes': [{'valid': True, 'indications': ['no
+ne']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications': ['right']}], 'out':
+ 0, 'in': 2, 'entry': [True, True, False], 'bearings': [42, 48, 223], 'location': [-76.800425, 39.09
+7277]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [45, 210, 225], 'location': [
+-76.797198, 39.099743]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indic
+ations': ['none']}, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry':
+[True, True, False], 'bearings': [42, 49, 223], 'location': [-76.784187, 39.109568]}, {'out': 0, 'in
+': 1, 'entry': [True, False, False], 'bearings': [51, 228, 230], 'location': [-76.777813, 39.114224]
+}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'
+valid': False, 'indications': ['right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearing
+s': [45, 60, 225], 'location': [-76.777301, 39.114545]}, {'out': 0, 'in': 2, 'entry': [True, False,
+False], 'bearings': [45, 225, 240], 'location': [-76.774735, 39.116213]}, {'lanes': [{'valid': True,
+ 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications':
+ ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [15, 30, 195], 'lo
+cation': [-76.756739, 39.137285]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [1
+5, 180, 195], 'location': [-76.755673, 39.139578]}, {'lanes': [{'valid': True, 'indications': ['none
+']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['slight right']}], 'o
+ut': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [20, 196, 199], 'location': [-76.753279,
+ 39.144901]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['
+none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications': ['slight right']}
+], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [30, 45, 225], 'location': [-76.7480
+46, 39.153386]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [45, 210, 225], 'loc
+ation': [-76.742227, 39.158789]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': Tru
+e, 'indications': ['none']}, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2,
+'entry': [True, True, False], 'bearings': [39, 40, 220], 'location': [-76.735574, 39.164997]}, {'out
+': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [30, 180, 210], 'location': [-76.731253, 3
+9.169558]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['no
+ne']}, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True,
+False], 'bearings': [30, 45, 210], 'location': [-76.730311, 39.17064]}, {'out': 0, 'in': 1, 'entry':
+ [True, False, False], 'bearings': [35, 213, 215], 'location': [-76.727366, 39.173912]}, {'lanes': [
+{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': False,
+ 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [63
+, 67, 246], 'location': [-76.701203, 39.198204]}, {'out': 0, 'in': 2, 'entry': [True, False, False],
+ 'bearings': [62, 238, 246], 'location': [-76.695528, 39.200356]}, {'lanes': [{'valid': True, 'indic
+ations': ['straight']}, {'valid': True, 'indications': ['straight']}, {'valid': False, 'indications'
+: ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [56, 63, 243], 'l
+ocation': [-76.694485, 39.200769]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [
+45, 210, 225], 'location': [-76.689444, 39.205016]}, {'lanes': [{'valid': True, 'indications': ['str
+aight']}, {'valid': True, 'indications': ['straight']}, {'valid': True, 'indications': ['straight']}
+, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False
+], 'bearings': [45, 52, 229], 'location': [-76.682756, 39.210131]}, {'out': 0, 'in': 2, 'entry': [Tr
+ue, False, False], 'bearings': [65, 242, 246], 'location': [-76.6746, 39.213582]}, {'lanes': [{'vali
+d': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'valid': True, 'indic
+ations': ['none']}, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'in': 2, 'entry':
+[True, True, False], 'bearings': [60, 75, 255], 'location': [-76.661538, 39.218096]}, {'out': 0, 'in
+': 2, 'entry': [True, False, False], 'bearings': [65, 238, 247], 'location': [-76.65919, 39.218906]}
+, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'v
+alid': True, 'indications': ['none']}, {'valid': False, 'indications': ['slight right']}], 'out': 0,
+ 'in': 2, 'entry': [True, True, False], 'bearings': [60, 67, 245], 'location': [-76.65814, 39.219282
+]}, {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [45, 225, 240], 'location': [-76.
+655109, 39.220804]}, {'lanes': [{'valid': True, 'indications': ['straight']}, {'valid': True, 'indic
+ations': ['straight']}, {'valid': True, 'indications': ['straight', 'slight right']}], 'out': 0, 'in
+': 2, 'entry': [True, True, False], 'bearings': [0, 15, 180], 'location': [-76.649934, 39.230509]},
+{'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': ['none']}, {'val
+id': True, 'indications': ['straight', 'slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, F
+alse], 'bearings': [0, 15, 180], 'location': [-76.635877, 39.258675]}, {'out': 0, 'in': 2, 'entry':
+[True, False, False], 'bearings': [5, 173, 186], 'location': [-76.635532, 39.261276]}, {'lanes': [{'
+valid': True, 'indications': ['straight']}, {'valid': True, 'indications': ['straight']}, {'valid':
+True, 'indications': ['straight']}, {'valid': False, 'indications': ['slight right']}], 'out': 0, 'i
+n': 2, 'entry': [True, True, False], 'bearings': [0, 15, 180], 'location': [-76.635375, 39.262662]},
+ {'out': 0, 'in': 2, 'entry': [True, False, False], 'bearings': [2, 175, 183], 'location': [-76.6351
+96, 39.265438]}, {'lanes': [{'valid': True, 'indications': ['straight']}, {'valid': True, 'indicatio
+ns': ['straight']}, {'valid': True, 'indications': ['straight']}, {'valid': False, 'indications': ['
+slight right']}], 'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [25, 36, 202], 'locat
+ion': [-76.634694, 39.267915]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True,
+ 'indications': ['none']}, {'valid': False, 'indications': ['right']}], 'out': 0, 'in': 2, 'entry':
+[True, True, False], 'bearings': [45, 60, 225], 'location': [-76.633482, 39.269411]}], 'driving_side
+': 'right', 'geometry': 'ogplFpcrtMcAiGE[GYGYEYKe@G[IYGYIWGYIYIYIWKWIYWq@Uk@Yo@Ym@Yk@[k@]k@]i@W_@e@o
+@]c@_@c@e@i@mEoEa@c@a@a@c@a@yAsAyAoAc@]e@]e@]q@g@s@e@iAs@cDyBiBmA}@m@iK}G}AgAi@_@c@_@m@i@s@u@s@w@o@w
+@e@q@w@oAm@eAq@uAi@qAk@}Aa@sAu@kC_@uAsAyE_A_D[i@_AoBo@kAw@oAq@aA_@s@YWm@k@uAqAq@i@iAcAyAm@wAo@_CaAgA
+g@q@[ECa@SgAq@u@g@w@k@y@u@u@s@w@{@qAwAiB{BQQ{A{A{@}@q@m@u@o@w@m@oA}@gAm@eAe@_A_@eA[}@UmAWeAQoAMcAIsA
+CgA?gA@kK\\uA@gA?w@CgAEu@I}@I}@O_AQu@Q_AW_AYy@]q@Yq@[}@g@gAq@aAo@_GaEq@e@w@g@q@a@y@c@UKs@[gAa@m@Sm@Q
+}@Qq@Mq@KaAKy@Gw@Eq@CwAE}AGkAA{@Gi@Ci@Gi@G_@Ek@Kk@Ma@Ia@Ky@Sq@QgAa@oAe@e@Se@SgAm@iAo@_Ao@kHgFmAy@mAw
+@gBcAeBaA_Bw@qB}@oBy@_Bo@aBu@uAu@cAk@aBeA}AkAqAiAiAcAgAiA_AaAoBoB_B}AeAaAkA}@mA}@}AaAoAs@_Bw@kAg@gAa
+@wAe@oA_@yA_@cM_DsA_@mA_@wAc@oBo@iCcAwAi@oAk@_Bw@_EeCYMQKgAw@aAu@}@u@{@u@uAqA_AaA_AaA{@gAmAsAw@_Aq@_
+AO[mBiCkAcB{@sAu@oAq@oAg@aAq@}AOg@_AaC]cA_@kAi@oBg@uBi@kCm@{CmCcO]}Bw@kDa@mBm@}Bm@}Bs@}Bg@wAq@oBu@kB
+k@sA_AqBg@cAk@gAeAiBiAkB}@oA_AoAcAmAiAiAcAaAqAeAaAs@YSyA}@gB}@sBeAmBq@gBo@uAi@_F{AkBi@kBi@yB_@_E{@yE
+cAmTqEgMmCkFqAqBg@oCs@oF{AmCy@wBs@eCy@iDiAeDiA}FoB{FuBcIuCcFmBiAa@_Bo@wCmASEe@Qs@W}L}Ec@QyGuC_DuAwDg
+B_J_E_HaDkCqAmCqAsFsCqDmB}BmA}BsAyEiC{JsFmDiB{BiA_D{AuCqA}DcB}EgBsDwAgDoAk@U{CmA}@]gAc@_JkDkAc@aC_Aa
+FmBoCiAWSyGsCqDgB{BmAaGeDcDmBaDqBqBqAgD_CwB{AgDeCyCyBcCkB_CkBuC_C_DmCaDoC_DsC_DyCmDkDkDmDuCcDqA}AaBs
+BkBkCiBoCgBoCyBeDwBeDwBcDgBqCwBcDkBqCiBmC{B_D}B}CoBgCwBmC{BmCeCsCcCoCaCeC_CcCmCoCiCiC{BcC}A_Bi@c@cAe
+AwB{BuB}B{AaBmAwAiAqAiAyAiCcDwBmCiAwAqCwDq@_AyAyB}BkDEO{CoEwA_COWsBiDaC{DwBqDoCmE{CwEsCcE}AyB_AoA_Am
+AoCkDgDiEw@cAmHmJgC{C}AwBcBaCcBaCmAkBwA{BmI{NaAeBgH}Lc@aAaDeFcAaBYc@cDaFyAsBiBeCgAwAmA}AoA}AWa@iDsDg
+BmBeDiDaEyDgEqDyD}CiKoH{CqB}CmB_E_CiCyAkCwAiDgB_@QiCqAcCkAoGuCwD}AoBy@kBs@iDqAaGuB]MoCcAiA]mY{JuWiJw
+@[y@[eAe@oAo@kAq@mAs@}AcAc@]i@a@gBuAuE}E_@UQQyL_NeH}HeHeI{FcG}]o`@QI{AaBkCiCuAsAkBcB{BqBoIoHGOeBsA_A
+y@[YUS]YoRqPwAoAeVyS}S{QsLiKoVeTSQeIcHcPoNiDyCwAqAkAoAyAcB}AoB}@oAiAeBeAgBcAiBaAmBu@cBy@qBu@mBk@eBg@
+_Be@aBsA}Em@eCmFuQ_B_Gu@wCk@_Cw@iCYeA}@uB}@sBu@wAu@qAm@}@m@y@m@w@q@u@s@s@eAaAgA{@uCoBk@e@i@o@cAeA_Ae
+Ay@eAaAuAiPgVuAuB{@oAaAaBw@gAoAaC_AqBy@sBa@iAo@oBq@aCe@gBgG_W@KgCuJg@oB}I}^wEiRaA_Ee@mBy@wDsCeLMo@iA
+qEOU]eA_@iA_@gAc@gAk@uAm@oAe@cASa@I[eA{A{@oAaAuA{@iAcAkAcAeAwAwAgAaAiA_AkAw@oAq@qAi@_AW_AUk@IaAKaAI{
+L_A}D[kCUkGg@yBOck@oEq@EgBIwAGsAEq@CaAEgBMcBMgAIaAKcAMy@QaASo@Q{@Y]Mw@]{@a@y@e@w@g@o@g@w@m@q@m@w@{@q
+@w@q@y@y@gAu@cAgA_B{\\of@Y_@W][_@QQ[YUSYU]UWQ_@QWM]Q[Ia@M_@I[GYG]E_@CsJq@SA{BOgOeAsG]sL[wBGoCGc@A]Aa
+@C]C_@EYE[G]Iw@Wq@[k@Wc@Sg@Yi@a@k@e@a@c@a@c@W[m@o@q@y@iAwAcC}CyA{B{D_F', 'maneuver': {'bearing_after
+': 71, 'bearing_before': 74, 'location': [-76.938974, 38.918475], 'modifier': 'slight left', 'type':
+ 'fork'}, 'destinations': 'Baltimore', 'name': 'Baltimore-Washington Parkway', 'mode': 'driving', 'w
+eight': 2572.8, 'duration': 2572.8, 'distance': 49539.3}, {'intersections': [{'out': 0, 'in': 2, 'en
+try': [True, False, False, False], 'bearings': [45, 219, 223, 315], 'location': [-76.629977, 39.2723
+09]}, {'lanes': [{'valid': True, 'indications': ['straight']}, {'valid': True, 'indications': ['stra
+ight']}, {'valid': True, 'indications': ['straight', 'right']}], 'out': 0, 'in': 2, 'entry': [True,
+True, False, False], 'bearings': [45, 135, 225, 300], 'location': [-76.629252, 39.272871]}, {'out':
+0, 'in': 2, 'entry': [True, True, False, False], 'bearings': [45, 135, 225, 315], 'location': [-76.6
+28619, 39.273375]}, {'out': 0, 'in': 2, 'entry': [True, True, False, False], 'bearings': [45, 135, 2
+25, 315], 'location': [-76.627271, 39.274445]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'b
+earings': [15, 45, 195], 'location': [-76.624246, 39.278701]}, {'out': 0, 'in': 2, 'entry': [True, F
+alse, False, False], 'bearings': [15, 105, 195, 285], 'location': [-76.623763, 39.27976]}, {'out': 0
+, 'in': 2, 'entry': [True, True, False, True], 'bearings': [0, 90, 195, 270], 'location': [-76.62314
+3, 39.281343]}, {'out': 0, 'in': 2, 'entry': [True, True, False], 'bearings': [0, 15, 180], 'locatio
+n': [-76.62313, 39.281579]}], 'driving_side': 'right', 'maneuver': {'bearing_after': 43, 'bearing_be
+fore': 42, 'location': [-76.629977, 39.272309], 'modifier': 'straight', 'type': 'new name'}, 'geomet
+ry': '}junFjxurMU[KOo@}@]g@sAgBQUOUeEwFaBsBuCiDi@c@QMUQ]Qa@Qy@]u@WgE{AoCcAsEaBWIwCgASGSGUE_@IWCUE]AQ
+?aMXkABI?KAK?KCKAKEICKEMGMIMIIKIKIKIQa@w@GKGI', 'ref': 'MD 295', 'name': 'Russell Street', 'mode': '
+driving', 'weight': 128.2, 'duration': 128.2, 'distance': 1663.5}, {'intersections': [{'out': 0, 'in
+': 2, 'entry': [True, True, False, True], 'bearings': [30, 135, 225, 315], 'location': [-76.622355,
+39.285333]}, {'out': 0, 'in': 1, 'entry': [True, False, True], 'bearings': [15, 195, 285], 'location
+': [-76.62212, 39.285638]}, {'lanes': [{'valid': True, 'indications': ['straight']}, {'valid': True,
+ 'indications': ['straight']}, {'valid': True, 'indications': ['straight', 'right']}, {'valid': Fals
+e, 'indications': ['right']}], 'out': 0, 'in': 2, 'entry': [True, True, False, False], 'bearings': [
+0, 90, 180, 270], 'location': [-76.622081, 39.286272]}, {'lanes': [{'valid': False, 'indications': [
+'left']}, {'valid': True, 'indications': ['straight']}, {'valid': True, 'indications': ['straight']}
+, {'valid': True, 'indications': ['straight']}], 'out': 0, 'in': 2, 'entry': [True, False, False, Tr
+ue], 'bearings': [0, 90, 180, 270], 'location': [-76.62216, 39.287462]}, {'out': 0, 'in': 2, 'entry'
+: [True, True, False, True], 'bearings': [0, 90, 180, 270], 'location': [-76.622232, 39.288592]}], '
+driving_side': 'right', 'maneuver': {'bearing_after': 32, 'bearing_before': 49, 'location': [-76.622
+355, 39.285333], 'modifier': 'straight', 'type': 'new name'}, 'geometry': 'i|wnFvhtrMQQMKMIOGKEMCKAG
+?K?O@c@@O?O@s@@u@BQ@[@G?o@BM?Q@iBD}ADG?M@{@Bk@@M?', 'ref': 'MD 295', 'name': 'South Paca Street', 'm
+ode': 'driving', 'weight': 38.8, 'duration': 38.8, 'distance': 441.8}, {'intersections': [{'out': 1,
+ 'in': 2, 'entry': [True, True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-76.62227
+4, 39.28925]}, {'lanes': [{'valid': True, 'indications': ['none']}, {'valid': True, 'indications': [
+'none']}, {'valid': True, 'indications': ['none']}, {'valid': False, 'indications': ['right']}], 'ou
+t': 1, 'in': 3, 'entry': [True, True, True, False], 'bearings': [0, 90, 180, 270], 'location': [-76.
+620918, 39.289306]}, {'lanes': [{'valid': False, 'indications': ['straight', 'left']}, {'valid': Tru
+e, 'indications': ['straight']}, {'valid': True, 'indications': ['straight']}, {'valid': True, 'indi
+cations': ['straight']}], 'out': 1, 'in': 2, 'entry': [False, True, False], 'bearings': [0, 90, 270]
+, 'location': [-76.619502, 39.289346]}, {'lanes': [{'valid': True, 'indications': ['straight', 'left
+']}, {'valid': True, 'indications': ['straight']}, {'valid': True, 'indications': ['straight']}, {'v
+alid': True, 'indications': ['straight']}], 'out': 1, 'in': 3, 'entry': [True, True, False, False],
+'bearings': [0, 90, 180, 270], 'location': [-76.619374, 39.289351]}, {'lanes': [{'valid': False, 'in
+dications': ['left']}, {'valid': True, 'indications': ['straight']}, {'valid': True, 'indications':
+['straight']}, {'valid': True, 'indications': ['straight', 'right']}], 'out': 1, 'in': 2, 'entry': [
+True, True, False], 'bearings': [15, 90, 270], 'location': [-76.618036, 39.289396]}, {'out': 1, 'in'
+: 5, 'entry': [False, True, True, True, False, False], 'bearings': [0, 75, 120, 180, 240, 270], 'loc
+ation': [-76.617804, 39.28939]}, {'out': 1, 'in': 3, 'entry': [True, True, False, False], 'bearings'
+: [0, 90, 180, 270], 'location': [-76.616403, 39.289478]}], 'driving_side': 'right', 'geometry': 'yt
+xnFdhtrM?UGaDA{@AY?SAgA?SAeAAyAAE?E?C?I?K?ICaA?SAa@Ay@?QAY?I?W@o@EO?MKyF?KAw@CsA?m@AY?Y', 'maneuver'
+: {'bearing_after': 85, 'bearing_before': 357, 'location': [-76.622274, 39.28925], 'modifier': 'righ
+t', 'type': 'turn'}, 'name': 'West Baltimore Street', 'mode': 'driving', 'weight': 73, 'duration': 7
+3, 'distance': 616.3}, {'intersections': [{'lanes': [{'valid': True, 'indications': ['straight', 'le
+ft']}, {'valid': False, 'indications': ['straight']}, {'valid': False, 'indications': ['none']}], 'o
+ut': 0, 'in': 3, 'entry': [True, True, False, False], 'bearings': [0, 90, 180, 270], 'location': [-7
+6.615149, 39.289522]}, {'out': 0, 'in': 2, 'entry': [True, False, False, True, True, True], 'bearing
+s': [0, 90, 180, 270, 285, 345], 'location': [-76.615214, 39.290356]}], 'driving_side': 'right', 'ge
+ometry': 'ovxnFt{rrMQ@cABW@a@@K@K?S?qBBK?', 'maneuver': {'bearing_after': 355, 'bearing_before': 87,
+ 'location': [-76.615149, 39.289522], 'modifier': 'left', 'type': 'turn'}, 'name': 'North Charles St
+reet', 'mode': 'driving', 'weight': 18.3, 'duration': 18.3, 'distance': 174.5}, {'intersections': [{
+'lanes': [{'valid': False, 'indications': ['none']}, {'valid': False, 'indications': ['none']}, {'va
+lid': True, 'indications': ['right']}], 'out': 1, 'in': 2, 'entry': [True, True, False], 'bearings':
+ [0, 90, 180], 'location': [-76.615231, 39.291092]}, {'out': 2, 'in': 4, 'entry': [False, False, Tru
+e, True, False], 'bearings': [0, 15, 90, 180, 270], 'location': [-76.613953, 39.291141]}, {'lanes':
+[{'valid': False, 'indications': ['left']}, {'valid': True, 'indications': ['straight']}, {'valid':
+True, 'indications': ['straight']}], 'out': 1, 'in': 4, 'entry': [True, True, False, False, False],
+'bearings': [0, 90, 135, 210, 270], 'location': [-76.612447, 39.291199]}], 'driving_side': 'right',
+'geometry': 'i`ynFd|rrMAOGuE?YAQAuACuBAw@AU?[CkAEyC?K', 'maneuver': {'bearing_after': 87, 'bearing_b
+efore': 357, 'location': [-76.615231, 39.291092], 'modifier': 'right', 'type': 'turn'}, 'name': 'Eas
+t Lexington Street', 'mode': 'driving', 'weight': 48, 'duration': 48, 'distance': 356.6}, {'intersec
+tions': [{'out': 2, 'in': 3, 'entry': [False, True, True, False], 'bearings': [0, 90, 180, 270], 'lo
+cation': [-76.611104, 39.291254]}], 'driving_side': 'right', 'geometry': 'iaynFjbrrMjAC', 'maneuver'
+: {'bearing_after': 175, 'bearing_before': 85, 'location': [-76.611104, 39.291254], 'modifier': 'rig
+ht', 'type': 'turn'}, 'name': 'Guilford Avenue', 'mode': 'driving', 'weight': 4, 'duration': 4, 'dis
+tance': 42.9}, {'intersections': [{'in': 0, 'entry': [True], 'bearings': [357], 'location': [-76.611
+075, 39.290868]}], 'driving_side': 'right', 'geometry': '}~xnFfbrrM', 'maneuver': {'bearing_after':
+0, 'bearing_before': 177, 'location': [-76.611075, 39.290868], 'modifier': 'left', 'type': 'arrive'}
+, 'name': 'Guilford Avenue', 'mode': 'driving', 'weight': 0, 'duration': 0, 'distance': 0}], 'weight
+': 3662.4, 'summary': 'Baltimore-Washington Parkway, Baltimore-Washington Parkway', 'duration': 3662
+.4, 'distance': 62671.9}], 'weight_name': 'routability', 'weight': 3662.4, 'duration': 3662.4, 'dist
+ance': 62671.9}], 'waypoints': [{'hint': 'vN2ihT-L7IoEAAAAEwAAADIAAAAHAAAArHXqQHY-5EGjq5lCAgQnQQQAAA
+ATAAAAMgAAAAcAAAAEgAAAaI9o-_99UQKfhGj7-n1RAgIAfxYAAAAA', 'location': [-77.033624, 38.895103], 'name'
+: '15th Street Northwest', 'distance': 239.5964048}, {'hint': 'TLUugP___38oAAAAOwAAAAAAAAAYAAAAQbUrQ
+knSokEAAAAAGvrRQSgAAAA7AAAAAAAAABgAAAAEgAAA_QFv-_SHVwI5A2_7AohXAgAADwsAAAAA', 'location': [-76.61107
+5, 39.290868], 'name': 'Guilford Avenue', 'distance': 27.31192723}]}

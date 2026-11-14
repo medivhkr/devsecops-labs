@@ -1,0 +1,23 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '{code, waypoints: [.waypoints[] | {name, location, dist
+ance}]}' /tmp/snap.json
+{
+  "code": "Ok",
+  "waypoints": [
+    {
+      "name": "",
+      "location": [
+        -9.497727,
+        38.78069
+      ],
+      "distance": 5865029.366
+    },
+    {
+      "name": "西长安街",
+      "location": [
+        116.391279,
+        39.906072
+      ],
+      "distance": 39.77965535
+    }
+  ]
+}

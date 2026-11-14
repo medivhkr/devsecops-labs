@@ -1,0 +1,14 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_6.py
+Starting Location: Washington, D.C.
+Destination: Beijing, China
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Beijing%2C+China
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;116.3912972,39.9057136?
+overview=false&steps=true&radiuses=50000;50000
+Starting Location: Washington, D.C.
+Destination: Bal
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Bal
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;67.2372587,36.7991624?o
+verview=false&steps=true&radiuses=50000;50000
+Starting Location: q

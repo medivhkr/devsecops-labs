@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '.routes[0].legs[0].steps[0] | {name, distance, maneuver
+}' /tmp/route.json
+{
+  "name": "15th Street Northwest",
+  "distance": 411.1,
+  "maneuver": {
+    "bearing_after": 0,
+    "bearing_before": 0,
+    "location": [
+      -77.033624,
+      38.895103
+    ],
+    "modifier": "left",
+    "type": "depart"
+  }
+}

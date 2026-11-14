@@ -1,0 +1,7 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '.routes[0] | {distance, duration, summary: .legs[0].sum
+mary}' /tmp/route.json
+{
+  "distance": 62671.9,
+  "duration": 3662.4,
+  "summary": "Baltimore-Washington Parkway, Baltimore-Washington Parkway"
+}

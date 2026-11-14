@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_4.py
+Starting Location: Washington, D.C.
+Destination: quit

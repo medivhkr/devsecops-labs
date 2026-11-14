@@ -1,0 +1,1 @@
+devasc@labvm:~$ UA="DEVASC-lab-4.9.2 student script (education)"

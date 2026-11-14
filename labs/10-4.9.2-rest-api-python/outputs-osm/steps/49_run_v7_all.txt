@@ -1,0 +1,279 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_7.py
+Starting Location: Washington, D.C.
+Destination: Baltimore, Md
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Baltimore%2C+Md
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;-76.6107590,39.2908816?
+overview=false&steps=true&radiuses=50000;50000
+API Status: Ok = A successful route call.
+
+=============================================
+Directions from Washington, D.C. to Baltimore, Md
+Trip Duration:   01:01:02
+Kilometers:      62.67
+Miles:           38.93
+Fuel Used:       not provided by OSRM
+=============================================
+Start out going north on 15th Street Northwest (0.41 km)
+Turn right onto New York Avenue Northwest (0.91 km)
+Continue onto K Street Northwest (0.18 km)
+Turn left onto 7th Street Northwest (0.05 km)
+Turn right onto K Street Northwest (1.11 km)
+Continue onto K Street Northeast (0.92 km)
+Turn left onto 6th Street Northeast (0.85 km)
+Bear right onto Brentwood Parkway Northeast (0.45 km)
+Turn right onto Mount Olivet Road Northeast (0.12 km)
+Turn left (0.14 km)
+Turn right onto New York Avenue Northeast (US 50; US 1 Alternate) (4.46 km)
+Continue onto John Hanson Highway (US 50) (0.22 km)
+Keep left at the fork onto Baltimore-Washington Parkway toward Baltimore (49.54 km)
+Continue onto Russell Street (MD 295) (1.66 km)
+Continue onto South Paca Street (MD 295) (0.44 km)
+Turn right onto West Baltimore Street (0.62 km)
+Turn left onto North Charles Street (0.17 km)
+Turn right onto East Lexington Street (0.36 km)
+Turn right onto Guilford Avenue (0.04 km)
+You have arrived at your destination, on the left (0.00 km)
+=============================================
+
+Starting Location: Moscow, Russia
+Destination: Beijing, China
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Moscow%2C+Russia
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Beijing%2C+China
+URL: https://router.project-osrm.org/route/v1/driving/37.6063916,55.6255780;116.3912972,39.9057136?o
+verview=false&steps=true&radiuses=50000;50000
+API Status: Ok = A successful route call.
+
+=============================================
+Directions from Moscow, Russia to Beijing, China
+Trip Duration:   88:23:11
+Kilometers:      7204.13
+Miles:           4474.61
+Fuel Used:       not provided by OSRM
+=============================================
+Start out going south (0.22 km)
+At the end of the road turn right onto Сумская улица (0.22 km)
+Turn left (0.18 km)
+Turn left onto Днепропетровская улица (0.40 km)
+Turn left onto Днепропетровская улица (0.06 km)
+Keep right at the fork onto Днепропетровская улица (0.33 km)
+At the end of the road turn right onto Варшавское шоссе (дублёр) (0.05 km)
+Bear left (0.07 km)
+Continue onto Варшавское шоссе (5.03 km)
+Bear right toward М-4: Кашира, МКАД-Восток (0.46 km)
+Merge onto МКАД, 33-й километр (0.64 km)
+Continue onto МКАД, 32-й километр (0.99 km)
+Continue onto МКАД, 31-й километр (1.04 km)
+Continue onto МКАД, 30-й километр (1.04 km)
+Continue onto МКАД, 29-й километр (0.95 km)
+Continue onto МКАД, 28-й километр (1.00 km)
+Continue onto МКАД, 27-й километр (1.00 km)
+Continue onto МКАД, 26-й километр (1.00 km)
+Continue onto МКАД, 25-й километр (1.00 km)
+Continue onto МКАД, 24-й километр (1.00 km)
+Continue onto МКАД, 23-й километр (1.00 km)
+Continue onto МКАД, 22-й километр (0.99 km)
+Continue onto МКАД, 21-й километр (1.00 km)
+Continue onto МКАД, 20-й километр (1.09 km)
+Continue onto МКАД, 19-й километр (0.83 km)
+Continue onto МКАД, 18-й километр (1.09 km)
+Continue onto МКАД, 17-й километр (1.07 km)
+Continue onto МКАД, 16-й километр (0.92 km)
+Continue onto МКАД, 15-й километр (1.01 km)
+Continue onto МКАД, 14-й километр (1.01 km)
+Continue onto МКАД, 13-й километр (1.00 km)
+Continue onto МКАД, 12-й километр (1.00 km)
+Continue onto МКАД, 11-й километр (0.95 km)
+Continue onto МКАД, 10-й километр (1.04 km)
+Continue onto МКАД, 9-й километр (1.00 km)
+Continue onto МКАД, 8-й километр (0.61 km)
+Take the exit on the right onto 7B toward Косинское шоссе, Салтыковская улица, Кожухово (0.62 km)
+Continue onto Косинское шоссе (2.89 km)
+Continue onto Северо-восточная хорда (4.70 km)
+Continue onto «Восток» (М-12) (796.12 km)
+Take the exit on the right (0.57 km)
+Continue (0.16 km)
+Continue onto Р-239 (49.22 km)
+Continue onto Алексеевское - Альметьевск (142.98 km)
+Continue onto 16К-0348 (0.38 km)
+Make a U-turn onto 16К-0348 (1.71 km)
+Turn right onto Р-239 (9.06 km)
+Bear right (0.05 km)
+Continue onto 16К-0346 (7.51 km)
+Turn left onto 16К-0337 (2.72 km)
+Merge onto Р-239 (0.16 km)
+Take the exit on the right onto Р-239 toward Р-239: Актюбинск, Оренбург (4.98 km)
+Enter the roundabout and take exit 1 onto Объездной тракт (Р-239) toward Р-239: Актюбинск, Оренбург
+(0.03 km)
+Exit the roundabout onto Объездной тракт (Р-239) toward Р-239: Актюбинск, Оренбург (0.08 km)
+Merge onto Объездной тракт (Р-239) (48.28 km)
+Continue onto улица Газинура Гафиатуллина (3.31 km)
+Turn left onto улица Джалиля (0.86 km)
+Bear right onto улица Ленина (7.98 km)
+Enter the roundabout and take exit 2 toward Р-239: Актюбинск, Оренбург (0.17 km)
+Exit the roundabout toward Р-239: Актюбинск, Оренбург (0.15 km)
+Continue onto Р-239 (19.88 km)
+Enter the roundabout and take exit 2 onto «Урал» (М-5) (0.06 km)
+Exit the roundabout onto «Урал» (М-5) (510.18 km)
+Take the exit on the right toward 75К-171: Черновское (0.07 km)
+Continue onto 75К-171 (0.41 km)
+Bear right onto 75К-164 (1.34 km)
+Continue onto 75К-269 (16.18 km)
+Turn left onto улица Ленина (0.97 km)
+Turn right onto улица Труда (1.25 km)
+Continue onto Больничная улица (0.43 km)
+Continue onto 75К-270 (35.20 km)
+Turn right onto 75К-197 (25.90 km)
+Continue onto 75К-194 (4.43 km)
+Enter the roundabout and take exit 2 onto 75К-194 (0.06 km)
+Exit the roundabout onto 75К-194 (0.95 km)
+Enter the roundabout and take exit 2 (0.16 km)
+Exit the roundabout (0.02 km)
+Continue (0.54 km)
+Merge onto 75К-004 (3.73 km)
+Continue onto 75К-004 (29.09 km)
+Keep right at the fork onto 75К-004 toward А-310: Кустанай, Троицк (0.08 km)
+Merge onto А-310 (42.84 km)
+Turn right onto А-310 (13.08 km)
+Bear right (0.07 km)
+Turn left (0.08 km)
+Turn left (0.06 km)
+At the end of the road turn right onto А-310 (0.08 km)
+Turn right (0.05 km)
+Keep left at the fork (0.20 km)
+Merge onto А-310 (0.38 km)
+Continue onto KАZ03 (41.01 km)
+Turn left onto KАZ03 (5.59 km)
+Turn left onto KАZ03 (1.75 km)
+Turn right onto KАZ03 (115.81 km)
+Keep left at the fork onto KАZ03 (9.22 km)
+Turn right onto Абай даңғылы (KАZ03) (1.13 km)
+Turn left onto Тәуелсіздік көшесі (KАZ03) (3.62 km)
+Enter the roundabout and take exit 1 onto KAZ23 toward Р36, М32: Карабутак, Сурган (0.01 km)
+Exit the roundabout onto KAZ23 toward Р36, М32: Карабутак, Сурган (3.17 km)
+Keep left at the fork onto KAZ23 (251.93 km)
+Turn right onto KAZ13 (14.92 km)
+Enter the roundabout and take exit 3 onto KZ03-12 (0.21 km)
+Exit the roundabout onto KZ03-12 (15.60 km)
+Continue onto KZ03-12 (66.70 km)
+Continue onto KАZ03 (87.38 km)
+Turn right onto KАZ03 (3.40 km)
+Turn left onto KАZ03 (109.21 km)
+Enter the roundabout and take exit 1 onto KАZ03 (0.02 km)
+Exit the roundabout onto KАZ03 (133.13 km)
+Take the exit toward Петропавл (0.41 km)
+Merge onto Астана айналма жолы (KZ01-01) (36.42 km)
+Take the exit on the right onto M-36 (0.34 km)
+Continue onto KАZ01 (150.59 km)
+Take the exit on the right onto KZ09-01 (15.65 km)
+Turn right onto KZ09-01 (1.50 km)
+Continue onto KZ09-01 (37.62 km)
+Turn left onto KAZ15 (17.59 km)
+Keep right at the fork onto Ауэзова улица (KAZ15) (152.57 km)
+Turn left onto KAZ15 (1.45 km)
+Turn left onto Қарқаралы - Қайнар (KAZ15) (31.24 km)
+Turn right onto Қарқаралы - Қайнар (KAZ15) (31.12 km)
+Bear right onto Қарқаралы - Қайнар (KAZ15) (102.04 km)
+Keep right at the fork onto Қарқаралы - Қайнар (KAZ15) (0.06 km)
+Turn right onto Қайнар - Баршатас (KAZ15) (124.37 km)
+Continue onto Kainar - Barshatas (KAZ15) (28.07 km)
+Continue onto р.Баканас (KAZ15) (0.12 km)
+Continue onto Barshatas - Ayaguz (KAZ15) (174.37 km)
+Take the ramp (0.09 km)
+Merge onto Қалбатау - Алматы (KAZ08) (28.66 km)
+Bear left onto Қалбатау - Алматы (63.34 km)
+Take the exit on the right (0.87 km)
+Continue onto Таскескен - Бақты (Қытай шекарасы) (KZ18-03) (186.59 km)
+Continue onto 承塔线 (G335) (2.84 km)
+Keep right at the fork onto 奎塔高速 (G3015) (216.56 km)
+Take the exit on the right (0.60 km)
+Keep right at the fork (0.80 km)
+Merge onto 奎阿高速 (G3014) (43.03 km)
+Keep left at the fork onto 五克高速 (S20) (206.48 km)
+Turn right (0.83 km)
+Turn left (0.71 km)
+Keep left at the fork (0.80 km)
+Merge onto 连霍高速 (G30) (212.82 km)
+Keep left at the fork onto 连霍高速 (G30) (516.57 km)
+Take the exit on the right (0.54 km)
+Keep left at the fork (1.86 km)
+Merge onto 梧骆高速 (S22) (133.06 km)
+Merge onto 京新高速 (G7) (1111.53 km)
+Keep left at the fork (1.63 km)
+Merge onto 京藏高速 (G6; G7) (26.75 km)
+Continue onto 包临高速 (G6; G7) (145.69 km)
+Continue onto 京藏高速 (G6; G7) (25.91 km)
+Keep left at the fork onto 京藏高速 (G6; G7) (123.52 km)
+Continue onto 呼包高速 (G6; G7) (119.22 km)
+Keep left at the fork onto G6 (206.19 km)
+Keep left at the fork onto 京藏高速公路 (G6) (32.96 km)
+Continue onto 京张高速公路 (G6) (0.47 km)
+Continue onto 京藏高速公路 (G6) (21.63 km)
+Continue onto 京张高速公路 (G6) (20.48 km)
+Continue onto 京藏高速 (G6) (3.15 km)
+Turn left (0.47 km)
+Merge onto 京藏高速 (G6) (15.19 km)
+Continue onto 京张高速公路 (G6) (5.67 km)
+Keep left at the fork (34.35 km)
+Continue (19.87 km)
+Keep left at the fork (0.14 km)
+Continue onto 京藏高速 (2.98 km)
+Continue onto 京张高速公路 (G6) (0.81 km)
+Continue onto 京藏高速 (5.52 km)
+Continue onto 潭峪沟隧道 (G6) (3.51 km)
+Continue onto 京藏高速 (G6) (9.00 km)
+Continue onto 山羊洼一号隧道 (G6) (0.26 km)
+Continue onto 京藏高速 (G6) (13.40 km)
+Continue onto 北京-拉萨高速公路 (G6) (2.34 km)
+Continue onto 京藏高速 (G6; G110) (31.67 km)
+Continue onto 德胜门外大街 (G110) (1.84 km)
+Continue (0.43 km)
+Turn right onto 德胜门内大街 (0.35 km)
+Keep right at the fork onto 德胜门内大街 (0.93 km)
+Keep left at the fork onto 德胜门内大街 (0.40 km)
+Continue onto 西什库大街 (1.16 km)
+At the end of the road turn right onto 西安门大街 (0.25 km)
+Turn left onto 西黄城根南街 (0.89 km)
+Turn left onto 灵境胡同 (0.34 km)
+Turn right onto 府右街 (0.80 km)
+Turn left onto 西长安街 (1.28 km)
+You have arrived at your destination, on the right (0.00 km)
+=============================================
+
+Starting Location: Washington, D.C.
+Destination: Beijing, China
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Beijing%2C+China
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;116.3912972,39.9057136?
+overview=false&steps=true&radiuses=50000;50000
+**********************************************
+Status Code: NoSegment; No road route between the locations.
+OSRM: Could not find a matching segment for coordinate 0 (0 = start, 1 = destination)
+**********************************************
+
+Starting Location: Washington, D.C.
+Destination: Bal
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Bal
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;67.2372587,36.7991624?o
+verview=false&steps=true&radiuses=50000;50000
+**********************************************
+Status Code: NoSegment; No road route between the locations.
+OSRM: Could not find a matching segment for coordinate 0 (0 = start, 1 = destination)
+**********************************************
+
+Starting Location: Washington, D.C.
+Destination: Xyzzy Qwerty 0000
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Xyzzy+Qwerty+0000
+**********************************************
+Unknown location: Xyzzy Qwerty 0000 (Nominatim found no such place)
+**********************************************
+
+Starting Location: Washington, D.C.
+Destination:
+**********************************************
+Missing an entry for one or both locations.
+**********************************************
+
+Starting Location: quit

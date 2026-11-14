@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ python3 osm_parse-json_5.py
+Starting Location: Washington, D.C.
+Destination: Baltimore, Md
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Washington%2C+D.C.
+Geocoding URL: https://nominatim.openstreetmap.org/search?format=json&limit=1&q=Baltimore%2C+Md
+URL: https://router.project-osrm.org/route/v1/driving/-77.0363849,38.8950982;-76.6107590,39.2908816?
+overview=false&steps=true&radiuses=50000;50000
+API Status: Ok = A successful route call.
+
+=============================================
+Directions from Washington, D.C. to Baltimore, Md
+Trip Duration:   01:01:02
+Miles:           38.92664596273292
+Fuel Used:       not provided by OSRM
+=============================================
+Starting Location: q

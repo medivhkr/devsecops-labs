@@ -1,0 +1,8 @@
+devasc@labvm:~/labs/devnet-src/mapquest$ jq '.routes[0] | keys_unsorted' /tmp/route.json
+[
+  "legs",
+  "weight_name",
+  "weight",
+  "duration",
+  "distance"
+]

@@ -1,0 +1,3 @@
+devasc@labvm:~$ grep PRETTY_NAME /etc/os-release && python3 --version
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+Python 3.8.10
