@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ openssl rand -base64 24 > ~/.vault_pass &&
+chmod 600 ~/.vault_pass && ls -l ~/.vault_pass
+-rw------- 1 devasc devasc 33 Nov 14 10:01 /home/devasc/.vault_pass

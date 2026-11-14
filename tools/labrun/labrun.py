@@ -42,6 +42,8 @@ ANSI_RE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)
 
 WIDTH = 100  # ширина терминала, как у обычного окна эмулятора терминала
 VENV_PREFIX_RE = re.compile(r"^\([\w.-]+\) ?$")
+VENV_TAIL_RE = re.compile(r"\([\w.-]+\) $")
+PROMPT_END_RE = re.compile(r"[$#] ")
 OSC_RE = re.compile(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)")
 
 
@@ -152,28 +154,25 @@ class LabRunner(object):
         self.child.sendline('echo __LAB""RUN_SYNC__')
         self.child.expect("__LABRUN_SYNC__\r?\n", timeout=60)
         code, body, prompt = self.wait_prompt(30)
-        self.pending = clean(prompt)
+        self.pending = prompt
 
     def wait_prompt(self, timeout):
         """Ждёт приглашение оболочки. Возвращает (код возврата, вывод до приглашения, строка приглашения)."""
         self.child.expect(MARK_RE, timeout=timeout)
         before = self.child.before
         code = int(self.child.match.group(1))
-        tail = ""
-        end = time.time() + 3
-        while time.time() < end and not (tail.endswith("$ ") or tail.endswith("# ")):
-            try:
-                tail += self.child.read_nonblocking(1000, timeout=0.3)
-            except pexpect.TIMEOUT:
-                continue
-            except pexpect.EOF:
-                break
-        # приглашение начинается с маркера; перед ним может стоять только префикс venv "(name) "
-        idx = before.rfind("\n")
-        last = clean(before[idx + 1:]) if idx >= 0 else clean(before)
-        if VENV_PREFIX_RE.match(last):
-            body = before[:idx + 1] if idx >= 0 else ""
-            return code, body, last.rstrip() + " " + tail
+        # Остаток приглашения ("devasc@labvm:~$ ") уже может лежать во внутреннем буфере pexpect,
+        # поэтому дочитываем его через expect, а не прямым чтением из pty.
+        try:
+            self.child.expect(PROMPT_END_RE, timeout=5)
+            tail = self.child.before + self.child.after
+        except pexpect.TIMEOUT:
+            tail = self.child.before
+        # приглашение начинается с маркера; перед ним может стоять префикс venv "(name) ".
+        # Строка возвращается "как есть" (с пробелом в конце), чтобы протокол совпадал с экраном.
+        m = VENV_TAIL_RE.search(before)
+        if m:
+            return code, before[:m.start()], m.group(0) + tail
         return code, before, tail
 
     def chown_path(self, path):
@@ -248,7 +247,7 @@ class LabRunner(object):
         chunks.append(body)
         text = screen_text(prompt_text + "".join(chunks))
         next_prompt = clean(prompt)
-        self.pending = next_prompt
+        self.pending = prompt
         text = text.rstrip() + "\n"
         if step.get("show_next_prompt", False):
             text += next_prompt.rstrip() + "\n"
@@ -284,7 +283,7 @@ class LabRunner(object):
             self.run_step(i, step)
         # итоговая строка приглашения, как в конце любого блока в методичке
         if self.transcript:
-            self.transcript[-1] = self.transcript[-1].rstrip() + "\n" + self.pending.rstrip() + "\n"
+            self.transcript[-1] = self.transcript[-1].rstrip() + "\n" + clean(self.pending).rstrip() + "\n"
         try:
             self.child.sendline("exit")
             self.child.expect(pexpect.EOF, timeout=10)

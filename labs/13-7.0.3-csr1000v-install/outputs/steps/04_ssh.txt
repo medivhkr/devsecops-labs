@@ -1,0 +1,18 @@
+devasc@labvm:~$ ssh cisco@192.168.56.101
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#exit
+Connection to 192.168.56.101 closed.

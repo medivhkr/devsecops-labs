@@ -1,0 +1,3 @@
+devasc@labvm:~$ ssh-keygen -l -F 192.168.56.101
+# Host 192.168.56.101 found: line 1
+192.168.56.101 RSA SHA256:IfEMV1uJfNtjxhNnom+DFARdFSG2lGQUZNtfLQI3mHk

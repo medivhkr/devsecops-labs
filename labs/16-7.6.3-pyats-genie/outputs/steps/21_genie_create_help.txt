@@ -1,0 +1,19 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie create --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Usage:
+  genie create <subcommand> [options]
+
+Subcommands:
+    parser              create a new Genie parser from template
+    testbed             create a testbed file automatically
+    trigger             create a new Genie trigger from template
+
+General Options:
+  -h, --help            Show help
+  -v, --verbose         Give more output, additive up to 3 times.
+  -q, --quiet           Give less output, additive up to 3 times, corresponding to WARNING, ERROR,
+                        and CRITICAL logging levels

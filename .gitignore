@@ -5,3 +5,5 @@ __pycache__/
 .env
 *.local
 .vault_pass
+labs/*/report/figs/
+labs/*/report/report.resolved.json

@@ -1,0 +1,9 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ git clone https://github.com/CiscoTestAutomati
+on/examples
+Cloning into 'examples'...
+remote: Enumerating objects: 1519, done.
+remote: Counting objects: 100% (367/367), done.
+remote: Compressing objects: 100% (192/192), done.
+remote: Total 1519 (delta 175), reused 264 (delta 143), pack-reused 1152 (from 1)
+Receiving objects: 100% (1519/1519), 1.20 MiB | 22.02 MiB/s, done.
+Resolving deltas: 100% (747/747), done.

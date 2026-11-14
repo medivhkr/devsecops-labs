@@ -1,0 +1,3 @@
+# Enter the hosts or devices for Ansible playbooks
+# Пароль перенесён в host_vars/CSR1kv.yml (зашифрован Ansible Vault)
+CSR1kv ansible_user=cisco ansible_host=192.168.56.101

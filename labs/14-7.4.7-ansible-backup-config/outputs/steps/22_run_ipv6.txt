@@ -1,0 +1,27 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ ansible-playbook -v cisco_router_ipv6_confi
+g_playbook.yaml
+Using /home/devasc/labs/devnet-src/ansible/ansible-csr1000v/ansible.cfg as config file
+
+PLAY [CONFIGURE IPv6 ADDRESSING] *******************************************************************
+
+TASK [SET IPv6 ADDRESS] ****************************************************************************
+changed: [CSR1kv] => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"}, "banne
+rs": {}, "changed": true, "commands": ["interface GigabitEthernet1", "description IPv6 ADDRESS", "ip
+v6 address 2001:DB8:ACAD:1::1/64", "ipv6 address FE80::1:1 link-local"], "updates": ["interface Giga
+bitEthernet1", "description IPv6 ADDRESS", "ipv6 address 2001:DB8:ACAD:1::1/64", "ipv6 address FE80:
+:1:1 link-local"]}
+
+TASK [SHOW IPv6 INTERFACE BRIEF] *******************************************************************
+ok: [CSR1kv] => {"changed": false, "stdout": ["GigabitEthernet1       [up/up]\n    FE80::1:1\n    20
+01:DB8:ACAD:1::1"], "stdout_lines": [["GigabitEthernet1       [up/up]", "    FE80::1:1", "    2001:D
+B8:ACAD:1::1"]]}
+
+TASK [SAVE OUTPUT ./ios_configurations/] ***********************************************************
+changed: [CSR1kv] => {"changed": true, "checksum": "60784fbaae4bd825b7d4f121c450effe529b553c", "dest
+": "ios_configurations/IPv6_output_CSR1kv.txt", "gid": 1000, "group": "devasc", "md5sum": "56e879f15
+e6e776cf131cec5abfc1886", "mode": "0644", "owner": "devasc", "size": 67, "src": "/home/devasc/.ansib
+le/tmp/ansible-tmp-1794650468.5846224-64004271202296/source", "state": "file", "uid": 1000}
+
+PLAY RECAP *****************************************************************************************
+CSR1kv                     : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

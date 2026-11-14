@@ -1,0 +1,5 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l verify-ipv6-1
+total 16
+-rw-r--r-- 1 devasc devasc  758 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_console.txt
+-rw-r--r-- 1 devasc devasc  877 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+-rw-rw-rw- 1 devasc devasc 4824 Nov 14 10:03 connection_CSR1kv.txt

@@ -1,0 +1,17 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ ansible-playbook cisco_router_ipv6_config_p
+laybook.yaml
+
+PLAY [CONFIGURE IPv6 ADDRESSING] *******************************************************************
+
+TASK [SET IPv6 ADDRESS] ****************************************************************************
+ok: [CSR1kv]
+
+TASK [SHOW IPv6 INTERFACE BRIEF] *******************************************************************
+ok: [CSR1kv]
+
+TASK [SAVE OUTPUT ./ios_configurations/] ***********************************************************
+ok: [CSR1kv]
+
+PLAY RECAP *****************************************************************************************
+CSR1kv                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

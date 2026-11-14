@@ -1,0 +1,215 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ ansible-playbook -v install_apache_playbook.y
+aml
+Using /home/devasc/labs/devnet-src/ansible/ansible-apache/ansible.cfg as config file
+
+PLAY [webservers] **********************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************
+ok: [192.0.2.3]
+
+TASK [INSTALL APACHE2] *****************************************************************************
+changed: [192.0.2.3] => {"cache_update_time": 1794650495, "cache_updated": true, "changed": true, "s
+tderr": "", "stderr_lines": [], "stdout": "Reading package lists...\nBuilding dependency tree...\nRe
+ading state information...\nThe following additional packages will be installed:\n  apache2-bin apac
+he2-data apache2-utils\nSuggested packages:\n  apache2-doc apache2-suexec-pristine | apache2-suexec-
+custom\nThe following NEW packages will be installed:\n  apache2 apache2-bin apache2-data apache2-ut
+ils\n0 upgraded, 4 newly installed, 0 to remove and 10 not upgraded.\nNeed to get 1693 kB of archive
+s.\nAfter this operation, 6830 kB of additional disk space will be used.\nGet:1 file:/etc/apt/apt-mi
+rrors.txt Mirrorlist [144 B]\nGet:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64
+apache2-bin amd64 2.4.58-1ubuntu8.19 [1339 kB]\nGet:3 http://azure.archive.ubuntu.com/ubuntu noble-u
+pdates/main amd64 apache2-data all 2.4.58-1ubuntu8.19 [163 kB]\nGet:4 http://azure.archive.ubuntu.co
+m/ubuntu noble-updates/main amd64 apache2-utils amd64 2.4.58-1ubuntu8.19 [101 kB]\nGet:5 http://azur
+e.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2 amd64 2.4.58-1ubuntu8.19 [90.2 kB]\nFet
+ched 1693 kB in 0s (5661 kB/s)\nSelecting previously unselected package apache2-bin.\r\n(Reading dat
+abase ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading
+ database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r
+(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database .
+.. 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading da
+tabase ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Re
+ading database ... 95%\r(Reading database ... 100%\r(Reading database ... 239118 files and directori
+es currently installed.)\r\nPreparing to unpack .../apache2-bin_2.4.58-1ubuntu8.19_amd64.deb ...\r\n
+Unpacking apache2-bin (2.4.58-1ubuntu8.19) ...\r\nSelecting previously unselected package apache2-da
+ta.\r\nPreparing to unpack .../apache2-data_2.4.58-1ubuntu8.19_all.deb ...\r\nUnpacking apache2-data
+ (2.4.58-1ubuntu8.19) ...\r\nSelecting previously unselected package apache2-utils.\r\nPreparing to
+unpack .../apache2-utils_2.4.58-1ubuntu8.19_amd64.deb ...\r\nUnpacking apache2-utils (2.4.58-1ubuntu
+8.19) ...\r\nSelecting previously unselected package apache2.\r\nPreparing to unpack .../apache2_2.4
+.58-1ubuntu8.19_amd64.deb ...\r\nUnpacking apache2 (2.4.58-1ubuntu8.19) ...\r\nSetting up apache2-bi
+n (2.4.58-1ubuntu8.19) ...\r\nSetting up apache2-data (2.4.58-1ubuntu8.19) ...\r\nSetting up apache2
+-utils (2.4.58-1ubuntu8.19) ...\r\nSetting up apache2 (2.4.58-1ubuntu8.19) ...\r\nEnabling module mp
+m_event.\r\nEnabling module authz_core.\r\nEnabling module authz_host.\r\nEnabling module authn_core
+.\r\nEnabling module auth_basic.\r\nEnabling module access_compat.\r\nEnabling module authn_file.\r\
+nEnabling module authz_user.\r\nEnabling module alias.\r\nEnabling module dir.\r\nEnabling module au
+toindex.\r\nEnabling module env.\r\nEnabling module mime.\r\nEnabling module negotiation.\r\nEnablin
+g module setenvif.\r\nEnabling module filter.\r\nEnabling module deflate.\r\nEnabling module status.
+\r\nEnabling module reqtimeout.\r\nEnabling conf charset.\r\nEnabling conf localized-error-pages.\r\
+nEnabling conf other-vhosts-access-log.\r\nEnabling conf security.\r\nEnabling conf serve-cgi-bin.\r
+\nEnabling site 000-default.\r\nCreated symlink /etc/systemd/system/multi-user.target.wants/apache2.
+service → /usr/lib/systemd/system/apache2.service.\r\r\nCreated symlink /etc/systemd/system/multi-us
+er.target.wants/apache-htcacheclean.service → /usr/lib/systemd/system/apache-htcacheclean.service.\r
+\r\nProcessing triggers for man-db (2.12.0-4build2) ...\r\nNot building database; man-db/auto-update
+ is not 'true'.\r\nProcessing triggers for ufw (0.36.2-6) ...\r\n\nRunning kernel seems to be up-to-
+date.\n\nRestarting services...\n\nService restarts being deferred:\n /etc/needrestart/restart.d/dbu
+s.service\n systemctl restart docker.service\n systemctl restart getty@tty1.service\n systemctl rest
+art hosted-compute-agent.service\n systemctl restart networkd-dispatcher.service\n systemctl restart
+ serial-getty@ttyS0.service\n systemctl restart systemd-logind.service\n systemctl restart walinuxag
+ent.service\n\nNo containers need to be restarted.\n\nUser sessions running outdated binaries:\n run
+ner @ user manager service: systemd[1187]\n\nNo VM guests are running outdated hypervisor (qemu) bin
+aries on this host.\n", "stdout_lines": ["Reading package lists...", "Building dependency tree...",
+"Reading state information...", "The following additional packages will be installed:", "  apache2-b
+in apache2-data apache2-utils", "Suggested packages:", "  apache2-doc apache2-suexec-pristine | apac
+he2-suexec-custom", "The following NEW packages will be installed:", "  apache2 apache2-bin apache2-
+data apache2-utils", "0 upgraded, 4 newly installed, 0 to remove and 10 not upgraded.", "Need to get
+ 1693 kB of archives.", "After this operation, 6830 kB of additional disk space will be used.", "Get
+:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]", "Get:2 http://azure.archive.ubuntu.com/ubuntu
+noble-updates/main amd64 apache2-bin amd64 2.4.58-1ubuntu8.19 [1339 kB]", "Get:3 http://azure.archiv
+e.ubuntu.com/ubuntu noble-updates/main amd64 apache2-data all 2.4.58-1ubuntu8.19 [163 kB]", "Get:4 h
+ttp://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2-utils amd64 2.4.58-1ubuntu8.1
+9 [101 kB]", "Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 apache2 amd64 2.
+4.58-1ubuntu8.19 [90.2 kB]", "Fetched 1693 kB in 0s (5661 kB/s)", "Selecting previously unselected p
+ackage apache2-bin.", "(Reading database ... ", "(Reading database ... 5%", "(Reading database ... 1
+0%", "(Reading database ... 15%", "(Reading database ... 20%", "(Reading database ... 25%", "(Readin
+g database ... 30%", "(Reading database ... 35%", "(Reading database ... 40%", "(Reading database ..
+. 45%", "(Reading database ... 50%", "(Reading database ... 55%", "(Reading database ... 60%", "(Rea
+ding database ... 65%", "(Reading database ... 70%", "(Reading database ... 75%", "(Reading database
+ ... 80%", "(Reading database ... 85%", "(Reading database ... 90%", "(Reading database ... 95%", "(
+Reading database ... 100%", "(Reading database ... 239118 files and directories currently installed.
+)", "Preparing to unpack .../apache2-bin_2.4.58-1ubuntu8.19_amd64.deb ...", "Unpacking apache2-bin (
+2.4.58-1ubuntu8.19) ...", "Selecting previously unselected package apache2-data.", "Preparing to unp
+ack .../apache2-data_2.4.58-1ubuntu8.19_all.deb ...", "Unpacking apache2-data (2.4.58-1ubuntu8.19) .
+..", "Selecting previously unselected package apache2-utils.", "Preparing to unpack .../apache2-util
+s_2.4.58-1ubuntu8.19_amd64.deb ...", "Unpacking apache2-utils (2.4.58-1ubuntu8.19) ...", "Selecting
+previously unselected package apache2.", "Preparing to unpack .../apache2_2.4.58-1ubuntu8.19_amd64.d
+eb ...", "Unpacking apache2 (2.4.58-1ubuntu8.19) ...", "Setting up apache2-bin (2.4.58-1ubuntu8.19)
+...", "Setting up apache2-data (2.4.58-1ubuntu8.19) ...", "Setting up apache2-utils (2.4.58-1ubuntu8
+.19) ...", "Setting up apache2 (2.4.58-1ubuntu8.19) ...", "Enabling module mpm_event.", "Enabling mo
+dule authz_core.", "Enabling module authz_host.", "Enabling module authn_core.", "Enabling module au
+th_basic.", "Enabling module access_compat.", "Enabling module authn_file.", "Enabling module authz_
+user.", "Enabling module alias.", "Enabling module dir.", "Enabling module autoindex.", "Enabling mo
+dule env.", "Enabling module mime.", "Enabling module negotiation.", "Enabling module setenvif.", "E
+nabling module filter.", "Enabling module deflate.", "Enabling module status.", "Enabling module req
+timeout.", "Enabling conf charset.", "Enabling conf localized-error-pages.", "Enabling conf other-vh
+osts-access-log.", "Enabling conf security.", "Enabling conf serve-cgi-bin.", "Enabling site 000-def
+ault.", "Created symlink /etc/systemd/system/multi-user.target.wants/apache2.service → /usr/lib/syst
+emd/system/apache2.service.", "", "Created symlink /etc/systemd/system/multi-user.target.wants/apach
+e-htcacheclean.service → /usr/lib/systemd/system/apache-htcacheclean.service.", "", "Processing trig
+gers for man-db (2.12.0-4build2) ...", "Not building database; man-db/auto-update is not 'true'.", "
+Processing triggers for ufw (0.36.2-6) ...", "", "Running kernel seems to be up-to-date.", "", "Rest
+arting services...", "", "Service restarts being deferred:", " /etc/needrestart/restart.d/dbus.servi
+ce", " systemctl restart docker.service", " systemctl restart getty@tty1.service", " systemctl resta
+rt hosted-compute-agent.service", " systemctl restart networkd-dispatcher.service", " systemctl rest
+art serial-getty@ttyS0.service", " systemctl restart systemd-logind.service", " systemctl restart wa
+linuxagent.service", "", "No containers need to be restarted.", "", "User sessions running outdated
+binaries:", " runner @ user manager service: systemd[1187]", "", "No VM guests are running outdated
+hypervisor (qemu) binaries on this host."]}
+
+TASK [ENABLED MOD_REWRITE] *************************************************************************
+changed: [192.0.2.3] => {"changed": true, "result": "Module rewrite enabled"}
+
+RUNNING HANDLER [RESTART APACHE2] ******************************************************************
+changed: [192.0.2.3] => {"changed": true, "name": "apache2", "state": "started", "status": {"ActiveE
+nterTimestamp": "Sat 2026-11-14 10:01:39 UTC", "ActiveEnterTimestampMonotonic": "287267368", "Active
+ExitTimestampMonotonic": "0", "ActiveState": "active", "After": "systemd-journald.socket -.mount sys
+init.target systemd-tmpfiles-setup.service basic.target system.slice network.target nss-lookup.targe
+t tmp.mount remote-fs.target", "AllowIsolate": "no", "AssertResult": "yes", "AssertTimestamp": "Sat
+2026-11-14 10:01:39 UTC", "AssertTimestampMonotonic": "287164318", "Before": "shutdown.target apache
+-htcacheclean.service multi-user.target", "BlockIOAccounting": "no", "BlockIOWeight": "[not set]", "
+CPUAccounting": "yes", "CPUAffinityFromNUMA": "no", "CPUQuotaPerSecUSec": "infinity", "CPUQuotaPerio
+dUSec": "infinity", "CPUSchedulingPolicy": "0", "CPUSchedulingPriority": "0", "CPUSchedulingResetOnF
+ork": "no", "CPUShares": "[not set]", "CPUUsageNSec": "40011000", "CPUWeight": "[not set]", "CacheDi
+rectoryMode": "0755", "CanFreeze": "yes", "CanIsolate": "no", "CanReload": "yes", "CanStart": "yes",
+ "CanStop": "yes", "CapabilityBoundingSet": "cap_chown cap_dac_override cap_dac_read_search cap_fown
+er cap_fsetid cap_kill cap_setgid cap_setuid cap_setpcap cap_linux_immutable cap_net_bind_service ca
+p_net_broadcast cap_net_admin cap_net_raw cap_ipc_lock cap_ipc_owner cap_sys_module cap_sys_rawio ca
+p_sys_chroot cap_sys_ptrace cap_sys_pacct cap_sys_admin cap_sys_boot cap_sys_nice cap_sys_resource c
+ap_sys_time cap_sys_tty_config cap_mknod cap_lease cap_audit_write cap_audit_control cap_setfcap cap
+_mac_override cap_mac_admin cap_syslog cap_wake_alarm cap_block_suspend cap_audit_read cap_perfmon c
+ap_bpf cap_checkpoint_restore", "CleanResult": "success", "CollectMode": "inactive", "ConditionResul
+t": "yes", "ConditionTimestamp": "Sat 2026-11-14 10:01:39 UTC", "ConditionTimestampMonotonic": "2871
+64315", "ConfigurationDirectoryMode": "0755", "Conflicts": "shutdown.target", "ControlGroup": "/syst
+em.slice/apache2.service", "ControlGroupId": "8905", "ControlPID": "0", "CoredumpFilter": "0x33", "C
+oredumpReceive": "no", "DefaultDependencies": "yes", "DefaultMemoryLow": "0", "DefaultMemoryMin": "0
+", "DefaultStartupMemoryLow": "0", "Delegate": "no", "Description": "The Apache HTTP Server", "Devic
+ePolicy": "auto", "Documentation": "https://httpd.apache.org/docs/2.4/", "DynamicUser": "no", "Effec
+tiveCPUs": "0-3", "EffectiveMemoryNodes": "0", "Environment": "APACHE_STARTED_BY_SYSTEMD=true", "Exe
+cMainCode": "0", "ExecMainExitTimestampMonotonic": "0", "ExecMainPID": "5998", "ExecMainStartTimesta
+mp": "Sat 2026-11-14 10:01:39 UTC", "ExecMainStartTimestampMonotonic": "287267313", "ExecMainStatus"
+: "0", "ExecReload": "{ path=/usr/sbin/apachectl ; argv[]=/usr/sbin/apachectl graceful ; ignore_erro
+rs=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }", "ExecReloadEx": "{
+ path=/usr/sbin/apachectl ; argv[]=/usr/sbin/apachectl graceful ; flags= ; start_time=[n/a] ; stop_t
+ime=[n/a] ; pid=0 ; code=(null) ; status=0/0 }", "ExecStart": "{ path=/usr/sbin/apachectl ; argv[]=/
+usr/sbin/apachectl start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(nul
+l) ; status=0/0 }", "ExecStartEx": "{ path=/usr/sbin/apachectl ; argv[]=/usr/sbin/apachectl start ;
+flags= ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }", "ExecStop": "{ pa
+th=/usr/sbin/apachectl ; argv[]=/usr/sbin/apachectl graceful-stop ; ignore_errors=no ; start_time=[n
+/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }", "ExecStopEx": "{ path=/usr/sbin/apachec
+tl ; argv[]=/usr/sbin/apachectl graceful-stop ; flags= ; start_time=[n/a] ; stop_time=[n/a] ; pid=0
+; code=(null) ; status=0/0 }", "ExitType": "main", "ExtensionImagePolicy": "root=verity+signed+encry
+pted+unprotected+absent:usr=verity+signed+encrypted+unprotected+absent:home=encrypted+unprotected+ab
+sent:srv=encrypted+unprotected+absent:tmp=encrypted+unprotected+absent:var=encrypted+unprotected+abs
+ent", "FailureAction": "none", "FileDescriptorStoreMax": "0", "FileDescriptorStorePreserve": "restar
+t", "FinalKillSignal": "9", "FragmentPath": "/usr/lib/systemd/system/apache2.service", "FreezerState
+": "running", "GID": "[not set]", "GuessMainPID": "yes", "IOAccounting": "no", "IOReadBytes": "[not
+set]", "IOReadOperations": "[not set]", "IOSchedulingClass": "2", "IOSchedulingPriority": "4", "IOWe
+ight": "[not set]", "IOWriteBytes": "[not set]", "IOWriteOperations": "[not set]", "IPAccounting": "
+no", "IPEgressBytes": "[no data]", "IPEgressPackets": "[no data]", "IPIngressBytes": "[no data]", "I
+PIngressPackets": "[no data]", "Id": "apache2.service", "IgnoreOnIsolate": "no", "IgnoreSIGPIPE": "y
+es", "InactiveEnterTimestampMonotonic": "0", "InactiveExitTimestamp": "Sat 2026-11-14 10:01:39 UTC",
+ "InactiveExitTimestampMonotonic": "287168260", "InvocationID": "6ff712ba1c81490f887140cf74c508ca",
+"JobRunningTimeoutUSec": "infinity", "JobTimeoutAction": "none", "JobTimeoutUSec": "infinity", "Keyr
+ingMode": "private", "KillMode": "mixed", "KillSignal": "15", "LimitAS": "infinity", "LimitASSoft":
+"infinity", "LimitCORE": "infinity", "LimitCORESoft": "0", "LimitCPU": "infinity", "LimitCPUSoft": "
+infinity", "LimitDATA": "infinity", "LimitDATASoft": "infinity", "LimitFSIZE": "infinity", "LimitFSI
+ZESoft": "infinity", "LimitLOCKS": "infinity", "LimitLOCKSSoft": "infinity", "LimitMEMLOCK": "838860
+8", "LimitMEMLOCKSoft": "8388608", "LimitMSGQUEUE": "819200", "LimitMSGQUEUESoft": "819200", "LimitN
+ICE": "0", "LimitNICESoft": "0", "LimitNOFILE": "65536", "LimitNOFILESoft": "65536", "LimitNPROC": "
+58121", "LimitNPROCSoft": "58121", "LimitRSS": "infinity", "LimitRSSSoft": "infinity", "LimitRTPRIO"
+: "0", "LimitRTPRIOSoft": "0", "LimitRTTIME": "infinity", "LimitRTTIMESoft": "infinity", "LimitSIGPE
+NDING": "58121", "LimitSIGPENDINGSoft": "58121", "LimitSTACK": "infinity", "LimitSTACKSoft": "167772
+16", "LoadState": "loaded", "LockPersonality": "no", "LogLevelMax": "-1", "LogRateLimitBurst": "0",
+"LogRateLimitIntervalUSec": "0", "LogsDirectoryMode": "0755", "MainPID": "5998", "ManagedOOMMemoryPr
+essure": "auto", "ManagedOOMMemoryPressureLimit": "0", "ManagedOOMPreference": "none", "ManagedOOMSw
+ap": "auto", "MemoryAccounting": "yes", "MemoryAvailable": "15502852096", "MemoryCurrent": "6053888"
+, "MemoryDenyWriteExecute": "no", "MemoryHigh": "infinity", "MemoryKSM": "no", "MemoryLimit": "infin
+ity", "MemoryLow": "0", "MemoryMax": "infinity", "MemoryMin": "0", "MemoryPeak": "6725632", "MemoryP
+ressureThresholdUSec": "200ms", "MemoryPressureWatch": "auto", "MemorySwapCurrent": "0", "MemorySwap
+Max": "infinity", "MemorySwapPeak": "0", "MemoryZSwapCurrent": "0", "MemoryZSwapMax": "infinity", "M
+ountAPIVFS": "no", "MountImagePolicy": "root=verity+signed+encrypted+unprotected+absent:usr=verity+s
+igned+encrypted+unprotected+absent:home=encrypted+unprotected+absent:srv=encrypted+unprotected+absen
+t:tmp=encrypted+unprotected+absent:var=encrypted+unprotected+absent", "NFileDescriptorStore": "0", "
+NRestarts": "0", "NUMAPolicy": "n/a", "Names": "apache2.service", "NeedDaemonReload": "no", "Nice":
+"0", "NoNewPrivileges": "no", "NonBlocking": "no", "NotifyAccess": "none", "OOMPolicy": "continue",
+"OOMScoreAdjust": "0", "OnFailureJobMode": "replace", "OnSuccessJobMode": "fail", "Perpetual": "no",
+ "PrivateDevices": "no", "PrivateIPC": "no", "PrivateMounts": "no", "PrivateNetwork": "no", "Private
+Tmp": "yes", "PrivateUsers": "no", "ProcSubset": "all", "ProtectClock": "no", "ProtectControlGroups"
+: "no", "ProtectHome": "no", "ProtectHostname": "no", "ProtectKernelLogs": "no", "ProtectKernelModul
+es": "no", "ProtectKernelTunables": "no", "ProtectProc": "default", "ProtectSystem": "no", "RefuseMa
+nualStart": "no", "RefuseManualStop": "no", "ReloadResult": "success", "ReloadSignal": "1", "RemainA
+fterExit": "no", "RemoveIPC": "no", "Requires": "system.slice sysinit.target -.mount", "RequiresMoun
+tsFor": "/var/tmp", "Restart": "on-abort", "RestartKillSignal": "15", "RestartMaxDelayUSec": "infini
+ty", "RestartMode": "normal", "RestartSteps": "0", "RestartUSec": "100ms", "RestartUSecNext": "100ms
+", "RestrictNamespaces": "no", "RestrictRealtime": "no", "RestrictSUIDSGID": "no", "Result": "succes
+s", "RootDirectoryStartOnly": "no", "RootEphemeral": "no", "RootImagePolicy": "root=verity+signed+en
+crypted+unprotected+absent:usr=verity+signed+encrypted+unprotected+absent:home=encrypted+unprotected
++absent:srv=encrypted+unprotected+absent:tmp=encrypted+unprotected+absent:var=encrypted+unprotected+
+absent", "RuntimeDirectoryMode": "0755", "RuntimeDirectoryPreserve": "no", "RuntimeMaxUSec": "infini
+ty", "RuntimeRandomizedExtraUSec": "0", "SameProcessGroup": "no", "SecureBits": "0", "SendSIGHUP": "
+no", "SendSIGKILL": "yes", "SetLoginEnvironment": "no", "Slice": "system.slice", "StandardError": "i
+nherit", "StandardInput": "null", "StandardOutput": "journal", "StartLimitAction": "none", "StartLim
+itBurst": "5", "StartLimitIntervalUSec": "10s", "StartupBlockIOWeight": "[not set]", "StartupCPUShar
+es": "[not set]", "StartupCPUWeight": "[not set]", "StartupIOWeight": "[not set]", "StartupMemoryHig
+h": "infinity", "StartupMemoryLow": "0", "StartupMemoryMax": "infinity", "StartupMemorySwapMax": "in
+finity", "StartupMemoryZSwapMax": "infinity", "StateChangeTimestamp": "Sat 2026-11-14 10:01:39 UTC",
+ "StateChangeTimestampMonotonic": "287267368", "StateDirectoryMode": "0755", "StatusErrno": "0", "St
+opWhenUnneeded": "no", "SubState": "running", "SuccessAction": "none", "SurviveFinalKillSignal": "no
+", "SyslogFacility": "3", "SyslogLevel": "6", "SyslogLevelPrefix": "yes", "SyslogPriority": "30", "S
+ystemCallErrorNumber": "2147483646", "TTYReset": "no", "TTYVHangup": "no", "TTYVTDisallocate": "no",
+ "TasksAccounting": "yes", "TasksCurrent": "55", "TasksMax": "17436", "TimeoutAbortUSec": "1min 30s"
+, "TimeoutCleanUSec": "infinity", "TimeoutStartFailureMode": "terminate", "TimeoutStartUSec": "1min
+30s", "TimeoutStopFailureMode": "terminate", "TimeoutStopUSec": "1min 30s", "TimerSlackNSec": "50000
+", "Transient": "no", "Type": "forking", "UID": "[not set]", "UMask": "0022", "UnitFilePreset": "ena
+bled", "UnitFileState": "enabled", "UtmpMode": "init", "WantedBy": "multi-user.target", "Wants": "tm
+p.mount", "WatchdogSignal": "6", "WatchdogTimestampMonotonic": "0", "WatchdogUSec": "0"}}
+
+PLAY RECAP *****************************************************************************************
+192.0.2.3                  : ok=4    changed=3    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

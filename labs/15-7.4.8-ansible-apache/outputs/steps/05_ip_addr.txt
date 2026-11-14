@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ ip addr show dummy0
+5: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 100
+0
+    link/ether b2:7c:c5:b9:e7:9c brd ff:ff:ff:ff:ff:ff
+    inet 192.0.2.1/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.2/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.3/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.4/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet 192.0.2.5/32 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b07c:c5ff:feb9:e79c/64 scope link
+       valid_lft forever preferred_lft forever

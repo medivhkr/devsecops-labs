@@ -1,0 +1,64 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show version" --testbed-file yaml
+/testbed.yml --devices CSR1kv
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:02:51: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+  0%|                                                                        | 0/1 [00:00<?, ?it/s]{
+  "version": {
+    "chassis": "CSR1000V",
+    "chassis_sn": "9K8P1OFYE3D",
+    "compiled_by": "mcpre",
+    "compiled_date": "Thu 30-Jan-20 18:48",
+    "copyright_years": "1986-2020",
+    "curr_config_register": "0x2102",
+    "disks": {
+      "bootflash:.": {
+        "disk_size": "7774207",
+        "type_of_disk": "virtual hard disk"
+      },
+      "webui:.": {
+        "disk_size": "0",
+        "type_of_disk": "WebUI ODM Files"
+      }
+    },
+    "hostname": "CSR1kv",
+    "image_id": "X86_64_LINUX_IOSD-UNIVERSALK9-M",
+    "image_type": "production image",
+    "label": "RELEASE SOFTWARE (fc1)",
+    "last_reload_reason": "reload",
+    "license_level": "ax",
+    "license_type": "Default. No valid license found.",
+    "location": "Fuji",
+    "main_mem": "2182252",
+    "mem_size": {
+      "non-volatile configuration": "32768",
+      "physical": "3985032"
+    },
+    "next_reload_license_level": "ax",
+    "number_of_intfs": {
+      "Gigabit Ethernet": "1"
+    },
+    "os": "IOS-XE",
+    "platform": "Virtual XE",
+    "processor_type": "VXE",
+    "returned_to_rom_by": "reload",
+    "rom": "IOS-XE ROMMON",
+    "rtr_type": "CSR1000V",
+    "system_image": "bootflash:packages.conf",
+    "uptime": "2 minutes",
+    "uptime_this_cp": "3 minutes",
+    "version": "16.9.5",
+    "version_short": "16.9",
+    "xe_version": "16.09.05"
+  }
+}
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.74it/s]

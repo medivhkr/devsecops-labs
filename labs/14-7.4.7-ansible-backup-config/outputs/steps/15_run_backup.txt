@@ -1,0 +1,14 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ ansible-playbook backup_cisco_router_playbo
+ok.yaml
+
+PLAY [AUTOMATIC BACKUP OF RUNNING-CONFIG] **********************************************************
+
+TASK [DISPLAYING THE RUNNING-CONFIG] ***************************************************************
+ok: [CSR1kv]
+
+TASK [SAVE OUTPUT TO ./backups/] *******************************************************************
+changed: [CSR1kv]
+
+PLAY RECAP *****************************************************************************************
+CSR1kv                     : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

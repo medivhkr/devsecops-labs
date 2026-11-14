@@ -1,0 +1,1561 @@
+devasc@labvm:~$ mkdir labs/devnet-src/pyats && cd labs/devnet-src/pyats
+devasc@labvm:~/labs/devnet-src/pyats$ python3 -m venv csr1kv
+devasc@labvm:~/labs/devnet-src/pyats$ cd csr1kv
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l
+total 20
+drwxr-xr-x 2 devasc devasc 4096 Nov 14 10:00 bin
+drwxr-xr-x 2 devasc devasc 4096 Nov 14 10:00 include
+drwxr-xr-x 3 devasc devasc 4096 Nov 14 10:00 lib
+lrwxrwxrwx 1 devasc devasc    3 Nov 14 10:00 lib64 -> lib
+-rw-r--r-- 1 devasc devasc   70 Nov 14 10:00 pyvenv.cfg
+drwxr-xr-x 3 devasc devasc 4096 Nov 14 10:00 share
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat pyvenv.cfg
+home = /usr/bin
+include-system-site-packages = false
+version = 3.8.10
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -1 /usr/bin/python*
+/usr/bin/python-argcomplete-check-easy-install-script3
+/usr/bin/python-argcomplete-tcsh3
+/usr/bin/python3
+/usr/bin/python3-config
+/usr/bin/python3.8
+/usr/bin/python3.8-config
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l bin
+total 44
+-rw-r--r-- 1 devasc devasc 8834 Nov 14 10:00 Activate.ps1
+-rw-r--r-- 1 devasc devasc 2206 Nov 14 10:00 activate
+-rw-r--r-- 1 devasc devasc 1252 Nov 14 10:00 activate.csh
+-rw-r--r-- 1 devasc devasc 2406 Nov 14 10:00 activate.fish
+-rwxr-xr-x 1 devasc devasc  267 Nov 14 10:00 easy_install
+-rwxr-xr-x 1 devasc devasc  267 Nov 14 10:00 easy_install-3.8
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip3
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip3.8
+lrwxrwxrwx 1 devasc devasc    7 Nov 14 10:00 python -> python3
+lrwxrwxrwx 1 devasc devasc   16 Nov 14 10:00 python3 -> /usr/bin/python3
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ source bin/activate
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pip3 install --upgrade pip
+Collecting pip
+  Downloading pip-25.0.1-py3-none-any.whl (1.8 MB)
+     |████████████████████████████████| 1.8 MB 12.6 MB/s
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 20.0.2
+    Uninstalling pip-20.0.2:
+      Successfully uninstalled pip-20.0.2
+Successfully installed pip-25.0.1
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pip3 install pyats[full]
+Collecting pyats[full]
+  Downloading pyats-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (4.5 kB)
+Collecting packaging>=20.0 (from pyats[full])
+  Downloading packaging-26.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting pyats.aereport<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.aereport-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.2 kB)
+Collecting pyats.aetest<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.aetest-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.3 kB)
+Collecting pyats.async<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.async-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.1 kB)
+Collecting pyats.log<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.log-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.4 kB)
+Collecting pyats.kleenex<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.kleenex-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.4 kB)
+Collecting pyats.connections<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.connections-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.4 kB)
+Collecting pyats.datastructures<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.datastructures-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.1 kB)
+Collecting pyats.easypy<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.easypy-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.5 kB)
+Collecting pyats.results<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.results-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.0 kB)
+Collecting pyats.reporter<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.reporter-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.2 kB)
+Collecting pyats.tcl<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.tcl-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.1 kB)
+Collecting pyats.topology<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.topology-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.3 kB)
+Collecting pyats.utils<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.utils-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (3.2 kB)
+Collecting cookiecutter (from pyats[full])
+  Downloading cookiecutter-2.6.0-py3-none-any.whl.metadata (7.3 kB)
+Collecting genie<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading genie-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (5.7 kB)
+Collecting pyats.robot<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.robot-24.9-py3-none-any.whl.metadata (3.1 kB)
+Collecting genie.libs.robot<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading genie.libs.robot-24.9-py3-none-any.whl.metadata (3.5 kB)
+Collecting genie.telemetry<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading genie.telemetry-24.9-py3-none-any.whl.metadata (3.2 kB)
+Collecting genie.trafficgen<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading genie.trafficgen-24.9-py3-none-any.whl.metadata (3.6 kB)
+Collecting pyats.contrib<24.10.0,>=24.9.0 (from pyats[full])
+  Downloading pyats.contrib-24.9-py3-none-any.whl.metadata (3.7 kB)
+Collecting PrettyTable (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading prettytable-3.11.0-py3-none-any.whl.metadata (30 kB)
+Collecting tqdm (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+Collecting dill (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading dill-0.4.0-py3-none-any.whl.metadata (10 kB)
+Collecting jsonpickle (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading jsonpickle-4.1.4-py3-none-any.whl.metadata (8.1 kB)
+Collecting netaddr<1.0.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading netaddr-0.10.1-py2.py3-none-any.whl.metadata (4.8 kB)
+Collecting genie.libs.conf<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.conf-24.9-py3-none-any.whl.metadata (3.7 kB)
+Collecting genie.libs.clean<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.clean-24.9-py3-none-any.whl.metadata (3.5 kB)
+Collecting genie.libs.health<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.health-24.9-py3-none-any.whl.metadata (3.6 kB)
+Collecting genie.libs.filetransferutils<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.filetransferutils-24.9-py3-none-any.whl.metadata (3.6 kB)
+Collecting genie.libs.ops<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.ops-24.9-py3-none-any.whl.metadata (3.4 kB)
+Collecting genie.libs.parser<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.parser-24.9-py3-none-any.whl.metadata (3.4 kB)
+Collecting genie.libs.sdk<24.10.0,>=24.9.0 (from genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading genie.libs.sdk-24.9-py3-none-any.whl.metadata (3.8 kB)
+Collecting robotframework (from genie.libs.robot<24.10.0,>=24.9.0->pyats[full])
+  Downloading robotframework-7.5.1-py3-none-any.whl.metadata (7.7 kB)
+Collecting unicon (from genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading unicon-24.9-cp38-cp38-manylinux2014_x86_64.whl.metadata (4.1 kB)
+Collecting IxNetwork (from genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading IxNetwork-9.30.2212.8-py2.py3-none-any.whl.metadata (4.6 kB)
+Collecting ixnetwork-restpy (from genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading ixnetwork_restpy-1.12.2-py3-none-any.whl.metadata (5.9 kB)
+Requirement already satisfied: setuptools in ./lib/python3.8/site-packages (from genie.trafficgen<24
+.10.0,>=24.9.0->pyats[full]) (44.0.0)
+Collecting wheel (from genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading wheel-0.45.1-py3-none-any.whl.metadata (2.3 kB)
+Collecting psutil (from pyats.aereport<24.10.0,>=24.9.0->pyats[full])
+  Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_6
+4.whl.metadata (22 kB)
+Collecting jinja2 (from pyats.aereport<24.10.0,>=24.9.0->pyats[full])
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting junit-xml (from pyats.aereport<24.10.0,>=24.9.0->pyats[full])
+  Downloading junit_xml-1.9-py2.py3-none-any.whl.metadata (3.2 kB)
+Collecting pyyaml (from pyats.aetest<24.10.0,>=24.9.0->pyats[full])
+  Downloading PyYAML-6.0.3-cp38-cp38-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_6
+4.whl.metadata (2.1 kB)
+Collecting requests (from pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading requests-2.32.4-py3-none-any.whl.metadata (4.9 kB)
+Collecting requests-toolbelt (from pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+Collecting xlrd==1.2 (from pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading xlrd-1.2.0-py2.py3-none-any.whl.metadata (1.3 kB)
+Collecting xlwt (from pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading xlwt-1.3.0-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting xlsxwriter (from pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading xlsxwriter-3.3.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting distro (from pyats.easypy<24.10.0,>=24.9.0->pyats[full])
+  Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting chardet<5.0.0,>=3.0.4 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading chardet-4.0.0-py2.py3-none-any.whl.metadata (3.5 kB)
+Collecting python-socketio<5.0.0,>=4.2.0 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading python_socketio-4.6.1-py2.py3-none-any.whl.metadata (2.1 kB)
+Collecting python-engineio<4.0.0,>=3.13.0 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading python_engineio-3.14.2-py2.py3-none-any.whl.metadata (2.0 kB)
+Collecting aiofiles>=0.6.0 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading aiofiles-24.1.0-py3-none-any.whl.metadata (10 kB)
+Collecting async-lru>=1.0.2 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading async_lru-2.0.4-py3-none-any.whl.metadata (4.5 kB)
+Collecting aiohttp<4.0 (from pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading aiohttp-3.10.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.7
+ kB)
+Collecting gitpython (from pyats.reporter<24.10.0,>=24.9.0->pyats[full])
+  Downloading gitpython-3.2.1-py3-none-any.whl.metadata (13 kB)
+Collecting yamllint (from pyats.topology<24.10.0,>=24.9.0->pyats[full])
+  Downloading yamllint-1.35.1-py3-none-any.whl.metadata (4.2 kB)
+Collecting cryptography (from pyats.utils<24.10.0,>=24.9.0->pyats[full])
+  Downloading cryptography-47.0.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (4.5 kB)
+Collecting binaryornot>=0.4.4 (from cookiecutter->pyats[full])
+  Downloading binaryornot-0.4.4-py2.py3-none-any.whl.metadata (6.0 kB)
+Collecting click<9.0.0,>=7.0 (from cookiecutter->pyats[full])
+  Downloading click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
+Collecting python-slugify>=4.0.0 (from cookiecutter->pyats[full])
+  Downloading python_slugify-8.0.4-py2.py3-none-any.whl.metadata (8.5 kB)
+Collecting arrow (from cookiecutter->pyats[full])
+  Downloading arrow-1.4.0-py3-none-any.whl.metadata (7.7 kB)
+Collecting rich (from cookiecutter->pyats[full])
+  Downloading rich-14.3.4-py3-none-any.whl.metadata (18 kB)
+Collecting aiohappyeyeballs>=2.3.0 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading aiohappyeyeballs-2.4.4-py3-none-any.whl.metadata (6.1 kB)
+Collecting aiosignal>=1.1.2 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading aiosignal-1.3.1-py3-none-any.whl.metadata (4.0 kB)
+Collecting attrs>=17.3.0 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading frozenlist-1.5.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_6
+4.manylinux2014_x86_64.whl.metadata (13 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading multidict-6.1.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.0
+ kB)
+Collecting yarl<2.0,>=1.12.0 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading yarl-1.15.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (56 kB)
+Collecting async-timeout<6.0,>=4.0 (from aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading async_timeout-5.0.1-py3-none-any.whl.metadata (5.1 kB)
+Collecting typing-extensions>=4.0.0 (from async-lru>=1.0.2->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading typing_extensions-4.13.2-py3-none-any.whl.metadata (3.0 kB)
+Collecting pyftpdlib (from genie.libs.filetransferutils<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->py
+ats[full])
+  Downloading pyftpdlib-2.2.0.tar.gz (189 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting tftpy<0.8.1 (from genie.libs.filetransferutils<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->
+pyats[full])
+  Downloading tftpy-0.8.0.tar.gz (32 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting xmltodict (from genie.libs.parser<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading xmltodict-0.15.0-py2.py3-none-any.whl.metadata (9.6 kB)
+Collecting ruamel.yaml (from genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading ruamel.yaml-0.18.16-py3-none-any.whl.metadata (25 kB)
+Collecting yang.connector<24.10.0,>=24.9.0 (from genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0,>=24
+.9.0->pyats[full])
+  Downloading yang.connector-24.9-py3-none-any.whl.metadata (1.3 kB)
+Collecting rest.connector<24.10.0,>=24.9.0 (from genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0,>=24
+.9.0->pyats[full])
+  Downloading rest.connector-24.9-py3-none-any.whl.metadata (1.7 kB)
+Collecting pysnmp-lextudio==6.1.2 (from genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->pya
+ts[full])
+  Downloading pysnmp_lextudio-6.1.2-py3-none-any.whl.metadata (8.0 kB)
+Collecting pyasn1==0.4.8 (from genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading pyasn1-0.4.8-py2.py3-none-any.whl.metadata (1.5 kB)
+Collecting pysmi-lextudio<2.0.0,>=1.3.0 (from pysnmp-lextudio==6.1.2->genie.libs.sdk<24.10.0,>=24.9.
+0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading pysmi_lextudio-1.4.3-py3-none-any.whl.metadata (8.1 kB)
+Collecting pysnmpcrypto<0.0.5,>=0.0.4 (from pysnmp-lextudio==6.1.2->genie.libs.sdk<24.10.0,>=24.9.0-
+>genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading pysnmpcrypto-0.0.4-py2.py3-none-any.whl.metadata (2.4 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->pyats.aereport<24.10.0,>=24.9.0->pyats[full])
+  Downloading MarkupSafe-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.
+0 kB)
+Collecting six>=1.9.0 (from python-engineio<4.0.0,>=3.13.0->pyats.log<24.10.0,>=24.9.0->pyats[full])
+  Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting text-unidecode>=1.3 (from python-slugify>=4.0.0->cookiecutter->pyats[full])
+  Downloading text_unidecode-1.3-py2.py3-none-any.whl.metadata (2.4 kB)
+Collecting charset_normalizer<4,>=2 (from requests->pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2
+_5_x86_64.whl.metadata (46 kB)
+Collecting idna<4,>=2.5 (from requests->pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading idna-3.15-py3-none-any.whl.metadata (7.7 kB)
+Collecting urllib3<3,>=1.21.1 (from requests->pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading urllib3-2.2.3-py3-none-any.whl.metadata (6.5 kB)
+Collecting certifi>=2017.4.17 (from requests->pyats.contrib<24.10.0,>=24.9.0->pyats[full])
+  Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting unicon.plugins<24.10.0,>=24.9.0 (from unicon->genie.trafficgen<24.10.0,>=24.9.0->pyats[fu
+ll])
+  Downloading unicon.plugins-24.9-py3-none-any.whl.metadata (4.0 kB)
+Collecting python-dateutil>=2.7.0 (from arrow->cookiecutter->pyats[full])
+  Downloading python_dateutil-3.0.0-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting backports.zoneinfo==0.2.1 (from arrow->cookiecutter->pyats[full])
+  Downloading backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl.metadata (4.7 kB)
+Collecting cffi>=1.14 (from cryptography->pyats.utils<24.10.0,>=24.9.0->pyats[full])
+  Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.5 kB)
+Collecting gitdb<5,>=4.0.1 (from gitpython->pyats.reporter<24.10.0,>=24.9.0->pyats[full])
+  Downloading gitdb-4.0.12-py3-none-any.whl.metadata (1.2 kB)
+Collecting backports.ssl>=0.0.9 (from IxNetwork->genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading backports.ssl-0.0.9.tar.gz (11 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting backports.ssl-match-hostname>=3.5.0.1 (from IxNetwork->genie.trafficgen<24.10.0,>=24.9.0-
+>pyats[full])
+  Downloading backports.ssl_match_hostname-3.7.0.1.tar.gz (5.7 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting pyopenssl>=17.5.0 (from IxNetwork->genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading pyopenssl-26.2.0-py3-none-any.whl.metadata (19 kB)
+Collecting websocket-client>=0.47.0 (from IxNetwork->genie.trafficgen<24.10.0,>=24.9.0->pyats[full])
+  Downloading websocket_client-1.8.0-py3-none-any.whl.metadata (8.0 kB)
+Collecting wcwidth (from PrettyTable->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading wcwidth-0.8.5-py3-none-any.whl.metadata (23 kB)
+Collecting markdown-it-py>=2.2.0 (from rich->cookiecutter->pyats[full])
+  Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich->cookiecutter->pyats[full])
+  Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+Collecting pathspec>=0.5.3 (from yamllint->pyats.topology<24.10.0,>=24.9.0->pyats[full])
+  Downloading pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+Collecting pycparser (from cffi>=1.14->cryptography->pyats.utils<24.10.0,>=24.9.0->pyats[full])
+  Downloading pycparser-2.23-py3-none-any.whl.metadata (993 bytes)
+Collecting smmap<6,>=3.0.1 (from gitdb<5,>=4.0.1->gitpython->pyats.reporter<24.10.0,>=24.9.0->pyats[
+full])
+  Downloading smmap-5.0.3-py3-none-any.whl.metadata (4.6 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich->cookiecutter->pyats[full])
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting tzdata (from python-dateutil>=2.7.0->arrow->cookiecutter->pyats[full])
+  Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting dict2xml (from rest.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->genie<24
+.10.0,>=24.9.0->pyats[full])
+  Downloading dict2xml-1.7.8-py3-none-any.whl.metadata (6.1 kB)
+Collecting f5-icontrol-rest (from rest.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->
+genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading f5-icontrol-rest-1.3.13.tar.gz (12 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting paramiko>=1.15.1 (from yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->
+genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading paramiko-3.5.1-py3-none-any.whl.metadata (4.6 kB)
+Collecting lxml<5.0.0,>=3.3.0 (from yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0
+->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading lxml-4.9.4-cp38-cp38-manylinux_2_28_x86_64.whl.metadata (3.7 kB)
+Collecting ncclient>=0.6.6 (from yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->g
+enie<24.10.0,>=24.9.0->pyats[full])
+  Downloading ncclient-0.7.1-py3-none-any.whl.metadata (12 kB)
+Collecting grpcio (from yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->genie<24.1
+0.0,>=24.9.0->pyats[full])
+  Downloading grpcio-1.70.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.9 k
+B)
+Collecting protobuf (from yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10.0,>=24.9.0->genie<24
+.10.0,>=24.9.0->pyats[full])
+  Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl.metadata (592 bytes)
+Collecting propcache>=0.2.0 (from yarl<2.0,>=1.12.0->aiohttp<4.0->pyats.log<24.10.0,>=24.9.0->pyats[
+full])
+  Downloading propcache-0.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.7
+ kB)
+Collecting ruamel.yaml.clib>=0.2.7 (from ruamel.yaml->genie.libs.sdk<24.10.0,>=24.9.0->genie<24.10.0
+,>=24.9.0->pyats[full])
+  Downloading ruamel.yaml.clib-0.2.8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl.metadata (
+2.2 kB)
+Collecting bcrypt>=3.2 (from paramiko>=1.15.1->yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10
+.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading bcrypt-5.0.0-cp38-abi3-manylinux_2_28_x86_64.whl.metadata (10 kB)
+Collecting pynacl>=1.5 (from paramiko>=1.15.1->yang.connector<24.10.0,>=24.9.0->genie.libs.sdk<24.10
+.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading pynacl-1.6.2-cp38-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (10.0
+kB)
+Collecting ply<4.0,>=3.11 (from pysmi-lextudio<2.0.0,>=1.3.0->pysnmp-lextudio==6.1.2->genie.libs.sdk
+<24.10.0,>=24.9.0->genie<24.10.0,>=24.9.0->pyats[full])
+  Downloading ply-3.11-py2.py3-none-any.whl.metadata (844 bytes)
+Downloading genie-24.9-cp38-cp38-manylinux2014_x86_64.whl (32.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 32.4/32.4 MB 80.7 MB/s eta 0:00:00
+Downloading genie.libs.robot-24.9-py3-none-any.whl (11 kB)
+Downloading genie.telemetry-24.9-py3-none-any.whl (70 kB)
+Downloading genie.trafficgen-24.9-py3-none-any.whl (111 kB)
+Downloading packaging-26.2-py3-none-any.whl (100 kB)
+Downloading pyats.aereport-24.9-cp38-cp38-manylinux2014_x86_64.whl (11.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.6/11.6 MB 91.0 MB/s eta 0:00:00
+Downloading pyats.aetest-24.9-cp38-cp38-manylinux2014_x86_64.whl (8.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.6/8.6 MB 105.3 MB/s eta 0:00:00
+Downloading pyats.async-24.9-cp38-cp38-manylinux2014_x86_64.whl (801 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.7/801.7 kB 145.5 MB/s eta 0:00:00
+Downloading pyats.connections-24.9-cp38-cp38-manylinux2014_x86_64.whl (1.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 43.0 MB/s eta 0:00:00
+Downloading pyats.contrib-24.9-py3-none-any.whl (73 kB)
+Downloading xlrd-1.2.0-py2.py3-none-any.whl (103 kB)
+Downloading pyats.datastructures-24.9-cp38-cp38-manylinux2014_x86_64.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 239.3 MB/s eta 0:00:00
+Downloading pyats.easypy-24.9-cp38-cp38-manylinux2014_x86_64.whl (8.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.4/8.4 MB 94.2 MB/s eta 0:00:00
+Downloading pyats.kleenex-24.9-cp38-cp38-manylinux2014_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 117.1 MB/s eta 0:00:00
+Downloading pyats.log-24.9-cp38-cp38-manylinux2014_x86_64.whl (14.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 14.7/14.7 MB 84.3 MB/s eta 0:00:00
+Downloading pyats.reporter-24.9-cp38-cp38-manylinux2014_x86_64.whl (4.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 116.1 MB/s eta 0:00:00
+Downloading pyats.results-24.9-cp38-cp38-manylinux2014_x86_64.whl (681 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 681.5/681.5 kB 139.1 MB/s eta 0:00:00
+Downloading pyats.robot-24.9-py3-none-any.whl (11 kB)
+Downloading pyats.tcl-24.9-cp38-cp38-manylinux2014_x86_64.whl (3.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.0/3.0 MB 106.0 MB/s eta 0:00:00
+Downloading pyats.topology-24.9-cp38-cp38-manylinux2014_x86_64.whl (3.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.8/3.8 MB 109.3 MB/s eta 0:00:00
+Downloading pyats.utils-24.9-cp38-cp38-manylinux2014_x86_64.whl (9.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 9.5/9.5 MB 101.3 MB/s eta 0:00:00
+Downloading cookiecutter-2.6.0-py3-none-any.whl (39 kB)
+Downloading pyats-24.9-cp38-cp38-manylinux2014_x86_64.whl (5.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 86.9 MB/s eta 0:00:00
+Downloading aiofiles-24.1.0-py3-none-any.whl (15 kB)
+Downloading aiohttp-3.10.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 285.1 MB/s eta 0:00:00
+Downloading async_lru-2.0.4-py3-none-any.whl (6.1 kB)
+Downloading binaryornot-0.4.4-py2.py3-none-any.whl (9.0 kB)
+Downloading chardet-4.0.0-py2.py3-none-any.whl (178 kB)
+Downloading click-8.1.8-py3-none-any.whl (98 kB)
+Downloading genie.libs.clean-24.9-py3-none-any.whl (436 kB)
+Downloading genie.libs.conf-24.9-py3-none-any.whl (1.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 199.3 MB/s eta 0:00:00
+Downloading genie.libs.filetransferutils-24.9-py3-none-any.whl (64 kB)
+Downloading genie.libs.health-24.9-py3-none-any.whl (20 kB)
+Downloading genie.libs.ops-24.9-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 181.2 MB/s eta 0:00:00
+Downloading genie.libs.parser-24.9-py3-none-any.whl (10.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 74.8 MB/s eta 0:00:00
+Downloading genie.libs.sdk-24.9-py3-none-any.whl (5.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.5/5.5 MB 49.7 MB/s eta 0:00:00
+Downloading pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+Downloading pysnmp_lextudio-6.1.2-py3-none-any.whl (280 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading netaddr-0.10.1-py2.py3-none-any.whl (2.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 129.7 MB/s eta 0:00:00
+Downloading python_engineio-3.14.2-py2.py3-none-any.whl (51 kB)
+Downloading python_slugify-8.0.4-py2.py3-none-any.whl (10 kB)
+Downloading python_socketio-4.6.1-py2.py3-none-any.whl (51 kB)
+Downloading PyYAML-6.0.3-cp38-cp38-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.
+whl (806 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.0/806.0 kB 91.3 MB/s eta 0:00:00
+Downloading requests-2.32.4-py3-none-any.whl (64 kB)
+Downloading unicon-24.9-cp38-cp38-manylinux2014_x86_64.whl (15.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.3/15.3 MB 88.3 MB/s eta 0:00:00
+Downloading arrow-1.4.0-py3-none-any.whl (68 kB)
+Downloading backports.zoneinfo-0.2.1-cp38-cp38-manylinux1_x86_64.whl (74 kB)
+Downloading cryptography-47.0.0-cp38-abi3-manylinux_2_28_x86_64.whl (4.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 141.9 MB/s eta 0:00:00
+Downloading dill-0.4.0-py3-none-any.whl (119 kB)
+Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading gitpython-3.2.1-py3-none-any.whl (231 kB)
+Downloading IxNetwork-9.30.2212.8-py2.py3-none-any.whl (23 kB)
+Downloading ixnetwork_restpy-1.12.2-py3-none-any.whl (19.6 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 19.6/19.6 MB 98.6 MB/s eta 0:00:00
+Downloading jsonpickle-4.1.4-py3-none-any.whl (47 kB)
+Downloading junit_xml-1.9-py2.py3-none-any.whl (7.1 kB)
+Downloading prettytable-3.11.0-py3-none-any.whl (28 kB)
+Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.
+whl (155 kB)
+Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+Downloading rich-14.3.4-py3-none-any.whl (310 kB)
+Downloading robotframework-7.5.1-py3-none-any.whl (844 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 844.5/844.5 kB 202.3 MB/s eta 0:00:00
+Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
+Downloading xlsxwriter-3.3.1-py3-none-any.whl (180 kB)
+Downloading xlwt-1.3.0-py2.py3-none-any.whl (99 kB)
+Downloading yamllint-1.35.1-py3-none-any.whl (66 kB)
+Downloading aiohappyeyeballs-2.4.4-py3-none-any.whl (14 kB)
+Downloading aiosignal-1.3.1-py3-none-any.whl (7.6 kB)
+Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+Downloading cffi-1.17.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (446 kB)
+Downloading charset_normalizer-3.5.2-cp37-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5
+_x86_64.whl (253 kB)
+Downloading frozenlist-1.5.0-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.
+manylinux2014_x86_64.whl (243 kB)
+Downloading gitdb-4.0.12-py3-none-any.whl (62 kB)
+Downloading idna-3.15-py3-none-any.whl (72 kB)
+Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+Downloading MarkupSafe-2.1.5-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (26 kB)
+Downloading multidict-6.1.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (129 kB)
+Downloading pathspec-0.12.1-py3-none-any.whl (31 kB)
+Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 87.8 MB/s eta 0:00:00
+Downloading pyopenssl-26.2.0-py3-none-any.whl (55 kB)
+Downloading python_dateutil-3.0.0-py2.py3-none-any.whl (94 kB)
+Downloading rest.connector-24.9-py3-none-any.whl (79 kB)
+Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Downloading text_unidecode-1.3-py2.py3-none-any.whl (78 kB)
+Downloading typing_extensions-4.13.2-py3-none-any.whl (45 kB)
+Downloading unicon.plugins-24.9-py3-none-any.whl (855 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 855.2/855.2 kB 187.1 MB/s eta 0:00:00
+Downloading urllib3-2.2.3-py3-none-any.whl (126 kB)
+Downloading websocket_client-1.8.0-py3-none-any.whl (58 kB)
+Downloading yang.connector-24.9-py3-none-any.whl (39 kB)
+Downloading yarl-1.15.2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (319 kB)
+Downloading ruamel.yaml-0.18.16-py3-none-any.whl (119 kB)
+Downloading wcwidth-0.8.5-py3-none-any.whl (299 kB)
+Downloading xmltodict-0.15.0-py2.py3-none-any.whl (10 kB)
+Downloading lxml-4.9.4-cp38-cp38-manylinux_2_28_x86_64.whl (8.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.0/8.0 MB 93.4 MB/s eta 0:00:00
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading ncclient-0.7.1-py3-none-any.whl (94 kB)
+Downloading paramiko-3.5.1-py3-none-any.whl (227 kB)
+Downloading propcache-0.2.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (213 kB)
+Downloading pysmi_lextudio-1.4.3-py3-none-any.whl (83 kB)
+Downloading pysnmpcrypto-0.0.4-py2.py3-none-any.whl (6.5 kB)
+Downloading ruamel.yaml.clib-0.2.8-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl (596 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 596.0/596.0 kB 133.8 MB/s eta 0:00:00
+Downloading smmap-5.0.3-py3-none-any.whl (24 kB)
+Downloading dict2xml-1.7.8-py3-none-any.whl (9.5 kB)
+Downloading grpcio-1.70.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (6.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.0/6.0 MB 160.2 MB/s eta 0:00:00
+Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl (320 kB)
+Downloading pycparser-2.23-py3-none-any.whl (118 kB)
+Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+Downloading bcrypt-5.0.0-cp38-abi3-manylinux_2_28_x86_64.whl (278 kB)
+Downloading ply-3.11-py2.py3-none-any.whl (49 kB)
+Downloading pynacl-1.6.2-cp38-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (1.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 295.5 MB/s eta 0:00:00
+Building wheels for collected packages: backports.ssl, backports.ssl-match-hostname, tftpy, pyftpdli
+b, f5-icontrol-rest
+  Building wheel for backports.ssl (pyproject.toml) ... done
+  Created wheel for backports.ssl: filename=backports_ssl-0.0.9-py3-none-any.whl size=12415 sha256=b
+b18180fd8677da8389dcef65d8aeac599c68d4d6cb289e1e0aa6e95156afabf
+  Stored in directory: /home/devasc/.cache/pip/wheels/74/42/d4/a07be37ad82be72bd2a95f1092ed39ee5c407
+b57bd976e210e
+  Building wheel for backports.ssl-match-hostname (pyproject.toml) ... done
+  Created wheel for backports.ssl-match-hostname: filename=backports_ssl_match_hostname-3.7.0.1-py2.
+py3-none-any.whl size=6735 sha256=306ed27ae8db54992e756078682a98c3ef515d70e6010cbaa3e7838ad63b38c1
+  Stored in directory: /home/devasc/.cache/pip/wheels/20/46/1e/7f787654ba5b7900e9a3be46a6fd89a99da05
+f4cefb655d3d6
+  Building wheel for tftpy (pyproject.toml) ... done
+  Created wheel for tftpy: filename=tftpy-0.8.0-py3-none-any.whl size=28672 sha256=038061edddfb26071
+b9fb015af1e05ba3896b7a2fdf24c1cc8463f93b4ad495c
+  Stored in directory: /home/devasc/.cache/pip/wheels/a0/11/ac/80b6ce4334f6725b562146a95de6ac7f622f7
+33389790ec277
+  Building wheel for pyftpdlib (pyproject.toml) ... done
+  Created wheel for pyftpdlib: filename=pyftpdlib-2.2.0-py3-none-any.whl size=89419 sha256=f9d698519
+517b5b0ef295cea185a0bd4bfd01667adc42e05e263fcb0a304440f
+  Stored in directory: /home/devasc/.cache/pip/wheels/e7/15/d9/e6f16c5284103ec9dab2f109bb20743b9e5e8
+b7d7bc57c6e63
+  Building wheel for f5-icontrol-rest (pyproject.toml) ... done
+  Created wheel for f5-icontrol-rest: filename=f5_icontrol_rest-1.3.13-py3-none-any.whl size=13337 s
+ha256=d6e6ab265d95cc4430bd024cebd26b83391d99711ba46700a34525e637c4372c
+  Stored in directory: /home/devasc/.cache/pip/wheels/dd/45/ec/60b89072fa609d47bac5887c704dca415879a
+591840966afd9
+Successfully built backports.ssl backports.ssl-match-hostname tftpy pyftpdlib f5-icontrol-rest
+Installing collected packages: xlwt, text-unidecode, pyasn1, ply, netaddr, genie.libs.ops, genie.lib
+s.conf, backports.ssl-match-hostname, backports.ssl, xmltodict, xlsxwriter, xlrd, wheel, websocket-c
+lient, wcwidth, urllib3, tzdata, typing-extensions, tqdm, tftpy, smmap, six, ruamel.yaml.clib, robot
+framework, pyyaml, python-slugify, pygments, pyftpdlib, pycparser, pyats.results, pyats.datastructur
+es, psutil, protobuf, propcache, pathspec, packaging, mdurl, MarkupSafe, lxml, jsonpickle, idna, grp
+cio, frozenlist, distro, dill, dict2xml, click, charset_normalizer, chardet, certifi, bcrypt, backpo
+rts.zoneinfo, attrs, async-timeout, aiohappyeyeballs, aiofiles, yamllint, ruamel.yaml, requests, pyt
+hon-engineio, python-dateutil, PrettyTable, multidict, markdown-it-py, junit-xml, jinja2, gitdb, gen
+ie.libs.robot, genie.libs.parser, cffi, binaryornot, async-lru, aiosignal, yarl, rich, requests-tool
+belt, python-socketio, pysmi-lextudio, pynacl, ixnetwork-restpy, gitpython, f5-icontrol-rest, crypto
+graphy, arrow, rest.connector, pysnmpcrypto, pyopenssl, pyats.contrib, paramiko, cookiecutter, aioht
+tp, pysnmp-lextudio, pyats.log, ncclient, IxNetwork, yang.connector, pyats.tcl, pyats.async, pyats.a
+ereport, genie.libs.sdk, unicon.plugins, unicon, pyats.connections, pyats.topology, pyats.utils, pya
+ts.aetest, pyats.kleenex, genie.libs.health, genie.libs.filetransferutils, genie.libs.clean, pyats.r
+eporter, pyats.easypy, genie, pyats.robot, pyats, genie.trafficgen, genie.telemetry
+Successfully installed IxNetwork-9.30.2212.8 MarkupSafe-2.1.5 PrettyTable-3.11.0 aiofiles-24.1.0 aio
+happyeyeballs-2.4.4 aiohttp-3.10.11 aiosignal-1.3.1 arrow-1.4.0 async-lru-2.0.4 async-timeout-5.0.1
+attrs-25.3.0 backports.ssl-0.0.9 backports.ssl-match-hostname-3.7.0.1 backports.zoneinfo-0.2.1 bcryp
+t-5.0.0 binaryornot-0.4.4 certifi-2026.10.23 cffi-1.17.1 chardet-4.0.0 charset_normalizer-3.5.2 clic
+k-8.1.8 cookiecutter-2.6.0 cryptography-47.0.0 dict2xml-1.7.8 dill-0.4.0 distro-1.9.0 f5-icontrol-re
+st-1.3.13 frozenlist-1.5.0 genie-24.9 genie.libs.clean-24.9 genie.libs.conf-24.9 genie.libs.filetran
+sferutils-24.9 genie.libs.health-24.9 genie.libs.ops-24.9 genie.libs.parser-24.9 genie.libs.robot-24
+.9 genie.libs.sdk-24.9 genie.telemetry-24.9 genie.trafficgen-24.9 gitdb-4.0.12 gitpython-3.2.1 grpci
+o-1.70.0 idna-3.15 ixnetwork-restpy-1.12.2 jinja2-3.1.6 jsonpickle-4.1.4 junit-xml-1.9 lxml-4.9.4 ma
+rkdown-it-py-3.0.0 mdurl-0.1.2 multidict-6.1.0 ncclient-0.7.1 netaddr-0.10.1 packaging-26.2 paramiko
+-3.5.1 pathspec-0.12.1 ply-3.11 propcache-0.2.0 protobuf-5.29.6 psutil-7.2.2 pyasn1-0.4.8 pyats-24.9
+ pyats.aereport-24.9 pyats.aetest-24.9 pyats.async-24.9 pyats.connections-24.9 pyats.contrib-24.9 py
+ats.datastructures-24.9 pyats.easypy-24.9 pyats.kleenex-24.9 pyats.log-24.9 pyats.reporter-24.9 pyat
+s.results-24.9 pyats.robot-24.9 pyats.tcl-24.9 pyats.topology-24.9 pyats.utils-24.9 pycparser-2.23 p
+yftpdlib-2.2.0 pygments-2.19.2 pynacl-1.6.2 pyopenssl-26.2.0 pysmi-lextudio-1.4.3 pysnmp-lextudio-6.
+1.2 pysnmpcrypto-0.0.4 python-dateutil-3.0.0 python-engineio-3.14.2 python-slugify-8.0.4 python-sock
+etio-4.6.1 pyyaml-6.0.3 requests-2.32.4 requests-toolbelt-1.0.0 rest.connector-24.9 rich-14.3.4 robo
+tframework-7.5.1 ruamel.yaml-0.18.16 ruamel.yaml.clib-0.2.8 six-1.17.0 smmap-5.0.3 text-unidecode-1.
+3 tftpy-0.8.0 tqdm-4.70.1 typing-extensions-4.13.2 tzdata-2026.6 unicon-24.9 unicon.plugins-24.9 url
+lib3-2.2.3 wcwidth-0.8.5 websocket-client-1.8.0 wheel-0.45.1 xlrd-1.2.0 xlsxwriter-3.3.1 xlwt-1.3.0
+xmltodict-0.15.0 yamllint-1.35.1 yang.connector-24.9 yarl-1.15.2
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pyats version check
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/topology/__init__.py:54:
+ CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and suppo
+rt for it is deprecated in cryptography. The next release of cryptography will remove support for Py
+thon 3.8.
+  from .device import Device, DeviceBase
+You are currently running pyATS version: 24.9
+Python: 3.8.10 [64bit]
+
+  Package                      Version
+  ---------------------------- -------
+  genie                        24.9
+  genie.libs.clean             24.9
+  genie.libs.conf              24.9
+  genie.libs.filetransferutils 24.9
+  genie.libs.health            24.9
+  genie.libs.ops               24.9
+  genie.libs.parser            24.9
+  genie.libs.robot             24.9
+  genie.libs.sdk               24.9
+  genie.telemetry              24.9
+  genie.trafficgen             24.9
+  pyats                        24.9
+  pyats.aereport               24.9
+  pyats.aetest                 24.9
+  pyats.async                  24.9
+  pyats.connections            24.9
+  pyats.contrib                24.9
+  pyats.datastructures         24.9
+  pyats.easypy                 24.9
+  pyats.kleenex                24.9
+  pyats.log                    24.9
+  pyats.reporter               24.9
+  pyats.results                24.9
+  pyats.robot                  24.9
+  pyats.tcl                    24.9
+  pyats.topology               24.9
+  pyats.utils                  24.9
+  rest.connector               24.9
+  unicon                       24.9
+  unicon.plugins               24.9
+  yang.connector               24.9
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pyats --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/topology/__init__.py:54:
+ CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and suppo
+rt for it is deprecated in cryptography. The next release of cryptography will remove support for Py
+thon 3.8.
+  from .device import Device, DeviceBase
+Usage:
+  pyats <command> [options]
+
+Commands:
+    clean               runs the provided clean file
+    create              create scripts and libraries from template
+    develop             Puts desired pyATS packages into development mode
+    diff                Command to diff two snapshots saved to file or directory
+    dnac                Command to learn DNAC features and save to file (Prototype)
+    learn               Command to learn device features and save to file
+    logs                command enabling log archive viewing in local browser
+    migrate             utilities for migrating to future versions of pyATS
+    parse               Command to parse show commands
+    run                 runs the provided script and output corresponding results.
+    secret              utilities for working with secret strings.
+    shell               enter Python shell, loading a pyATS testbed file and/or pickled data
+    undevelop           Removes desired pyATS packages from development mode
+    validate            utilities that help to validate input files
+    version             commands related to version display and manipulation
+
+General Options:
+  -h, --help            Show help
+
+Run 'pyats <command> --help' for more information on a command.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ git clone https://github.com/CiscoTestAutomati
+on/examples
+Cloning into 'examples'...
+remote: Enumerating objects: 1519, done.
+remote: Counting objects: 100% (367/367), done.
+remote: Compressing objects: 100% (192/192), done.
+remote: Total 1519 (delta 175), reused 264 (delta 143), pack-reused 1152 (from 1)
+Receiving objects: 100% (1519/1519), 1.20 MiB | 22.02 MiB/s, done.
+Resolving deltas: 100% (747/747), done.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l
+total 24
+drwxr-xr-x  3 devasc devasc 4096 Nov 14 10:01 bin
+drwxr-xr-x 25 devasc devasc 4096 Nov 14 10:01 examples
+drwxr-xr-x  2 devasc devasc 4096 Nov 14 10:00 include
+drwxr-xr-x  3 devasc devasc 4096 Nov 14 10:00 lib
+lrwxrwxrwx  1 devasc devasc    3 Nov 14 10:00 lib64 -> lib
+-rw-r--r--  1 devasc devasc   70 Nov 14 10:00 pyvenv.cfg
+drwxr-xr-x  3 devasc devasc 4096 Nov 14 10:00 share
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l examples
+total 100
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 GenieHarnessHelloWorld
+-rw-r--r--  1 devasc devasc 11357 Nov 14 10:01 LICENSE
+-rw-r--r--  1 devasc devasc   916 Nov 14 10:01 README.md
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 abstraction_example
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 basic
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 blitz
+drwxr-xr-x 31 devasc devasc  4096 Nov 14 10:01 clean
+drwxr-xr-x  7 devasc devasc  4096 Nov 14 10:01 comprehensive
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 connection
+drwxr-xr-x  5 devasc devasc  4096 Nov 14 10:01 datafiles
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 feature
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 groups
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 health
+drwxr-xr-x 15 devasc devasc  4096 Nov 14 10:01 libraries
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 loop
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 metadata
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 metaparser
+drwxr-xr-x  5 devasc devasc  4096 Nov 14 10:01 parsergen
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 retry
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 script_parameters
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 steps
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 tasks
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 uids
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l examples/basic
+total 16
+-rw-r--r-- 1 devasc devasc  534 Nov 14 10:01 basic_example_job.py
+-rwxr-xr-x 1 devasc devasc 4510 Nov 14 10:01 basic_example_script.py
+drwxr-xr-x 2 devasc devasc 4096 Nov 14 10:01 results
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat examples/basic/basic_example_script.py
+#!/usr/bin/env python
+###################################################################
+# basic_example.py : A very simple test script example which include:
+#     common_setup
+#     Tescases
+#     common_cleanup
+# The purpose of this sample test script is to show the "hello world"
+# of aetest.
+###################################################################
+
+# To get a logger for the script
+import logging
+
+# Needed for aetest script
+from pyats import aetest
+
+# Get your logger for your script
+log = logging.getLogger(__name__)
+
+###################################################################
+###                  COMMON SETUP SECTION                       ###
+###################################################################
+
+# This is how to create a CommonSetup
+# You can have one of no CommonSetup
+# CommonSetup can be named whatever you want
+
+class common_setup(aetest.CommonSetup):
+    """ Common Setup section """
+
+    # CommonSetup have subsection.
+    # You can have 1 to as many subsection as wanted
+    # here is an example of 2 subsections
+
+    # First subsection
+    @aetest.subsection
+    def sample_subsection_1(self):
+        """ Common Setup subsection """
+        log.info("Aetest Common Setup ")
+
+    # If you want to get the name of current section,
+    # add section to the argument of the function.
+
+    # Second subsection
+    @aetest.subsection
+    def sample_subsection_2(self, section):
+        """ Common Setup subsection """
+        log.info("Inside %s" % (section))
+
+        # And how to access the class itself ?
+
+        # self refers to the instance of that class, and remains consistent
+        # throughout the execution of that container.
+        log.info("Inside class %s" % (self.uid))
+
+###################################################################
+###                     TESTCASES SECTION                       ###
+###################################################################
+
+# This is how to create a testcase
+# You can have 0 to as many testcase as wanted
+
+# Testcase name : tc_one
+class tc_one(aetest.Testcase):
+    """ This is user Testcases section """
+
+    # Testcases are divided into 3 sections
+    # Setup, Test and Cleanup.
+
+    # This is how to create a setup section
+    @aetest.setup
+    def prepare_testcase(self, section):
+        """ Testcase Setup section """
+        log.info("Preparing the test")
+        log.info(section)
+
+    # This is how to create a test section
+    # You can have 0 to as many test section as wanted
+
+    # First test section
+    @ aetest.test
+    def simple_test_1(self):
+        """ Sample test section. Only print """
+        log.info("First test section ")
+
+    # Second test section
+    @ aetest.test
+    def simple_test_2(self):
+        """ Sample test section. Only print """
+        log.info("Second test section ")
+
+    # This is how to create a cleanup section
+    @aetest.cleanup
+    def clean_testcase(self):
+        """ Testcase cleanup section """
+        log.info("Pass testcase cleanup")
+
+# Testcase name : tc_two
+class tc_two(aetest.Testcase):
+    """ This is user Testcases section """
+
+    @ aetest.test
+    def simple_test_1(self):
+        """ Sample test section. Only print """
+        log.info("First test section ")
+        self.failed('This is an intentional failure')
+
+    # Second test section
+    @ aetest.test
+    def simple_test_2(self):
+        """ Sample test section. Only print """
+        log.info("Second test section ")
+
+    # This is how to create a cleanup section
+    @aetest.cleanup
+    def clean_testcase(self):
+        """ Testcase cleanup section """
+        log.info("Pass testcase cleanup")
+
+#####################################################################
+####                       COMMON CLEANUP SECTION                 ###
+#####################################################################
+
+# This is how to create a CommonCleanup
+# You can have 0 , or 1 CommonCleanup.
+# CommonCleanup can be named whatever you want :)
+class common_cleanup(aetest.CommonCleanup):
+    """ Common Cleanup for Sample Test """
+
+    # CommonCleanup follow exactly the same rule as CommonSetup regarding
+    # subsection
+    # You can have 1 to as many subsection as wanted
+    # here is an example of 1 subsections
+
+    @aetest.subsection
+    def clean_everything(self):
+        """ Common Cleanup Subsection """
+        log.info("Aetest Common Cleanup ")
+
+if __name__ == '__main__': # pragma: no cover
+    result = aetest.main()
+    aetest.exit_cli_code(result)
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat examples/basic/basic_example_job.py
+"""
+<PYATS_JOBFILE>
+"""
+# To run the job:
+# pyats run job basic_example_job.py
+# Description: This example shows the basic functionality of pyats
+#              with few passing tests
+
+import os
+from pyats.easypy import run
+
+# All run() must be inside a main function
+def main():
+    # Find the location of the script in relation to the job file
+    test_path = os.path.dirname(os.path.abspath(__file__))
+    testscript = os.path.join(test_path, 'basic_example_script.py')
+
+    # Execute the testscript
+    run(testscript=testscript)
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pyats run job examples/basic/basic_example_job
+.py
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/topology/__init__.py:54:
+ CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and suppo
+rt for it is deprecated in cryptography. The next release of cryptography will remove support for Py
+thon 3.8.
+  from .device import Device, DeviceBase
+2026-11-14T10:02:17: %EASYPY-INFO: Starting job run: basic_example_job
+2026-11-14T10:02:17: %EASYPY-INFO: Runinfo directory: /home/devasc/.pyats/runinfo/basic_example_job.
+2026Nov14_10:02:16.118591
+2026-11-14T10:02:17: %EASYPY-INFO: -----------------------------------------------------------------
+---------------
+2026-11-14T10:02:19: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %EASYPY-INFO: |                          Bringup/Clean Information
+              |
+2026-11-14T10:02:19: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %EASYPY-INFO: {'bringup': {}, 'cleaners': {}, 'devices': {}}
+
+2026-11-14T10:02:19: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %EASYPY-INFO: |           Bringup/Clean Information after applying clean templa
+tes           |
+2026-11-14T10:02:19: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %EASYPY-INFO: {'bringup': {}, 'cleaners': {}, 'devices': {}}
+
+2026-11-14T10:02:19: %ATS-INFO: Checking all devices are up and ready is disabled, '--check-all-devi
+ces-up' must be set to True in case of pyats runs or '-check_all_devices_up' set to True in case of
+legacy easypy runs
+<module 'pyats.easypy.jobs.basic_example_job' from '/home/devasc/labs/devnet-src/pyats/csr1kv/exampl
+es/basic/basic_example_job.py'>
+2026-11-14T10:02:19: %EASYPY-INFO: Starting task execution: Task-1
+2026-11-14T10:02:19: %EASYPY-INFO:     test harness = pyats.aetest
+2026-11-14T10:02:19: %EASYPY-INFO:     testscript   = /home/devasc/labs/devnet-src/pyats/csr1kv/exam
+ples/basic/basic_example_script.py
+<module 'pyats.aetest.testscript.basic_example_script' from '/home/devasc/labs/devnet-src/pyats/csr1
+kv/examples/basic/basic_example_script.py'>
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                            Starting common setup
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                   Starting subsection sample_subsection_1
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: Aetest Common Setup
+2026-11-14T10:02:19: %AETEST-INFO: The result of subsection sample_subsection_1 is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                   Starting subsection sample_subsection_2
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: Inside subsection sample_subsection_2
+2026-11-14T10:02:19: %SCRIPT-INFO: Inside class common_setup
+2026-11-14T10:02:19: %AETEST-INFO: The result of subsection sample_subsection_2 is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: The result of common setup is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                           Starting testcase tc_one
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                      Starting section prepare_testcase
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: Preparing the test
+2026-11-14T10:02:19: %SCRIPT-INFO: section prepare_testcase
+2026-11-14T10:02:19: %AETEST-INFO: The result of section prepare_testcase is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                        Starting section simple_test_1
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: First test section
+2026-11-14T10:02:19: %AETEST-INFO: The result of section simple_test_1 is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                        Starting section simple_test_2
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: Second test section
+2026-11-14T10:02:19: %AETEST-INFO: The result of section simple_test_2 is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %AETEST-INFO: |                       Starting section clean_testcase
+              |
+2026-11-14T10:02:19: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:19: %SCRIPT-INFO: Pass testcase cleanup
+2026-11-14T10:02:19: %AETEST-INFO: The result of section clean_testcase is => PASSED
+2026-11-14T10:02:19: %AETEST-INFO: The result of testcase tc_one is => PASSED
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                           Starting testcase tc_two
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                        Starting section simple_test_1
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %SCRIPT-INFO: First test section
+2026-11-14T10:02:20: %AETEST-ERROR: Failed reason: This is an intentional failure
+2026-11-14T10:02:20: %AETEST-INFO: The result of section simple_test_1 is => FAILED
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                        Starting section simple_test_2
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %SCRIPT-INFO: Second test section
+2026-11-14T10:02:20: %AETEST-INFO: The result of section simple_test_2 is => PASSED
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                       Starting section clean_testcase
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %SCRIPT-INFO: Pass testcase cleanup
+2026-11-14T10:02:20: %AETEST-INFO: The result of section clean_testcase is => PASSED
+2026-11-14T10:02:20: %AETEST-INFO: The result of testcase tc_two is => FAILED
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                           Starting common cleanup
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %AETEST-INFO: |                     Starting subsection clean_everything
+              |
+2026-11-14T10:02:20: %AETEST-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:20: %SCRIPT-INFO: Aetest Common Cleanup
+2026-11-14T10:02:20: %AETEST-INFO: The result of subsection clean_everything is => PASSED
+2026-11-14T10:02:20: %AETEST-INFO: The result of common cleanup is => PASSED
+2026-11-14T10:02:20: %GENIE-INFO: Saving Abstract Tree...
+2026-11-14T10:02:20: %GENIE-INFO: Abstract Tree saved
+2026-11-14T10:02:20: %CONTRIB-INFO: WebEx Token not given as argument or in config. No WebEx notific
+ation will be sent
+2026-11-14T10:02:20: %EASYPY-INFO: -----------------------------------------------------------------
+---------------
+2026-11-14T10:02:20: %EASYPY-INFO: Job finished. Wrapping up...
+2026-11-14T10:02:21: %EASYPY-INFO: Creating archive file: /home/devasc/.pyats/archive/26-11/basic_ex
+ample_job.2026Nov14_10:02:16.118591.zip
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: |                                Easypy Report
+              |
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: pyATS Instance   : /home/devasc/labs/devnet-src/pyats/csr1kv
+2026-11-14T10:02:21: %EASYPY-INFO: Python Version   : cpython-3.8.10 (64bit)
+2026-11-14T10:02:21: %EASYPY-INFO: CLI Arguments    : /home/devasc/labs/devnet-src/pyats/csr1kv/bin/
+pyats run job examples/basic/basic_example_job.py
+2026-11-14T10:02:21: %EASYPY-INFO: User             : devasc
+2026-11-14T10:02:21: %EASYPY-INFO: Host Server      : labvm
+2026-11-14T10:02:21: %EASYPY-INFO: Host OS Version  : Ubuntu 20.04 focal (x86_64)
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Job Information
+2026-11-14T10:02:21: %EASYPY-INFO:     Name         : basic_example_job
+2026-11-14T10:02:21: %EASYPY-INFO:     Start time   : 2026-11-14 10:02:19.171868+00:00
+2026-11-14T10:02:21: %EASYPY-INFO:     Stop time    : 2026-11-14 10:02:20.375604+00:00
+2026-11-14T10:02:21: %EASYPY-INFO:     Elapsed time : 0:00:02
+2026-11-14T10:02:21: %EASYPY-INFO:     Archive      : /home/devasc/.pyats/archive/26-11/basic_exampl
+e_job.2026Nov14_10:02:16.118591.zip
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Total Tasks    : 1
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Overall Stats
+2026-11-14T10:02:21: %EASYPY-INFO:     Passed     : 3
+2026-11-14T10:02:21: %EASYPY-INFO:     Passx      : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Failed     : 1
+2026-11-14T10:02:21: %EASYPY-INFO:     Aborted    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Blocked    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Skipped    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Errored    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO:     TOTAL      : 4
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Success Rate   : 75.00 %
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Section Stats
+2026-11-14T10:02:21: %EASYPY-INFO:     Passed     : 9
+2026-11-14T10:02:21: %EASYPY-INFO:     Passx      : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Failed     : 1
+2026-11-14T10:02:21: %EASYPY-INFO:     Aborted    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Blocked    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Skipped    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:     Errored    : 0
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO:     TOTAL      : 10
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: Section Success Rate   : 90.00 %
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: |                             Task Result Summary
+              |
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: Task-1: basic_example_script.common_setup
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: Task-1: basic_example_script.tc_one
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: Task-1: basic_example_script.tc_two
+         FAILED
+2026-11-14T10:02:21: %EASYPY-INFO: Task-1: basic_example_script.common_cleanup
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO:
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: |                             Task Result Details
+              |
+2026-11-14T10:02:21: %EASYPY-INFO: +----------------------------------------------------------------
+--------------+
+2026-11-14T10:02:21: %EASYPY-INFO: Task-1: basic_example_script
+2026-11-14T10:02:21: %EASYPY-INFO: |-- common_setup
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- sample_subsection_1
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   `-- sample_subsection_2
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |-- tc_one
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- prepare_testcase
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- simple_test_1
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- simple_test_2
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   `-- clean_testcase
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |-- tc_two
+         FAILED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- simple_test_1
+         FAILED
+2026-11-14T10:02:21: %EASYPY-INFO: |   |-- simple_test_2
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: |   `-- clean_testcase
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: `-- common_cleanup
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO:     `-- clean_everything
+         PASSED
+2026-11-14T10:02:21: %EASYPY-INFO: Sending report email...
+2026-11-14T10:02:21: %EASYPY-INFO: Missing SMTP server configuration, or failed to reach/authenticat
+e/send mail. Result notification email failed to send.
+2026-11-14T10:02:21: %EASYPY-INFO: Done!
+
+Pro Tip
+-------
+    Did you hear? You can now make revisions to existing parsers! Follow the link to find out more:
+        https://pubhub.devnetcloud.com/media/pyats-development-guide/docs/writeparser/writeparser.ht
+ml#revising-a-parser
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Usage:
+  genie <command> [options]
+
+Commands:
+    create              Create Testbed, parser, triggers, ...
+    develop             Puts desired pyATS packages into development mode
+    diff                Command to diff two snapshots saved to file or directory
+    dnac                Command to learn DNAC features and save to file (Prototype)
+    learn               Command to learn device features and save to file
+    parse               Command to parse show commands
+    run                 Run Genie triggers & verifications in pyATS runtime environment
+    shell               enter Python shell, loading a pyATS testbed file and/or pickled data
+    undevelop           Removes desired pyATS packages from development mode
+
+General Options:
+  -h, --help            Show help
+
+Run 'genie <command> --help' for more information on a command.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie create --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Usage:
+  genie create <subcommand> [options]
+
+Subcommands:
+    parser              create a new Genie parser from template
+    testbed             create a testbed file automatically
+    trigger             create a new Genie trigger from template
+
+General Options:
+  -h, --help            Show help
+  -v, --verbose         Give more output, additive up to 3 times.
+  -q, --quiet           Give less output, additive up to 3 times, corresponding to WARNING, ERROR,
+                        and CRITICAL logging levels
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie create testbed interactive --output yaml
+/testbed.yml --encode-password
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Start creating Testbed yaml file ...
+Do all of the devices have the same username? [y/n] n
+Do all of the devices have the same default password? [y/n] n
+Do all of the devices have the same enable password? [y/n] n
+
+Device hostname: CSR1kv
+   IP (ip, or ip:port): 192.168.56.101
+   Username: cisco
+Default Password (leave blank if you want to enter on demand):
+Enable Password (leave blank if you want to enter on demand):
+   Protocol (ssh, telnet, ...): ssh -o KexAlgorithms=diffie-hellman-group14-sha1
+   OS (iosxr, iosxe, ios, nxos, linux, ...): iosxe
+More devices to add ? [y/n] n
+Testbed file generated:
+yaml/testbed.yml
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat yaml/testbed.yml
+devices:
+  CSR1kv:
+    connections:
+      cli:
+        ip: 192.168.56.101
+        protocol: ssh -o KexAlgorithms=diffie-hellman-group14-sha1
+    credentials:
+      default:
+        password: '%ENC{w5PDosOUw5fDosKQwpbCmMKH}'
+        username: cisco
+      enable:
+        password: '%ASK{}'
+    os: iosxe
+    type: iosxe
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ssh -o KexAlgorithms=diffie-hellman-group14-sh
+a1 cisco@192.168.56.101
+The authenticity of host '192.168.56.101 (192.168.56.101)' can't be established.
+RSA key fingerprint is SHA256:KKbeoW+y9ARF66FXkO+RIReeNBA2DrgTdeDXWtfVGuo.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.56.101' (RSA) to the list of known hosts.
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet1       192.168.56.101  YES DHCP   up                    up
+CSR1kv#exit
+Connection to 192.168.56.101 closed.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show ip interface brief" --testbe
+d-file yaml/testbed.yml --devices CSR1kv
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:02:44: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+  0%|                                                                        | 0/1 [00:00<?, ?it/s]{
+  "interface": {
+    "GigabitEthernet1": {
+      "interface_is_ok": "YES",
+      "ip_address": "192.168.56.101",
+      "method": "DHCP",
+      "protocol": "up",
+      "status": "up"
+    }
+  }
+}
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.79it/s]
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show version" --testbed-file yaml
+/testbed.yml --devices CSR1kv
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:02:51: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+  0%|                                                                        | 0/1 [00:00<?, ?it/s]{
+  "version": {
+    "chassis": "CSR1000V",
+    "chassis_sn": "9K8P1OFYE3D",
+    "compiled_by": "mcpre",
+    "compiled_date": "Thu 30-Jan-20 18:48",
+    "copyright_years": "1986-2020",
+    "curr_config_register": "0x2102",
+    "disks": {
+      "bootflash:.": {
+        "disk_size": "7774207",
+        "type_of_disk": "virtual hard disk"
+      },
+      "webui:.": {
+        "disk_size": "0",
+        "type_of_disk": "WebUI ODM Files"
+      }
+    },
+    "hostname": "CSR1kv",
+    "image_id": "X86_64_LINUX_IOSD-UNIVERSALK9-M",
+    "image_type": "production image",
+    "label": "RELEASE SOFTWARE (fc1)",
+    "last_reload_reason": "reload",
+    "license_level": "ax",
+    "license_type": "Default. No valid license found.",
+    "location": "Fuji",
+    "main_mem": "2182252",
+    "mem_size": {
+      "non-volatile configuration": "32768",
+      "physical": "3985032"
+    },
+    "next_reload_license_level": "ax",
+    "number_of_intfs": {
+      "Gigabit Ethernet": "1"
+    },
+    "os": "IOS-XE",
+    "platform": "Virtual XE",
+    "processor_type": "VXE",
+    "returned_to_rom_by": "reload",
+    "rom": "IOS-XE ROMMON",
+    "rtr_type": "CSR1000V",
+    "system_image": "bootflash:packages.conf",
+    "uptime": "2 minutes",
+    "uptime_this_cp": "3 minutes",
+    "version": "16.9.5",
+    "version_short": "16.9",
+    "xe_version": "16.09.05"
+  }
+}
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.74it/s]
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ssh -o KexAlgorithms=diffie-hellman-group14-sh
+a1 cisco@192.168.56.101
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+CSR1kv(config)#interface gig 1
+CSR1kv(config-if)#ipv6 address 2001:db8:acad:56::101/64
+CSR1kv(config-if)#end
+CSR1kv#exit
+Connection to 192.168.56.101 closed.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show ipv6 interface gig 1" --test
+bed-file yaml/testbed.yml --devices CSR1kv --output verify-ipv6-1
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:03:01: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.69it/s]
++==============================================================================+
+| Genie Parse Summary for CSR1kv                                               |
++==============================================================================+
+|  Connected to CSR1kv                                                         |
+|  -  Log: verify-ipv6-1/connection_CSR1kv.txt                                 |
+|------------------------------------------------------------------------------|
+|  Parsed command 'show ipv6 interface gig 1'                                  |
+|  -  Parsed structure: verify-ipv6-1/CSR1kv_show-ipv6-interface-              |
+| gig-1_parsed.txt                                                             |
+|  -  Device Console:   verify-ipv6-1/CSR1kv_show-ipv6-interface-              |
+| gig-1_console.txt                                                            |
+|------------------------------------------------------------------------------|
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l verify-ipv6-1
+total 16
+-rw-r--r-- 1 devasc devasc  758 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_console.txt
+-rw-r--r-- 1 devasc devasc  877 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+-rw-rw-rw- 1 devasc devasc 4824 Nov 14 10:03 connection_CSR1kv.txt
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat verify-ipv6-1/CSR1kv_show-ipv6-interface-g
+ig-1_console.txt
++++ CSR1kv with via 'cli': executing command 'show ipv6 interface gig 1' +++
+show ipv6 interface gig 1
+GigabitEthernet1 is up, line protocol is up
+  IPv6 is enabled, link-local address is FE80::A00:27FF:FE73:D79F
+  No Virtual link-local address(es):
+  Description: VBox
+  Global unicast address(es):
+    2001:DB8:ACAD:56::101, subnet is 2001:DB8:ACAD:56::/64
+  Joined group address(es):
+    FF02::1
+    FF02::1:FF00:101
+    FF02::1:FF73:D79F
+  MTU is 1500 bytes
+  ICMP error messages limited to one every 100 milliseconds
+  ICMP redirects are enabled
+  ICMP unreachables are sent
+  ND DAD is enabled, number of DAD attempts: 1
+  ND reachable time is 30000 milliseconds (using 30000)
+  ND NS retransmit interval is 1000 milliseconds
+CSR1kv#
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat verify-ipv6-1/CSR1kv_show-ipv6-interface-g
+ig-1_parsed.txt
+{
+  "GigabitEthernet1": {
+    "enabled": true,
+    "ipv6": {
+      "2001:DB8:ACAD:56::101/64": {
+        "ip": "2001:DB8:ACAD:56::101",
+        "prefix_length": "64",
+        "status": "valid"
+      },
+      "FE80::A00:27FF:FE73:D79F": {
+        "ip": "FE80::A00:27FF:FE73:D79F",
+        "origin": "link_layer",
+        "status": "valid"
+      },
+      "enabled": true,
+      "icmp": {
+        "error_messages_limited": 100,
+        "redirects": true,
+        "unreachables": "sent"
+      },
+      "nd": {
+        "dad_attempts": 1,
+        "dad_enabled": true,
+        "ns_retransmit_interval": 1000,
+        "reachable_time": 30000,
+        "suppress": false,
+        "using_time": 30000
+      }
+    },
+    "joined_group_addresses": [
+      "FF02::1",
+      "FF02::1:FF00:101",
+      "FF02::1:FF73:D79F"
+    ],
+    "mtu": 1500,
+    "oper_status": "up"
+  },
+  "_exclude": []
+}
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ssh -o KexAlgorithms=diffie-hellman-group14-sh
+a1 cisco@192.168.56.101
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+CSR1kv(config)#interface gig 1
+CSR1kv(config-if)#ipv6 address fe80::56:1 link-local
+CSR1kv(config-if)#end
+CSR1kv#exit
+Connection to 192.168.56.101 closed.
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show ipv6 interface gig 1" --test
+bed-file yaml/testbed.yml --devices CSR1kv --output verify-ipv6-2
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:03:19: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.67it/s]
++==============================================================================+
+| Genie Parse Summary for CSR1kv                                               |
++==============================================================================+
+|  Connected to CSR1kv                                                         |
+|  -  Log: verify-ipv6-2/connection_CSR1kv.txt                                 |
+|------------------------------------------------------------------------------|
+|  Parsed command 'show ipv6 interface gig 1'                                  |
+|  -  Parsed structure: verify-ipv6-2/CSR1kv_show-ipv6-interface-              |
+| gig-1_parsed.txt                                                             |
+|  -  Device Console:   verify-ipv6-2/CSR1kv_show-ipv6-interface-              |
+| gig-1_console.txt                                                            |
+|------------------------------------------------------------------------------|
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l verify-ipv6-2
+total 16
+-rw-r--r-- 1 devasc devasc  741 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_console.txt
+-rw-r--r-- 1 devasc devasc  846 Nov 14 10:03 CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+-rw-rw-rw- 1 devasc devasc 4807 Nov 14 10:03 connection_CSR1kv.txt
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat verify-ipv6-2/CSR1kv_show-ipv6-interface-g
+ig-1_console.txt
++++ CSR1kv with via 'cli': executing command 'show ipv6 interface gig 1' +++
+show ipv6 interface gig 1
+GigabitEthernet1 is up, line protocol is up
+  IPv6 is enabled, link-local address is FE80::56:1
+  No Virtual link-local address(es):
+  Description: VBox
+  Global unicast address(es):
+    2001:DB8:ACAD:56::101, subnet is 2001:DB8:ACAD:56::/64
+  Joined group address(es):
+    FF02::1
+    FF02::1:FF00:101
+    FF02::1:FF56:1
+  MTU is 1500 bytes
+  ICMP error messages limited to one every 100 milliseconds
+  ICMP redirects are enabled
+  ICMP unreachables are sent
+  ND DAD is enabled, number of DAD attempts: 1
+  ND reachable time is 30000 milliseconds (using 30000)
+  ND NS retransmit interval is 1000 milliseconds
+CSR1kv#
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat verify-ipv6-2/CSR1kv_show-ipv6-interface-g
+ig-1_parsed.txt
+{
+  "GigabitEthernet1": {
+    "enabled": true,
+    "ipv6": {
+      "2001:DB8:ACAD:56::101/64": {
+        "ip": "2001:DB8:ACAD:56::101",
+        "prefix_length": "64",
+        "status": "valid"
+      },
+      "FE80::56:1": {
+        "ip": "FE80::56:1",
+        "origin": "link_layer",
+        "status": "valid"
+      },
+      "enabled": true,
+      "icmp": {
+        "error_messages_limited": 100,
+        "redirects": true,
+        "unreachables": "sent"
+      },
+      "nd": {
+        "dad_attempts": 1,
+        "dad_enabled": true,
+        "ns_retransmit_interval": 1000,
+        "reachable_time": 30000,
+        "suppress": false,
+        "using_time": 30000
+      }
+    },
+    "joined_group_addresses": [
+      "FF02::1",
+      "FF02::1:FF00:101",
+      "FF02::1:FF56:1"
+    ],
+    "mtu": 1500,
+    "oper_status": "up"
+  },
+  "_exclude": []
+}
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie diff verify-ipv6-1 verify-ipv6-2
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+1it [00:00, 1691.25it/s]
++==============================================================================+
+| Genie Diff Summary between directories verify-ipv6-1/ and verify-ipv6-2/     |
++==============================================================================+
+|  File: CSR1kv_show-ipv6-interface-gig-1_parsed.txt                           |
+|   - Diff can be found at ./diff_CSR1kv_show-ipv6-interface-gig-1_parsed.txt  |
+|------------------------------------------------------------------------------|
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat ./diff_CSR1kv_show-ipv6-interface-gig-1_pa
+rsed.txt
+--- verify-ipv6-1/CSR1kv_show-ipv6-interface-gig-1_parsed.txt
++++ verify-ipv6-2/CSR1kv_show-ipv6-interface-gig-1_parsed.txt
+ GigabitEthernet1:
+  ipv6:
++  FE80::56:1:
++   ip: FE80::56:1
++   origin: link_layer
++   status: valid
+-  FE80::A00:27FF:FE73:D79F:
+-   ip: FE80::A00:27FF:FE73:D79F
+-   origin: link_layer
+-   status: valid
+  joined_group_addresses:
+-  index[2]: FF02::1:FF73:D79F
++  index[2]: FF02::1:FF56:1
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ deactivate
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$

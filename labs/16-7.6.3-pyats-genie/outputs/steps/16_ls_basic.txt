@@ -1,0 +1,5 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l examples/basic
+total 16
+-rw-r--r-- 1 devasc devasc  534 Nov 14 10:01 basic_example_job.py
+-rwxr-xr-x 1 devasc devasc 4510 Nov 14 10:01 basic_example_script.py
+drwxr-xr-x 2 devasc devasc 4096 Nov 14 10:01 results

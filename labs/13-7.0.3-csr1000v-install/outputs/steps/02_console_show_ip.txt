@@ -1,0 +1,35 @@
+devasc@labvm:~$ ssh cisco@192.168.56.101
+The authenticity of host '192.168.56.101 (192.168.56.101)' can't be established.
+RSA key fingerprint is SHA256:IfEMV1uJfNtjxhNnom+DFARdFSG2lGQUZNtfLQI3mHk.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.56.101' (RSA) to the list of known hosts.
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet1       192.168.56.101  YES DHCP   up                    up
+CSR1kv#show version | include Version|uptime|processor
+Cisco IOS XE Software, Version 16.09.05
+Cisco IOS Software [Fuji], Virtual XE Software (X86_64_LINUX_IOSD-UNIVERSALK9-M), Version 16.9.5, RE
+LEASE SOFTWARE (fc1)
+licensed under the GNU General Public License ("GPL") Version 2.0.  The
+software code licensed under GPL Version 2.0 is free software that comes
+GPL code under the terms of GPL Version 2.0.  For more details, see the
+CSR1kv uptime is 0 minutes
+Uptime for this control processor is 1 minute
+cisco CSR1000V (VXE) processor (revision VXE) with 2182252K/3075K bytes of memory.
+CSR1kv#exit
+Connection to 192.168.56.101 closed.

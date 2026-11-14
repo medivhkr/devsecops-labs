@@ -1,0 +1,27 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie parse "show ipv6 interface gig 1" --test
+bed-file yaml/testbed.yml --devices CSR1kv --output verify-ipv6-1
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Using the default YAML encoding key since no key was specified in configuration.
+THIS IS A SHARED KEY AND IS NOT SECURE, PLEASE RUN `pyats secret keygen` AND ADD TO YOUR pyats.conf
+FILE BEFORE ENCODING ANY VALUES.
+Enter enable password for device CSR1kv:
+2026-11-14T10:03:01: %UNICON-WARNING: Device 'CSR1kv' connection 'cli' does not have IP and/or port
+specified, ignoring
+Device 'CSR1kv' connection 'cli' does not have IP and/or port specified, ignoring
+100%|████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.69it/s]
++==============================================================================+
+| Genie Parse Summary for CSR1kv                                               |
++==============================================================================+
+|  Connected to CSR1kv                                                         |
+|  -  Log: verify-ipv6-1/connection_CSR1kv.txt                                 |
+|------------------------------------------------------------------------------|
+|  Parsed command 'show ipv6 interface gig 1'                                  |
+|  -  Parsed structure: verify-ipv6-1/CSR1kv_show-ipv6-interface-              |
+| gig-1_parsed.txt                                                             |
+|  -  Device Console:   verify-ipv6-1/CSR1kv_show-ipv6-interface-              |
+| gig-1_console.txt                                                            |
+|------------------------------------------------------------------------------|

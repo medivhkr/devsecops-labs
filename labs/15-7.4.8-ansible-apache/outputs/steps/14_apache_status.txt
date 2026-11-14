@@ -1,0 +1,18 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ sudo systemctl status apache2
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/usr/lib/systemd/system/apache2.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-11-14 10:01:43 UTC; 3s ago
+       Docs: https://httpd.apache.org/docs/2.4/
+    Process: 6426 ExecStart=/usr/sbin/apachectl start (code=exited, status=0/SUCCESS)
+   Main PID: 6430 (apache2)
+      Tasks: 55 (limit: 17436)
+     Memory: 5.7M (peak: 5.9M)
+        CPU: 27ms
+     CGroup: /system.slice/apache2.service
+             ├─6430 /usr/sbin/apache2 -k start
+             ├─6432 /usr/sbin/apache2 -k start
+             └─6433 /usr/sbin/apache2 -k start
+
+Nov 14 10:01:43 labvm systemd[1]: Starting apache2.service - The Apache HTTP Server...
+Nov 14 10:01:43 labvm apachectl[6429]: AH00558: apache2: Could not reliably determine the server's >
+Nov 14 10:01:43 labvm systemd[1]: Started apache2.service - The Apache HTTP Server.

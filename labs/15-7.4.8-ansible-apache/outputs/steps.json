@@ -1,0 +1,292 @@
+{
+  "lab": "7.4.8",
+  "title": "Use Ansible to Automate Installing a Web Server",
+  "finished": "2026-11-14T10:02:43.513637Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "ssh_start",
+      "title": "Part 2 Step 2: запуск SSH-сервера",
+      "start": "2026-11-14T10:01:01.895918Z",
+      "type": "cmd",
+      "cmd": "sudo systemctl start ssh",
+      "exit": 0,
+      "seconds": 3.26,
+      "file": "steps/01_ssh_start.txt"
+    },
+    {
+      "n": 2,
+      "id": "ssh_status",
+      "title": "Проверка состояния sshd",
+      "start": "2026-11-14T10:01:05.153920Z",
+      "type": "cmd",
+      "cmd": "systemctl is-active ssh && dpkg -l openssh-server sshpass | tail -n 2",
+      "exit": 0,
+      "seconds": 3.08,
+      "file": "steps/02_ssh_status.txt"
+    },
+    {
+      "n": 3,
+      "id": "cd_lab",
+      "title": "Part 2 Step 3: каталог ansible-apache",
+      "start": "2026-11-14T10:01:08.230588Z",
+      "type": "cmd",
+      "cmd": "cd labs/devnet-src/ansible/ansible-apache",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/03_cd_lab.txt"
+    },
+    {
+      "n": 4,
+      "id": "hosts",
+      "title": "Part 2 Step 4b: inventory-файл hosts",
+      "start": "2026-11-14T10:01:11.290054Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-apache/hosts",
+      "content": "[webservers]\n192.0.2.3 ansible_ssh_user=devasc ansible_ssh_pass=Cisco123!\n"
+    },
+    {
+      "n": 5,
+      "id": "ip_addr",
+      "title": "Part 2 Step 4c: адреса интерфейса dummy0",
+      "start": "2026-11-14T10:01:11.295637Z",
+      "type": "cmd",
+      "cmd": "ip addr show dummy0",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/05_ip_addr.txt"
+    },
+    {
+      "n": 6,
+      "id": "ansible_cfg",
+      "title": "Part 2 Step 5: ansible.cfg",
+      "start": "2026-11-14T10:01:14.359466Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-apache/ansible.cfg",
+      "content": "[defaults]\n# Use local hosts file in this folder\ninventory=./hosts\n# Don't worry about RSA Fingerprints\nhost_key_checking = False\n# Do not create retry files\nretry_files_enabled = False\n"
+    },
+    {
+      "n": 7,
+      "id": "ansible_version",
+      "title": "Версия Ansible и используемый ansible.cfg",
+      "start": "2026-11-14T10:01:14.364833Z",
+      "type": "cmd",
+      "cmd": "ansible --version",
+      "exit": 0,
+      "seconds": 3.33,
+      "file": "steps/07_ansible_version.txt"
+    },
+    {
+      "n": 8,
+      "id": "ad_hoc_ping",
+      "title": "Part 3 Step 1: модуль ping",
+      "start": "2026-11-14T10:01:17.697720Z",
+      "type": "cmd",
+      "cmd": "ansible webservers -m ping",
+      "exit": 0,
+      "seconds": 5.64,
+      "file": "steps/08_ad_hoc_ping.txt"
+    },
+    {
+      "n": 9,
+      "id": "ad_hoc_echo",
+      "title": "Part 3 Step 2: модуль command",
+      "start": "2026-11-14T10:01:23.339344Z",
+      "type": "cmd",
+      "cmd": "ansible webservers -m command -a \"/bin/echo hello world\"",
+      "exit": 0,
+      "seconds": 3.91,
+      "file": "steps/09_ad_hoc_echo.txt"
+    },
+    {
+      "n": 10,
+      "id": "test_playbook",
+      "title": "Part 4 Step 1: test_apache_playbook.yaml",
+      "start": "2026-11-14T10:01:27.248499Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-apache/test_apache_playbook.yaml",
+      "content": "---\n- hosts: webservers\n  tasks:\n    - name: run echo command\n      command: /bin/echo hello world\n"
+    },
+    {
+      "n": 11,
+      "id": "run_test_playbook",
+      "title": "Part 4 Step 2: запуск тестового плейбука",
+      "start": "2026-11-14T10:01:27.253863Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook -v test_apache_playbook.yaml",
+      "exit": 0,
+      "seconds": 5.48,
+      "file": "steps/11_run_test_playbook.txt"
+    },
+    {
+      "n": 12,
+      "id": "install_playbook",
+      "title": "Part 4 Step 3: install_apache_playbook.yaml",
+      "start": "2026-11-14T10:01:32.737171Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-apache/install_apache_playbook.yaml",
+      "content": "---\n- hosts: webservers\n  become: yes\n  tasks:\n    - name: INSTALL APACHE2\n      apt: name=apache2 update_cache=yes state=latest\n    - name: ENABLED MOD_REWRITE\n      apache2_module: name=rewrite state=present\n      notify:\n        - RESTART APACHE2\n  handlers:\n    - name: RESTART APACHE2\n      service: name=apache2 state=restarted\n"
+    },
+    {
+      "n": 13,
+      "id": "run_install",
+      "title": "Part 4 Step 5: установка Apache",
+      "start": "2026-11-14T10:01:32.742716Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook -v install_apache_playbook.yaml",
+      "exit": 0,
+      "seconds": 14.12,
+      "file": "steps/13_run_install.txt"
+    },
+    {
+      "n": 14,
+      "id": "apache_status",
+      "title": "Part 4 Step 6a: состояние службы apache2 (выход из просмотра клавишей q)",
+      "start": "2026-11-14T10:01:46.859656Z",
+      "type": "cmd",
+      "cmd": "sudo systemctl status apache2",
+      "exit": 0,
+      "seconds": 3.65,
+      "file": "steps/14_apache_status.txt"
+    },
+    {
+      "n": 15,
+      "id": "curl_80",
+      "title": "Part 4 Step 6b: стартовая страница Apache на порту 80",
+      "start": "2026-11-14T10:01:50.510834Z",
+      "type": "cmd",
+      "cmd": "curl -s http://192.0.2.3 | grep -i -o '<title>.*</title>'",
+      "exit": 0,
+      "seconds": 3.07,
+      "file": "steps/15_curl_80.txt"
+    },
+    {
+      "n": 16,
+      "id": "shot_80",
+      "title": "",
+      "start": "2026-11-14T10:01:53.580535Z",
+      "type": "host",
+      "cmd": "google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1280,900 --screenshot=/tmp/apache_80.png http://192.0.2.3/ || chromium --headless --no-sandbox --screenshot=/tmp/apache_80.png http://192.0.2.3/",
+      "exit": 0,
+      "output": "[6503:6529:1114/100158.240660:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6529:1114/100158.370575:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6529:1114/100158.582362:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6532:1114/100158.904809:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6532:1114/100158.904844:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6532:1114/100158.904859:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6529:1114/100200.457243:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6529:1114/100200.941874:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100203.629640:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6529:1114/100203.629728:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100203.629757:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6529:1114/100203.629784:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100203.640216:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6503:1114/100203.672886:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6529:1114/100203.677164:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100203.869710:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6503:1114/100203.899675:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6529:1114/100203.899837:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100203.955753:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6503:1114/100204.030775:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6503:1114/100204.030840:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[6503:6529:1114/100204.030850:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100204.185567:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[6503:6529:1114/100204.186010:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[6503:6503:1114/100204.205381:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n173065 bytes written to file /tmp/apache_80.png\n"
+    },
+    {
+      "n": 17,
+      "id": "options_playbook",
+      "title": "Part 5 Step 1: install_apache_options_playbook.yaml",
+      "start": "2026-11-14T10:02:05.627720Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-apache/install_apache_options_playbook.yaml",
+      "content": "---\n- hosts: webservers\n  become: yes\n  tasks:\n   - name: INSTALL APACHE2\n     apt: name=apache2 update_cache=yes state=latest\n   - name: ENABLED MOD_REWRITE\n     apache2_module: name=rewrite state=present\n     notify:\n       - RESTART APACHE2\n   - name: APACHE2 LISTEN ON PORT 8081\n     lineinfile: dest=/etc/apache2/ports.conf regexp=\"^Listen 80\" line=\"Listen 8081\" state=present\n     notify:\n       - RESTART APACHE2\n   - name: APACHE2 VIRTUALHOST ON PORT 8081\n     lineinfile: dest=/etc/apache2/sites-available/000-default.conf regexp=\"^<VirtualHost \\*:80>\" line=\"<VirtualHost *:8081>\" state=present\n     notify:\n       - RESTART APACHE2\n  handlers:\n   - name: RESTART APACHE2\n     service: name=apache2 state=restarted\n"
+    },
+    {
+      "n": 18,
+      "id": "ports_before",
+      "title": "Part 5 Step 2: ports.conf до изменения",
+      "start": "2026-11-14T10:02:05.633061Z",
+      "type": "cmd",
+      "cmd": "cat /etc/apache2/ports.conf",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/18_ports_before.txt"
+    },
+    {
+      "n": 19,
+      "id": "vhost_before",
+      "title": "Part 5 Step 2: 000-default.conf до изменения",
+      "start": "2026-11-14T10:02:08.693487Z",
+      "type": "cmd",
+      "cmd": "cat /etc/apache2/sites-available/000-default.conf",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/19_vhost_before.txt"
+    },
+    {
+      "n": 20,
+      "id": "run_options",
+      "title": "Part 5 Step 3: запуск плейбука с параметрами",
+      "start": "2026-11-14T10:02:11.757473Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook install_apache_options_playbook.yaml",
+      "exit": 0,
+      "seconds": 8.1,
+      "file": "steps/20_run_options.txt"
+    },
+    {
+      "n": 21,
+      "id": "ports_after",
+      "title": "Part 5 Step 4a: ports.conf после изменения",
+      "start": "2026-11-14T10:02:19.852777Z",
+      "type": "cmd",
+      "cmd": "cat /etc/apache2/ports.conf",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/21_ports_after.txt"
+    },
+    {
+      "n": 22,
+      "id": "vhost_after",
+      "title": "Part 5 Step 4a: 000-default.conf после изменения",
+      "start": "2026-11-14T10:02:22.915341Z",
+      "type": "cmd",
+      "cmd": "head -n 5 /etc/apache2/sites-available/000-default.conf",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/22_vhost_after.txt"
+    },
+    {
+      "n": 23,
+      "id": "ss_listen",
+      "title": "Проверка прослушиваемого порта",
+      "start": "2026-11-14T10:02:25.976360Z",
+      "type": "cmd",
+      "cmd": "sudo ss -tlnp | grep apache2",
+      "exit": 0,
+      "seconds": 3.13,
+      "file": "steps/23_ss_listen.txt"
+    },
+    {
+      "n": 24,
+      "id": "curl_8081",
+      "title": "Part 5 Step 4b: страница на порту 8081",
+      "start": "2026-11-14T10:02:29.109658Z",
+      "type": "cmd",
+      "cmd": "curl -s http://192.0.2.3:8081 | grep -i -o '<title>.*</title>'",
+      "exit": 0,
+      "seconds": 3.07,
+      "file": "steps/24_curl_8081.txt"
+    },
+    {
+      "n": 25,
+      "id": "curl_80_closed",
+      "title": "Порт 80 больше не обслуживается",
+      "start": "2026-11-14T10:02:32.176069Z",
+      "type": "cmd",
+      "cmd": "curl -sS http://192.0.2.3",
+      "exit": 7,
+      "seconds": 3.07,
+      "file": "steps/25_curl_80_closed.txt"
+    },
+    {
+      "n": 26,
+      "id": "shot_8081",
+      "title": "",
+      "start": "2026-11-14T10:02:35.241870Z",
+      "type": "host",
+      "cmd": "google-chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1280,900 --screenshot=/tmp/apache_8081.png http://192.0.2.3:8081/ || chromium --headless --no-sandbox --screenshot=/tmp/apache_8081.png http://192.0.2.3:8081/",
+      "exit": 0,
+      "output": "[7481:7504:1114/100235.293262:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7508:1114/100235.294152:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7508:1114/100235.294186:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7508:1114/100235.294208:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7504:1114/100235.296326:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7504:1114/100235.296353:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7504:1114/100235.307098:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7504:1114/100235.343367:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.426418:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.426560:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.427004:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.427502:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.427656:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7481:1114/100235.429233:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.429342:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.441868:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7481:1114/100235.445263:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.445492:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.451163:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7481:1114/100235.453679:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[7481:7481:1114/100235.455843:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.455933:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.469406:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[7481:7504:1114/100235.471358:ERROR:dbus/bus.cc:406] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[7481:7481:1114/100235.474021:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n173065 bytes written to file /tmp/apache_8081.png\n"
+    },
+    {
+      "n": 27,
+      "id": "rerun_options",
+      "title": "Повторный запуск: идемпотентность",
+      "start": "2026-11-14T10:02:36.038958Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook install_apache_options_playbook.yaml",
+      "exit": 0,
+      "seconds": 7.42,
+      "file": "steps/27_rerun_options.txt"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ ansible-playbook --vault-password-file ~/.v
+ault_pass backup_cisco_router_playbook.yaml
+
+PLAY [AUTOMATIC BACKUP OF RUNNING-CONFIG] **********************************************************
+
+TASK [DISPLAYING THE RUNNING-CONFIG] ***************************************************************
+ok: [CSR1kv]
+
+TASK [SAVE OUTPUT TO ./backups/] *******************************************************************
+ok: [CSR1kv]
+
+PLAY RECAP *****************************************************************************************
+CSR1kv                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

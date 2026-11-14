@@ -1,0 +1,24 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+Usage:
+  genie <command> [options]
+
+Commands:
+    create              Create Testbed, parser, triggers, ...
+    develop             Puts desired pyATS packages into development mode
+    diff                Command to diff two snapshots saved to file or directory
+    dnac                Command to learn DNAC features and save to file (Prototype)
+    learn               Command to learn device features and save to file
+    parse               Command to parse show commands
+    run                 Run Genie triggers & verifications in pyATS runtime environment
+    shell               enter Python shell, loading a pyATS testbed file and/or pickled data
+    undevelop           Removes desired pyATS packages from development mode
+
+General Options:
+  -h, --help            Show help
+
+Run 'genie <command> --help' for more information on a command.

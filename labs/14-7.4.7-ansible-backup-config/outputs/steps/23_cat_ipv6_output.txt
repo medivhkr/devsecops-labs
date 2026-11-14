@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ cat ios_configurations/IPv6_output_CSR1kv.t
+xt
+GigabitEthernet1       [up/up]
+    FE80::1:1
+    2001:DB8:ACAD:1::1

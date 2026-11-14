@@ -74,6 +74,7 @@ def resolve(lab_dir):
         png = os.path.join(figs, "{}.png".format(fid))
         render("\n".join(texts), title, png, cols=b.get("cols", 100))
         b["t"] = "figure"
+        b["terminal"] = True
         b["image"] = os.path.relpath(png, rep_dir).replace("\\", "/")
         b.setdefault("id", fid)
     out = os.path.join(rep_dir, "report.resolved.json")

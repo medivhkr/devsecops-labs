@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ cat pyvenv.cfg
+home = /usr/bin
+include-system-site-packages = false
+version = 3.8.10

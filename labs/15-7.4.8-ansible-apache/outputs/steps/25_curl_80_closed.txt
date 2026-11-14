@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ curl -sS http://192.0.2.3
+curl: (7) Failed to connect to 192.0.2.3 port 80 after 0 ms: Couldn't connect to server

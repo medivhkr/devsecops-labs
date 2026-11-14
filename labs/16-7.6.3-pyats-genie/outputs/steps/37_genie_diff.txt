@@ -1,0 +1,13 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ genie diff verify-ipv6-1 verify-ipv6-2
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/utils/yaml/__init__.py:1
+: CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and supp
+ort for it is deprecated in cryptography. The next release of cryptography will remove support for P
+ython 3.8.
+  from .loader import Loader
+1it [00:00, 1691.25it/s]
++==============================================================================+
+| Genie Diff Summary between directories verify-ipv6-1/ and verify-ipv6-2/     |
++==============================================================================+
+|  File: CSR1kv_show-ipv6-interface-gig-1_parsed.txt                           |
+|   - Diff can be found at ./diff_CSR1kv_show-ipv6-interface-gig-1_parsed.txt  |
+|------------------------------------------------------------------------------|

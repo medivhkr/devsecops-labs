@@ -1,0 +1,2 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-csr1000v$ cat ansible.cfg
+# Add to this file for the Ansible lab

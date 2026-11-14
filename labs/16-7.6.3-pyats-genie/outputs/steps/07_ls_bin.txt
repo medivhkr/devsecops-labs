@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l bin
+total 44
+-rw-r--r-- 1 devasc devasc 8834 Nov 14 10:00 Activate.ps1
+-rw-r--r-- 1 devasc devasc 2206 Nov 14 10:00 activate
+-rw-r--r-- 1 devasc devasc 1252 Nov 14 10:00 activate.csh
+-rw-r--r-- 1 devasc devasc 2406 Nov 14 10:00 activate.fish
+-rwxr-xr-x 1 devasc devasc  267 Nov 14 10:00 easy_install
+-rwxr-xr-x 1 devasc devasc  267 Nov 14 10:00 easy_install-3.8
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip3
+-rwxr-xr-x 1 devasc devasc  258 Nov 14 10:00 pip3.8
+lrwxrwxrwx 1 devasc devasc    7 Nov 14 10:00 python -> python3
+lrwxrwxrwx 1 devasc devasc   16 Nov 14 10:00 python3 -> /usr/bin/python3

@@ -1,0 +1,25 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ls -l examples
+total 100
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 GenieHarnessHelloWorld
+-rw-r--r--  1 devasc devasc 11357 Nov 14 10:01 LICENSE
+-rw-r--r--  1 devasc devasc   916 Nov 14 10:01 README.md
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 abstraction_example
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 basic
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 blitz
+drwxr-xr-x 31 devasc devasc  4096 Nov 14 10:01 clean
+drwxr-xr-x  7 devasc devasc  4096 Nov 14 10:01 comprehensive
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 connection
+drwxr-xr-x  5 devasc devasc  4096 Nov 14 10:01 datafiles
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 feature
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 groups
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 health
+drwxr-xr-x 15 devasc devasc  4096 Nov 14 10:01 libraries
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 loop
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 metadata
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 metaparser
+drwxr-xr-x  5 devasc devasc  4096 Nov 14 10:01 parsergen
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 retry
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 script_parameters
+drwxr-xr-x  4 devasc devasc  4096 Nov 14 10:01 steps
+drwxr-xr-x  3 devasc devasc  4096 Nov 14 10:01 tasks
+drwxr-xr-x  2 devasc devasc  4096 Nov 14 10:01 uids

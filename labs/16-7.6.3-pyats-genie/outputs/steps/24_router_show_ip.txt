@@ -1,0 +1,26 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ssh -o KexAlgorithms=diffie-hellman-group14-sh
+a1 cisco@192.168.56.101
+The authenticity of host '192.168.56.101 (192.168.56.101)' can't be established.
+RSA key fingerprint is SHA256:KKbeoW+y9ARF66FXkO+RIReeNBA2DrgTdeDXWtfVGuo.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.56.101' (RSA) to the list of known hosts.
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet1       192.168.56.101  YES DHCP   up                    up
+CSR1kv#exit
+Connection to 192.168.56.101 closed.

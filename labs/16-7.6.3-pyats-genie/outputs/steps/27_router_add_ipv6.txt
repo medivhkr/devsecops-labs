@@ -1,0 +1,24 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ ssh -o KexAlgorithms=diffie-hellman-group14-sh
+a1 cisco@192.168.56.101
+Password:
+
+*                                           *
+**                                         **
+***                                       ***
+***  Cisco Networking Academy             ***
+***                                       ***
+***  This software is provided for        ***
+***   Educational Purposes                ***
+***    Only in Networking Academies       ***
+***                                       ***
+**                                         **
+*                                           *
+
+
+CSR1kv#configure terminal
+Enter configuration commands, one per line.  End with CNTL/Z.
+CSR1kv(config)#interface gig 1
+CSR1kv(config-if)#ipv6 address 2001:db8:acad:56::101/64
+CSR1kv(config-if)#end
+CSR1kv#exit
+Connection to 192.168.56.101 closed.

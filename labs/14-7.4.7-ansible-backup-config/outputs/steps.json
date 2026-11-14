@@ -1,0 +1,338 @@
+{
+  "lab": "7.4.7",
+  "title": "Use Ansible to Back Up and Configure a Device",
+  "finished": "2026-11-14T10:01:42.673296Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "cd_lab",
+      "title": "Переход в каталог ansible-csr1000v",
+      "start": "2026-11-14T10:00:09.200971Z",
+      "type": "cmd",
+      "cmd": "cd labs/devnet-src/ansible/ansible-csr1000v",
+      "exit": 0,
+      "seconds": 3.07,
+      "file": "steps/01_cd_lab.txt"
+    },
+    {
+      "n": 2,
+      "id": "hosts",
+      "title": "Part 2 Step 2: inventory-файл hosts",
+      "start": "2026-11-14T10:00:12.268742Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-csr1000v/hosts",
+      "content": "# Enter the hosts or devices for Ansible playbooks\nCSR1kv ansible_user=cisco ansible_password=cisco123! ansible_host=192.168.56.101\n"
+    },
+    {
+      "n": 3,
+      "id": "cd_up",
+      "title": "Part 2 Step 3a: на уровень выше",
+      "start": "2026-11-14T10:00:12.275947Z",
+      "type": "cmd",
+      "cmd": "cd ..",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/03_cd_up.txt"
+    },
+    {
+      "n": 4,
+      "id": "ansible_usage",
+      "title": "Part 2 Step 3b: справка ansible",
+      "start": "2026-11-14T10:00:15.331497Z",
+      "type": "cmd",
+      "cmd": "ansible",
+      "exit": 2,
+      "seconds": 3.2,
+      "file": "steps/04_ansible_usage.txt"
+    },
+    {
+      "n": 5,
+      "id": "ansible_version_global",
+      "title": "Part 2 Step 3c: версия Ansible и файл конфигурации по умолчанию",
+      "start": "2026-11-14T10:00:18.528425Z",
+      "type": "cmd",
+      "cmd": "ansible --version",
+      "exit": 0,
+      "seconds": 3.19,
+      "file": "steps/05_ansible_version_global.txt"
+    },
+    {
+      "n": 6,
+      "id": "default_cfg",
+      "title": "Part 2 Step 4: файл /etc/ansible/ansible.cfg",
+      "start": "2026-11-14T10:00:21.723149Z",
+      "type": "cmd",
+      "cmd": "cat /etc/ansible/ansible.cfg | more",
+      "exit": 0,
+      "seconds": 3.11,
+      "file": "steps/06_default_cfg.txt"
+    },
+    {
+      "n": 7,
+      "id": "cd_csr",
+      "title": "Part 2 Step 5a",
+      "start": "2026-11-14T10:00:24.834032Z",
+      "type": "cmd",
+      "cmd": "cd ansible-csr1000v/",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/07_cd_csr.txt"
+    },
+    {
+      "n": 8,
+      "id": "ansible_version_local",
+      "title": "Part 2 Step 5a: ansible --version в каталоге лабораторной",
+      "start": "2026-11-14T10:00:27.889708Z",
+      "type": "cmd",
+      "cmd": "ansible --version",
+      "exit": 0,
+      "seconds": 3.2,
+      "file": "steps/08_ansible_version_local.txt"
+    },
+    {
+      "n": 9,
+      "id": "cat_cfg_placeholder",
+      "title": "Part 2 Step 5b: содержимое ansible.cfg до правки",
+      "start": "2026-11-14T10:00:31.085452Z",
+      "type": "cmd",
+      "cmd": "cat ansible.cfg",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/09_cat_cfg_placeholder.txt"
+    },
+    {
+      "n": 10,
+      "id": "ansible_cfg",
+      "title": "Part 2 Step 6: ansible.cfg",
+      "start": "2026-11-14T10:00:34.142023Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-csr1000v/ansible.cfg",
+      "content": "# config file for ansible-csr1000v\n[defaults]\n# Use local hosts file in this folder\ninventory=./hosts\nhost_key_checking = False # Don't worry about RSA Fingerprints\nretry_files_enabled = False # Do not create them\ndeprecation_warnings = False # Do not show warnings\n"
+    },
+    {
+      "n": 11,
+      "id": "cat_cfg",
+      "title": "Part 2 Step 7: итоговые файлы конфигурации",
+      "start": "2026-11-14T10:00:34.149829Z",
+      "type": "cmd",
+      "cmd": "cat ansible.cfg hosts",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/11_cat_cfg.txt"
+    },
+    {
+      "n": 12,
+      "id": "backup_playbook",
+      "title": "Part 3 Step 1: плейбук резервного копирования",
+      "start": "2026-11-14T10:00:37.206912Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-csr1000v/backup_cisco_router_playbook.yaml",
+      "content": "---\n- name: AUTOMATIC BACKUP OF RUNNING-CONFIG\n  hosts: CSR1kv\n  gather_facts: false\n  connection: local\n  tasks:\n   - name: DISPLAYING THE RUNNING-CONFIG\n     ios_command:\n       commands:\n         - show running-config\n     register: config\n   - name: SAVE OUTPUT TO ./backups/\n     copy:\n       content: \"{{ config.stdout[0] }}\"\n       dest: \"backups/show_run_{{ inventory_hostname }}.txt\"\n"
+    },
+    {
+      "n": 13,
+      "id": "ping1",
+      "title": "Part 3 Step 3a: проверка доступности CSR1kv",
+      "start": "2026-11-14T10:00:37.214386Z",
+      "type": "cmd",
+      "cmd": "ping 192.168.56.101",
+      "exit": 0,
+      "seconds": 4.37,
+      "file": "steps/13_ping1.txt"
+    },
+    {
+      "n": 14,
+      "id": "mkdir_backups",
+      "title": "Part 3 Step 3b",
+      "start": "2026-11-14T10:00:41.589520Z",
+      "type": "cmd",
+      "cmd": "mkdir backups",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/14_mkdir_backups.txt"
+    },
+    {
+      "n": 15,
+      "id": "run_backup",
+      "title": "Part 3 Step 3c: запуск плейбука резервного копирования",
+      "start": "2026-11-14T10:00:44.646707Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook backup_cisco_router_playbook.yaml",
+      "exit": 0,
+      "seconds": 4.75,
+      "file": "steps/15_run_backup.txt"
+    },
+    {
+      "n": 16,
+      "id": "ls_backups",
+      "title": "Part 3 Step 4: проверка файла резервной копии",
+      "start": "2026-11-14T10:00:49.397752Z",
+      "type": "cmd",
+      "cmd": "ls -l backups",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/16_ls_backups.txt"
+    },
+    {
+      "n": 17,
+      "id": "cat_backup",
+      "title": "Part 3 Step 4: содержимое резервной копии",
+      "start": "2026-11-14T10:00:52.455329Z",
+      "type": "cmd",
+      "cmd": "cat backups/show_run_CSR1kv.txt",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/17_cat_backup.txt"
+    },
+    {
+      "n": 18,
+      "id": "cat_hosts",
+      "title": "Part 4 Step 1: inventory",
+      "start": "2026-11-14T10:00:55.517724Z",
+      "type": "cmd",
+      "cmd": "cat hosts",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/18_cat_hosts.txt"
+    },
+    {
+      "n": 19,
+      "id": "ipv6_playbook",
+      "title": "Part 4 Step 2: плейбук настройки IPv6",
+      "start": "2026-11-14T10:00:58.575138Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-csr1000v/cisco_router_ipv6_config_playbook.yaml",
+      "content": "---\n- name: CONFIGURE IPv6 ADDRESSING\n  hosts: CSR1kv\n  gather_facts: false\n  connection: local\n  tasks:\n   - name: SET IPv6 ADDRESS\n     ios_config:\n       parents: \"interface GigabitEthernet1\"\n       lines:\n         - description IPv6 ADDRESS\n         - ipv6 address 2001:DB8:ACAD:1::1/64\n         - ipv6 address FE80::1:1 link-local\n   - name: SHOW IPv6 INTERFACE BRIEF\n     ios_command:\n       commands:\n         - show ipv6 interface brief\n     register: output\n   - name: SAVE OUTPUT ./ios_configurations/\n     copy:\n       content: \"{{ output.stdout[0] }}\"\n       dest: \"ios_configurations/IPv6_output_{{ inventory_hostname }}.txt\"\n"
+    },
+    {
+      "n": 20,
+      "id": "ping2",
+      "title": "Part 4 Step 4a: проверка доступности CSR1kv",
+      "start": "2026-11-14T10:00:58.583224Z",
+      "type": "cmd",
+      "cmd": "ping 192.168.56.101",
+      "exit": 0,
+      "seconds": 4.38,
+      "file": "steps/20_ping2.txt"
+    },
+    {
+      "n": 21,
+      "id": "mkdir_iosconf",
+      "title": "Part 4 Step 4b",
+      "start": "2026-11-14T10:01:02.965439Z",
+      "type": "cmd",
+      "cmd": "mkdir ios_configurations",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/21_mkdir_iosconf.txt"
+    },
+    {
+      "n": 22,
+      "id": "run_ipv6",
+      "title": "Part 4 Step 4c: запуск плейбука настройки IPv6",
+      "start": "2026-11-14T10:01:06.022335Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook -v cisco_router_ipv6_config_playbook.yaml",
+      "exit": 0,
+      "seconds": 5.89,
+      "file": "steps/22_run_ipv6.txt"
+    },
+    {
+      "n": 23,
+      "id": "cat_ipv6_output",
+      "title": "Part 4 Step 5: результат show ipv6 interface brief",
+      "start": "2026-11-14T10:01:11.913043Z",
+      "type": "cmd",
+      "cmd": "cat ios_configurations/IPv6_output_CSR1kv.txt",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/23_cat_ipv6_output.txt"
+    },
+    {
+      "n": 24,
+      "id": "run_ipv6_again",
+      "title": "Повторный запуск: идемпотентность ios_config",
+      "start": "2026-11-14T10:01:14.969931Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook cisco_router_ipv6_config_playbook.yaml",
+      "exit": 0,
+      "seconds": 5.32,
+      "file": "steps/24_run_ipv6_again.txt"
+    },
+    {
+      "n": 25,
+      "id": "backup_after",
+      "title": "Резервная копия после изменения конфигурации",
+      "start": "2026-11-14T10:01:20.287518Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook backup_cisco_router_playbook.yaml && grep -n -A8 '^interface GigabitEthernet1' backups/show_run_CSR1kv.txt",
+      "exit": 0,
+      "seconds": 4.77,
+      "file": "steps/25_backup_after.txt"
+    },
+    {
+      "n": 26,
+      "id": "vault_pass_file",
+      "title": "Vault: файл с паролем хранилища",
+      "start": "2026-11-14T10:01:25.055253Z",
+      "type": "cmd",
+      "cmd": "openssl rand -base64 24 > ~/.vault_pass && chmod 600 ~/.vault_pass && ls -l ~/.vault_pass",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/26_vault_pass_file.txt"
+    },
+    {
+      "n": 27,
+      "id": "vault_encrypt",
+      "title": "Vault: шифрование пароля устройства",
+      "start": "2026-11-14T10:01:28.115653Z",
+      "type": "cmd",
+      "cmd": "mkdir -p host_vars && ansible-vault encrypt_string --vault-password-file ~/.vault_pass 'cisco123!' --name ansible_password > host_vars/CSR1kv.yml",
+      "exit": 0,
+      "seconds": 3.18,
+      "file": "steps/27_vault_encrypt.txt"
+    },
+    {
+      "n": 28,
+      "id": "hosts_no_password",
+      "title": "Vault: inventory без пароля",
+      "start": "2026-11-14T10:01:31.297301Z",
+      "type": "file",
+      "path": "~/labs/devnet-src/ansible/ansible-csr1000v/hosts",
+      "content": "# Enter the hosts or devices for Ansible playbooks\n# Пароль перенесён в host_vars/CSR1kv.yml (зашифрован Ansible Vault)\nCSR1kv ansible_user=cisco ansible_host=192.168.56.101\n"
+    },
+    {
+      "n": 29,
+      "id": "vault_show",
+      "title": "Vault: содержимое hosts и host_vars/CSR1kv.yml",
+      "start": "2026-11-14T10:01:31.305323Z",
+      "type": "cmd",
+      "cmd": "cat hosts host_vars/CSR1kv.yml",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/29_vault_show.txt"
+    },
+    {
+      "n": 30,
+      "id": "vault_run_nopass",
+      "title": "Vault: запуск без пароля хранилища",
+      "start": "2026-11-14T10:01:34.362953Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook backup_cisco_router_playbook.yaml",
+      "exit": 2,
+      "seconds": 3.39,
+      "file": "steps/30_vault_run_nopass.txt"
+    },
+    {
+      "n": 31,
+      "id": "vault_run_ok",
+      "title": "Vault: запуск с паролем хранилища",
+      "start": "2026-11-14T10:01:37.755405Z",
+      "type": "cmd",
+      "cmd": "ansible-playbook --vault-password-file ~/.vault_pass backup_cisco_router_playbook.yaml",
+      "exit": 0,
+      "seconds": 4.87,
+      "file": "steps/31_vault_run_ok.txt"
+    }
+  ]
+}

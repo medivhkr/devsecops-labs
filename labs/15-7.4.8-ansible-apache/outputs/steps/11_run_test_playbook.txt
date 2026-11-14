@@ -1,0 +1,16 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ ansible-playbook -v test_apache_playbook.yaml
+Using /home/devasc/labs/devnet-src/ansible/ansible-apache/ansible.cfg as config file
+
+PLAY [webservers] **********************************************************************************
+
+TASK [Gathering Facts] *****************************************************************************
+ok: [192.0.2.3]
+
+TASK [run echo command] ****************************************************************************
+changed: [192.0.2.3] => {"changed": true, "cmd": ["/bin/echo", "hello", "world"], "delta": "0:00:00.
+003044", "end": "2026-11-14 10:01:29.598779", "msg": "", "rc": 0, "start": "2026-11-14 10:01:29.5957
+35", "stderr": "", "stderr_lines": [], "stdout": "hello world", "stdout_lines": ["hello world"]}
+
+PLAY RECAP *****************************************************************************************
+192.0.2.3                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=
+0    ignored=0

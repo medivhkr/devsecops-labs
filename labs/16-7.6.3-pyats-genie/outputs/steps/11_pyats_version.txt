@@ -1,0 +1,42 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pyats version check
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/topology/__init__.py:54:
+ CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and suppo
+rt for it is deprecated in cryptography. The next release of cryptography will remove support for Py
+thon 3.8.
+  from .device import Device, DeviceBase
+You are currently running pyATS version: 24.9
+Python: 3.8.10 [64bit]
+
+  Package                      Version
+  ---------------------------- -------
+  genie                        24.9
+  genie.libs.clean             24.9
+  genie.libs.conf              24.9
+  genie.libs.filetransferutils 24.9
+  genie.libs.health            24.9
+  genie.libs.ops               24.9
+  genie.libs.parser            24.9
+  genie.libs.robot             24.9
+  genie.libs.sdk               24.9
+  genie.telemetry              24.9
+  genie.trafficgen             24.9
+  pyats                        24.9
+  pyats.aereport               24.9
+  pyats.aetest                 24.9
+  pyats.async                  24.9
+  pyats.connections            24.9
+  pyats.contrib                24.9
+  pyats.datastructures         24.9
+  pyats.easypy                 24.9
+  pyats.kleenex                24.9
+  pyats.log                    24.9
+  pyats.reporter               24.9
+  pyats.results                24.9
+  pyats.robot                  24.9
+  pyats.tcl                    24.9
+  pyats.topology               24.9
+  pyats.utils                  24.9
+  rest.connector               24.9
+  unicon                       24.9
+  unicon.plugins               24.9
+  yang.connector               24.9

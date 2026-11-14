@@ -1,0 +1,30 @@
+(csr1kv) devasc@labvm:~/labs/devnet-src/pyats/csr1kv$ pyats --help
+/home/devasc/labs/devnet-src/pyats/csr1kv/lib/python3.8/site-packages/pyats/topology/__init__.py:54:
+ CryptographyDeprecationWarning: Python 3.8 is no longer supported by the Python core team and suppo
+rt for it is deprecated in cryptography. The next release of cryptography will remove support for Py
+thon 3.8.
+  from .device import Device, DeviceBase
+Usage:
+  pyats <command> [options]
+
+Commands:
+    clean               runs the provided clean file
+    create              create scripts and libraries from template
+    develop             Puts desired pyATS packages into development mode
+    diff                Command to diff two snapshots saved to file or directory
+    dnac                Command to learn DNAC features and save to file (Prototype)
+    learn               Command to learn device features and save to file
+    logs                command enabling log archive viewing in local browser
+    migrate             utilities for migrating to future versions of pyATS
+    parse               Command to parse show commands
+    run                 runs the provided script and output corresponding results.
+    secret              utilities for working with secret strings.
+    shell               enter Python shell, loading a pyATS testbed file and/or pickled data
+    undevelop           Removes desired pyATS packages from development mode
+    validate            utilities that help to validate input files
+    version             commands related to version display and manipulation
+
+General Options:
+  -h, --help            Show help
+
+Run 'pyats <command> --help' for more information on a command.

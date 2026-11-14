@@ -1,0 +1,4 @@
+devasc@labvm:~/labs/devnet-src/ansible/ansible-apache$ ansible webservers -m command -a "/bin/echo h
+ello world"
+192.0.2.3 | CHANGED | rc=0 >>
+hello world

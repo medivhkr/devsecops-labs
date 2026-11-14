@@ -1,0 +1,62 @@
+{
+  "lab": "7.0.3",
+  "title": "Install the CSR1000v VM",
+  "finished": "2026-11-14T10:00:46.619412Z",
+  "steps": [
+    {
+      "n": 1,
+      "id": "env",
+      "title": "Стенд: ОС, имя хоста и сетевые адреса ВМ DEVASC",
+      "start": "2026-11-14T10:00:27.389418Z",
+      "type": "cmd",
+      "cmd": "cat /etc/os-release | head -4 && hostname && ip -brief address",
+      "exit": 0,
+      "seconds": 3.07,
+      "file": "steps/01_env.txt"
+    },
+    {
+      "n": 2,
+      "id": "console_show_ip",
+      "title": "Part 2 Step 1: вход на маршрутизатор и show ip interface brief",
+      "start": "2026-11-14T10:00:30.462470Z",
+      "type": "cmd",
+      "cmd": "ssh cisco@192.168.56.101",
+      "exit": 0,
+      "seconds": 3.4,
+      "file": "steps/02_console_show_ip.txt"
+    },
+    {
+      "n": 3,
+      "id": "ping",
+      "title": "Part 2 Step 3: ping 192.168.56.101 с ВМ DEVASC",
+      "start": "2026-11-14T10:00:33.867539Z",
+      "type": "cmd",
+      "cmd": "ping 192.168.56.101",
+      "exit": 0,
+      "seconds": 6.43,
+      "file": "steps/03_ping.txt"
+    },
+    {
+      "n": 4,
+      "id": "ssh",
+      "title": "Part 2 Step 4: SSH-сессия с CSR1kv",
+      "start": "2026-11-14T10:00:40.302349Z",
+      "type": "cmd",
+      "cmd": "ssh cisco@192.168.56.101",
+      "exit": 0,
+      "seconds": 3.21,
+      "file": "steps/04_ssh.txt"
+    },
+    {
+      "n": 5,
+      "id": "ssh_fingerprint",
+      "title": "Отпечаток ключа SSH маршрутизатора в known_hosts",
+      "start": "2026-11-14T10:00:43.508829Z",
+      "type": "cmd",
+      "cmd": "ssh-keygen -l -F 192.168.56.101",
+      "exit": 0,
+      "seconds": 3.06,
+      "file": "steps/05_ssh_fingerprint.txt"
+    }
+  ]
+}
