@@ -1,0 +1,7 @@
+devasc@labvm:~$ sudo ip netns exec PC-B traceroute -n -I 209.165.200.227
+traceroute to 209.165.200.227 (209.165.200.227), 30 hops max, 60 byte packets
+ 1  172.16.3.1  0.031 ms  0.012 ms  0.008 ms
+ 2  10.2.2.1  0.018 ms  0.011 ms  0.007 ms
+ 3  10.1.1.2  0.016 ms  0.009 ms  0.008 ms
+ 4  209.165.200.227  0.029 ms  0.013 ms  0.013 ms
+ 5  209.165.200.227  0.025 ms  0.019 ms  0.019 ms

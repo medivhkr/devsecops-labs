@@ -1,0 +1,6 @@
+devasc@labvm:~$ ls -l /srv/DEVASC-Server/http/ && cat /srv/DEVASC-Server/http/index.html
+total 4
+-rw-r--r-- 1 devasc devasc 119 Nov 14 11:04 index.html
+<html>
+<center><font size='+2' color='blue'>DevNet Associate</font></center>
+<hr>Welcome to the NetAcad DEVASC course!

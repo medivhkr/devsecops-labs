@@ -1,0 +1,1 @@
+devasc@labvm:~$ sudo ip link add Fa0 netns PC-A type veth peer name Fa0-2 netns S2

@@ -1,0 +1,201 @@
+devasc@labvm:~/labs/devnet-src/school-library$ python3 add100RandomBooks.py
+Book {'id': 4, 'title': 'Inverse eco-centric function', 'author': 'Mary Young', 'isbn': '978-0-234-8
+6435-7'} added.
+Book {'id': 5, 'title': 'Reverse-engineered responsive interface', 'author': 'Derek Skinner', 'isbn'
+: '978-0-7900-0357-3'} added.
+Book {'id': 6, 'title': 'Self-enabling even-keeled application', 'author': 'Lisa Delgado', 'isbn': '
+978-0-619-11170-0'} added.
+Book {'id': 7, 'title': 'Down-sized contextually-based software', 'author': 'Ian English', 'isbn': '
+978-1-145-44323-5'} added.
+Book {'id': 8, 'title': 'Inverse intangible project', 'author': 'Angela Garner', 'isbn': '978-0-279-
+84192-4'} added.
+Book {'id': 9, 'title': 'Switchable zero-defect knowledgebase', 'author': 'Mark Smith Jr.', 'isbn':
+'978-1-70856-650-0'} added.
+Book {'id': 10, 'title': 'Upgradable intangible policy', 'author': 'Christopher Jenkins', 'isbn': '9
+78-1-4054-6741-4'} added.
+Book {'id': 11, 'title': 'Vision-oriented attitude-oriented leverage', 'author': 'Jason Ryan', 'isbn
+': '978-0-214-92129-2'} added.
+Book {'id': 12, 'title': 'User-friendly even-keeled frame', 'author': 'Benjamin Vazquez', 'isbn': '9
+78-0-491-48548-7'} added.
+Book {'id': 13, 'title': 'Up-sized maximized array', 'author': 'Andrew Griffin', 'isbn': '978-1-08-8
+80679-1'} added.
+Book {'id': 14, 'title': 'Robust dynamic capability', 'author': 'Heather Brown', 'isbn': '978-1-8611
+3-337-3'} added.
+Book {'id': 15, 'title': 'Upgradable attitude-oriented paradigm', 'author': 'Virginia Shelton DVM',
+'isbn': '978-1-4157-8943-8'} added.
+Book {'id': 16, 'title': 'Vision-oriented actuating focus group', 'author': 'Justin Romero', 'isbn':
+ '978-1-75297-768-0'} added.
+Book {'id': 17, 'title': 'Decentralized heuristic monitoring', 'author': 'Danny Bell', 'isbn': '978-
+1-01-582648-9'} added.
+Book {'id': 18, 'title': 'Distributed explicit frame', 'author': 'Anthony Glenn', 'isbn': '978-1-946
+814-31-9'} added.
+Book {'id': 19, 'title': 'De-engineered dynamic contingency', 'author': 'Emily Bonilla', 'isbn': '97
+8-0-250-24174-3'} added.
+Book {'id': 20, 'title': 'Organized dynamic artificial intelligence', 'author': 'Mercedes Rose', 'is
+bn': '978-0-386-39912-7'} added.
+Book {'id': 21, 'title': 'Future-proofed multi-tasking archive', 'author': 'Lisa Clark', 'isbn': '97
+8-0-87338-962-4'} added.
+Book {'id': 22, 'title': 'Vision-oriented motivating time-frame', 'author': 'Wayne Johnson', 'isbn':
+ '978-1-4149-8104-8'} added.
+Book {'id': 23, 'title': 'User-friendly static encryption', 'author': 'Angela Townsend', 'isbn': '97
+8-1-62728-727-2'} added.
+Book {'id': 24, 'title': 'Quality-focused didactic architecture', 'author': 'Lisa Jacobson', 'isbn':
+ '978-1-60527-992-3'} added.
+Book {'id': 25, 'title': 'Intuitive asymmetric concept', 'author': 'David Harrell', 'isbn': '978-1-9
+68596-42-2'} added.
+Book {'id': 26, 'title': 'Virtual next generation superstructure', 'author': 'Katherine Ward', 'isbn
+': '978-1-5177-5156-2'} added.
+Book {'id': 27, 'title': 'Future-proofed 4thgeneration knowledgebase', 'author': 'Amber Bennett', 'i
+sbn': '978-0-7445-6740-3'} added.
+Book {'id': 28, 'title': 'Team-oriented contextually-based encoding', 'author': 'Nicholas Durham', '
+isbn': '978-0-615-01912-3'} added.
+Book {'id': 29, 'title': 'Open-source bifurcated initiative', 'author': 'Brian Bruce', 'isbn': '978-
+0-07-144819-2'} added.
+Book {'id': 30, 'title': 'Virtual modular structure', 'author': 'Kevin Spencer', 'isbn': '978-0-373-
+74764-1'} added.
+Book {'id': 31, 'title': 'Multi-lateral upward-trending leverage', 'author': 'Mindy Austin', 'isbn':
+ '978-0-06-440904-9'} added.
+Book {'id': 32, 'title': 'Re-contextualized regional success', 'author': 'Diana Fisher', 'isbn': '97
+8-1-75015-293-5'} added.
+Book {'id': 33, 'title': 'Distributed directional middleware', 'author': 'Richard Arnold', 'isbn': '
+978-1-109-13624-1'} added.
+Book {'id': 34, 'title': 'Horizontal scalable hardware', 'author': 'Frederick Greene', 'isbn': '978-
+0-9949651-3-4'} added.
+Book {'id': 35, 'title': 'Proactive neutral info-mediaries', 'author': 'Stacy Hutchinson', 'isbn': '
+978-0-13-254976-9'} added.
+Book {'id': 36, 'title': 'Intuitive tangible database', 'author': 'Tracy Lloyd', 'isbn': '978-0-546-
+53484-9'} added.
+Book {'id': 37, 'title': 'Total solution-oriented projection', 'author': 'Carmen Simmons', 'isbn': '
+978-0-15-218054-6'} added.
+Book {'id': 38, 'title': 'Secured secondary software', 'author': 'Robert Anderson', 'isbn': '978-0-2
+63-36686-0'} added.
+Book {'id': 39, 'title': 'Optional national middleware', 'author': 'Dawn Graham', 'isbn': '978-0-11-
+836101-9'} added.
+Book {'id': 40, 'title': 'Multi-tiered optimal database', 'author': 'Mary Mack', 'isbn': '978-1-4615
+-3540-9'} added.
+Book {'id': 41, 'title': 'Operative reciprocal migration', 'author': 'Kimberly Morales', 'isbn': '97
+8-0-531-08221-8'} added.
+Book {'id': 42, 'title': 'Reduced fault-tolerant utilization', 'author': 'William Lamb', 'isbn': '97
+8-0-500-93525-5'} added.
+Book {'id': 43, 'title': 'Reactive 5thgeneration migration', 'author': 'Joshua Powers', 'isbn': '978
+-1-76261-007-2'} added.
+Book {'id': 44, 'title': 'Visionary grid-enabled hardware', 'author': 'Travis Wright', 'isbn': '978-
+1-78399-824-1'} added.
+Book {'id': 45, 'title': 'Ameliorated client-driven flexibility', 'author': 'Natalie Shaw', 'isbn':
+'978-1-924074-47-6'} added.
+Book {'id': 46, 'title': 'Multi-tiered composite concept', 'author': 'Wayne Massey', 'isbn': '978-1-
+83841-239-5'} added.
+Book {'id': 47, 'title': 'Centralized disintermediate conglomeration', 'author': 'Robert Richards',
+'isbn': '978-0-400-02861-3'} added.
+Book {'id': 48, 'title': 'Profound dynamic methodology', 'author': 'Marcus Rivera', 'isbn': '978-1-4
+674-1581-1'} added.
+Book {'id': 49, 'title': 'User-centric bi-directional emulation', 'author': 'Susan Barnett', 'isbn':
+ '978-0-8396-3042-5'} added.
+Book {'id': 50, 'title': 'Configurable background hardware', 'author': 'Virginia Mitchell', 'isbn':
+'978-0-11-933571-2'} added.
+Book {'id': 51, 'title': 'Future-proofed impactful ability', 'author': 'Sharon Bush', 'isbn': '978-0
+-8496-1966-3'} added.
+Book {'id': 52, 'title': 'Automated stable challenge', 'author': 'Mark Ryan', 'isbn': '978-1-85979-5
+90-3'} added.
+Book {'id': 53, 'title': 'Optimized responsive knowledge user', 'author': 'Kelsey Johnston', 'isbn':
+ '978-1-146-01923-1'} added.
+Book {'id': 54, 'title': 'Public-key system-worthy system engine', 'author': 'Lisa Cook', 'isbn': '9
+78-1-04-832284-2'} added.
+Book {'id': 55, 'title': 'Devolved stable Graphic Interface', 'author': 'Julia Cortez', 'isbn': '978
+-1-69167-627-9'} added.
+Book {'id': 56, 'title': 'Configurable content-based throughput', 'author': 'Autumn Roth', 'isbn': '
+978-1-09-197572-9'} added.
+Book {'id': 57, 'title': 'Enterprise-wide eco-centric flexibility', 'author': 'Lynn Young', 'isbn':
+'978-0-692-22322-2'} added.
+Book {'id': 58, 'title': 'Networked zero administration strategy', 'author': 'Aaron Nguyen', 'isbn':
+ '978-1-06-625158-2'} added.
+Book {'id': 59, 'title': 'Grass-roots motivating policy', 'author': 'Martin Hanna', 'isbn': '978-1-6
+5069-316-3'} added.
+Book {'id': 60, 'title': 'Future-proofed asymmetric utilization', 'author': 'Nicole Floyd', 'isbn':
+'978-0-04-470220-7'} added.
+Book {'id': 61, 'title': 'Reactive client-server productivity', 'author': 'Tiffany Gilbert', 'isbn':
+ '978-1-245-41933-8'} added.
+Book {'id': 62, 'title': 'Triple-buffered stable productivity', 'author': 'Erin Orr', 'isbn': '978-0
+-374-17753-9'} added.
+Book {'id': 63, 'title': 'Horizontal upward-trending system engine', 'author': 'Joshua Owens', 'isbn
+': '978-0-931040-40-5'} added.
+Book {'id': 64, 'title': 'Open-source client-driven projection', 'author': 'Michael Jones', 'isbn':
+'978-0-300-78014-7'} added.
+Book {'id': 65, 'title': 'Upgradable discrete service-desk', 'author': 'Ashlee Reid', 'isbn': '978-0
+-306-66288-1'} added.
+Book {'id': 66, 'title': 'Balanced discrete contingency', 'author': 'April Willis', 'isbn': '978-0-9
+05978-96-3'} added.
+Book {'id': 67, 'title': 'Optional contextually-based help-desk', 'author': 'David Thompson', 'isbn'
+: '978-0-8321-3916-1'} added.
+Book {'id': 68, 'title': 'Configurable even-keeled throughput', 'author': 'Richard Owen', 'isbn': '9
+78-0-309-40857-8'} added.
+Book {'id': 69, 'title': 'Reactive object-oriented functionalities', 'author': 'James Hill', 'isbn':
+ '978-1-84171-484-4'} added.
+Book {'id': 70, 'title': 'Business-focused client-server approach', 'author': 'Mrs. Amanda Montgomer
+y', 'isbn': '978-0-86612-301-3'} added.
+Book {'id': 71, 'title': 'Optional global info-mediaries', 'author': 'Brittany Lewis', 'isbn': '978-
+1-01-198091-8'} added.
+Book {'id': 72, 'title': 'Self-enabling human-resource capacity', 'author': 'Rachel Wade', 'isbn': '
+978-0-15-370264-8'} added.
+Book {'id': 73, 'title': 'Extended 3rdgeneration help-desk', 'author': 'Amy Hall', 'isbn': '978-1-63
+040-480-2'} added.
+Book {'id': 74, 'title': 'Front-line modular analyzer', 'author': 'Susan Horne', 'isbn': '978-0-9476
+11-17-0'} added.
+Book {'id': 75, 'title': 'Multi-lateral demand-driven concept', 'author': 'Valerie Cox', 'isbn': '97
+8-0-292-96258-3'} added.
+Book {'id': 76, 'title': 'Front-line context-sensitive Graphic Interface', 'author': 'Mrs. Katherine
+ Higgins', 'isbn': '978-1-04-174533-4'} added.
+Book {'id': 77, 'title': 'Monitored mission-critical projection', 'author': 'Jordan Rodriguez', 'isb
+n': '978-0-7229-2930-8'} added.
+Book {'id': 78, 'title': 'User-centric optimal algorithm', 'author': 'Shelly Frazier', 'isbn': '978-
+0-642-83603-8'} added.
+Book {'id': 79, 'title': 'Triple-buffered transitional orchestration', 'author': 'Michael Webster',
+'isbn': '978-0-267-20572-1'} added.
+Book {'id': 80, 'title': 'Sharable foreground utilization', 'author': 'Amber Dillon', 'isbn': '978-0
+-474-63195-5'} added.
+Book {'id': 81, 'title': 'Versatile heuristic emulation', 'author': 'Jessica Wood', 'isbn': '978-1-2
+07-36956-5'} added.
+Book {'id': 82, 'title': 'Devolved context-sensitive portal', 'author': 'David Schmidt', 'isbn': '97
+8-1-83435-667-9'} added.
+Book {'id': 83, 'title': 'Extended tangible hub', 'author': 'Diane Davis', 'isbn': '978-0-206-85095-
+1'} added.
+Book {'id': 84, 'title': 'Implemented radical concept', 'author': 'Tiffany Lloyd', 'isbn': '978-1-70
+482-742-1'} added.
+Book {'id': 85, 'title': 'Quality-focused empowering structure', 'author': 'Willie Summers', 'isbn':
+ '978-1-4434-1489-0'} added.
+Book {'id': 86, 'title': 'Progressive transitional algorithm', 'author': 'Erika Flores', 'isbn': '97
+8-0-7566-0538-4'} added.
+Book {'id': 87, 'title': 'Multi-layered bottom-line migration', 'author': 'Molly Martinez', 'isbn':
+'978-1-7323640-0-4'} added.
+Book {'id': 88, 'title': 'Persistent contextually-based product', 'author': 'Dawn Smith', 'isbn': '9
+78-0-86702-964-2'} added.
+Book {'id': 89, 'title': 'Multi-tiered systemic hub', 'author': 'Kathryn Stewart', 'isbn': '978-1-08
+-494343-8'} added.
+Book {'id': 90, 'title': 'Ergonomic optimal implementation', 'author': 'Christopher Harmon', 'isbn':
+ '978-1-936160-10-5'} added.
+Book {'id': 91, 'title': 'Automated upward-trending workforce', 'author': 'Jimmy Lopez', 'isbn': '97
+8-1-02-929524-0'} added.
+Book {'id': 92, 'title': 'Stand-alone cohesive encoding', 'author': 'Hannah Howard', 'isbn': '978-1-
+198-58321-6'} added.
+Book {'id': 93, 'title': 'Devolved high-level moderator', 'author': 'Anna Wagner', 'isbn': '978-0-45
+8-19281-6'} added.
+Book {'id': 94, 'title': 'Cloned transitional encryption', 'author': 'Jill Yates', 'isbn': '978-0-14
+-826652-0'} added.
+Book {'id': 95, 'title': 'Adaptive incremental open architecture', 'author': 'Leslie Levy', 'isbn':
+'978-1-995512-74-7'} added.
+Book {'id': 96, 'title': 'Horizontal motivating service-desk', 'author': 'Patricia Rodriguez', 'isbn
+': '978-0-7726-0720-1'} added.
+Book {'id': 97, 'title': 'Triple-buffered intangible success', 'author': 'Richard Roberts', 'isbn':
+'978-1-80423-069-5'} added.
+Book {'id': 98, 'title': 'Compatible responsive alliance', 'author': 'Michael Owen', 'isbn': '978-0-
+7249-8023-9'} added.
+Book {'id': 99, 'title': 'Up-sized solution-oriented Internet solution', 'author': 'Travis Jones', '
+isbn': '978-0-624-42956-2'} added.
+Book {'id': 100, 'title': 'Universal value-added project', 'author': 'Lisa Santiago', 'isbn': '978-0
+-642-45386-0'} added.
+Book {'id': 101, 'title': 'Quality-focused clear-thinking Graphic Interface', 'author': 'Kathryn Hug
+hes', 'isbn': '978-0-318-96768-4'} added.
+Book {'id': 102, 'title': 'Networked multi-tasking open architecture', 'author': 'Ronald Peters', 'i
+sbn': '978-0-389-75161-8'} added.
+Book {'id': 103, 'title': 'Organized cohesive framework', 'author': 'John Thomas', 'isbn': '978-0-08
+-088798-2'} added.

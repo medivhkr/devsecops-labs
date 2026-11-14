@@ -1,0 +1,50 @@
+devasc@labvm:~$ jq '.produces, .paths."/books".get' swagger.json
+[
+  "application/json",
+  "application/xml",
+  "application/yaml"
+]
+{
+  "tags": [
+    "/api/v1"
+  ],
+  "operationId": "get_books",
+  "parameters": [
+    {
+      "name": "includeISBN",
+      "in": "query",
+      "type": "boolean",
+      "description": "Include in the results the ISBN numbers. Default=false"
+    },
+    {
+      "name": "sortBy",
+      "in": "query",
+      "type": "string",
+      "enum": [
+        "id",
+        "title",
+        "author",
+        "isbn"
+      ],
+      "description": "Sort results using the specified parameter. Default=id"
+    },
+    {
+      "name": "author",
+      "in": "query",
+      "type": "string",
+      "description": "Return only books by the given Author."
+    },
+    {
+      "name": "page",
+      "in": "query",
+      "type": "integer",
+      "description": "Replies are split into pages of 10 records. The RFC 5988 'Link' response heade
+r points to the next page; use this parameter to request a page. Pages are numbered from 0."
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Success"
+    }
+  }
+}

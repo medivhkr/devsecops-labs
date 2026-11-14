@@ -1,0 +1,18 @@
+devasc@labvm:~$ jq '.paths | map_values(map_values(has("security")))' swagger.json
+{
+  "/loginViaBasic": {
+    "post": false
+  },
+  "/loginViaJSON": {
+    "post": false
+  },
+  "/books": {
+    "get": false,
+    "post": true
+  },
+  "/books/{id}": {
+    "get": false,
+    "put": true,
+    "delete": true
+  }
+}

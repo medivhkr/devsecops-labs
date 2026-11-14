@@ -1,0 +1,6 @@
+devasc@labvm:~$ curl -s -X POST "http://library.demo.local/api/v1/loginViaBasic" -u cisco \
+>   -H "accept: application/json" | tee token.json
+Enter host password for user 'cisco':
+{
+    "token": "cisco|BXOPKO2ElA9yeh8zz5vKUi0w4SwYa2JnGdkQ7I-c9QI"
+}

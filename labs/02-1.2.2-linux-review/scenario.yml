@@ -256,6 +256,13 @@ steps:
         optional: true
         delay: 0.5
         sendcontrol: "c"
+      # если more после Ctrl+C снова показывает приглашение, выход клавишей q
+      - expect: "--More--"
+        timeout: 5
+        optional: true
+        delay: 0.5
+        send: "q"
+        raw: true
   - id: ps_ef
     title: "Part 5 Step 3d: все процессы в полном формате"
     cmd: "ps -ef"

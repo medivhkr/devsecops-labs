@@ -1,0 +1,11 @@
+devasc@labvm:~$ sudo ip netns exec PC-B curl -i http://209.165.200.227
+HTTP/1.0 200 OK
+Server: SimpleHTTP/0.6 Python/3.12.3
+Date: Sat, 14 Nov 2026 11:04:00 GMT
+Content-type: text/html
+Content-Length: 119
+Last-Modified: Sat, 14 Nov 2026 11:04:00 GMT
+
+<html>
+<center><font size='+2' color='blue'>DevNet Associate</font></center>
+<hr>Welcome to the NetAcad DEVASC course!

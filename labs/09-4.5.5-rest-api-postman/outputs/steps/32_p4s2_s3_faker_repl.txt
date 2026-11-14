@@ -1,0 +1,181 @@
+devasc@labvm:~/labs/devnet-src/school-library$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from faker import Faker
+>>> fake = Faker()
+>>> fake.
+Display all 301 possibilities? (y or n)
+fake.aba(                             fake.mac_address(
+fake.add_provider(                    fake.mac_platform_token(
+fake.address(                         fake.mac_processor(
+fake.administrative_unit(             fake.md5(
+fake.am_pm(                           fake.military_apo(
+fake.android_platform_token(          fake.military_dpo(
+fake.ascii_company_email(             fake.military_ship(
+fake.ascii_email(                     fake.military_state(
+fake.ascii_free_email(                fake.mime_type(
+fake.ascii_safe_email(                fake.month(
+fake.bank_country(                    fake.month_name(
+fake.basic_phone_number(              fake.msisdn(
+fake.bban(                            fake.name(
+fake.binary(                          fake.name_female(
+fake.boolean(                         fake.name_male(
+fake.bothify(                         fake.name_nonbinary(
+fake.bs(                              fake.nic_handle(
+fake.building_number(                 fake.nic_handles(
+fake.cache_pattern                    fake.null_boolean(
+fake.catch_phrase(                    fake.numerify(
+fake.century(                         fake.opera(
+fake.chrome(                          fake.optional
+fake.city(                            fake.paragraph(
+fake.city_prefix(                     fake.paragraphs(
+fake.city_suffix(                     fake.parse(
+fake.color(                           fake.passport_dates(
+fake.color_hsl(                       fake.passport_dob(
+fake.color_hsv(                       fake.passport_full(
+fake.color_name(                      fake.passport_gender(
+fake.color_rgb(                       fake.passport_number(
+fake.color_rgb_float(                 fake.passport_owner(
+fake.company(                         fake.password(
+fake.company_email(                   fake.past_date(
+fake.company_suffix(                  fake.past_datetime(
+fake.coordinate(                      fake.phone_number(
+fake.country(                         fake.port_number(
+fake.country_calling_code(            fake.postalcode(
+fake.country_code(                    fake.postalcode_in_state(
+fake.credit_card_expire(              fake.postalcode_plus4(
+fake.credit_card_full(                fake.postcode(
+fake.credit_card_number(              fake.postcode_in_state(
+fake.credit_card_provider(            fake.prefix(
+fake.credit_card_security_code(       fake.prefix_female(
+fake.cryptocurrency(                  fake.prefix_male(
+fake.cryptocurrency_code(             fake.prefix_nonbinary(
+fake.cryptocurrency_name(             fake.pricetag(
+fake.csv(                             fake.profile(
+fake.currency(                        fake.provider(
+fake.currency_code(                   fake.providers
+fake.currency_name(                   fake.psv(
+fake.currency_symbol(                 fake.pybool(
+fake.current_country(                 fake.pydecimal(
+fake.current_country_code(            fake.pydict(
+fake.date(                            fake.pyfloat(
+fake.date_between(                    fake.pyint(
+fake.date_between_dates(              fake.pyiterable(
+fake.date_object(                     fake.pylist(
+fake.date_of_birth(                   fake.pyobject(
+fake.date_this_century(               fake.pyset(
+fake.date_this_decade(                fake.pystr(
+fake.date_this_month(                 fake.pystr_format(
+fake.date_this_year(                  fake.pystruct(
+fake.date_time(                       fake.pytimezone(
+fake.date_time_ad(                    fake.pytuple(
+fake.date_time_between(               fake.random
+fake.date_time_between_dates(         fake.random_choices(
+fake.date_time_this_century(          fake.random_digit(
+fake.date_time_this_decade(           fake.random_digit_above_two(
+fake.date_time_this_month(            fake.random_digit_not_null(
+fake.date_time_this_year(             fake.random_digit_not_null_or_empty(
+fake.day_of_month(                    fake.random_digit_or_empty(
+fake.day_of_week(                     fake.random_element(
+fake.del_arguments(                   fake.random_elements(
+fake.dga(                             fake.random_int(
+fake.domain_name(                     fake.random_letter(
+fake.domain_word(                     fake.random_letters(
+fake.dsv(                             fake.random_lowercase_letter(
+fake.ean(                             fake.random_number(
+fake.ean13(                           fake.random_sample(
+fake.ean8(                            fake.random_uppercase_letter(
+fake.ein(                             fake.randomize_nb_elements(
+fake.email(                           fake.rgb_color(
+fake.emoji(                           fake.rgb_css_color(
+fake.enum(                            fake.ripe_id(
+fake.factories                        fake.safari(
+fake.file_extension(                  fake.safe_color_name(
+fake.file_name(                       fake.safe_domain_name(
+fake.file_path(                       fake.safe_email(
+fake.firefox(                         fake.safe_hex_color(
+fake.first_name(                      fake.sbn9(
+fake.first_name_female(               fake.secondary_address(
+fake.first_name_male(                 fake.seed
+fake.first_name_nonbinary(            fake.seed_instance(
+fake.fixed_width(                     fake.seed_locale(
+fake.format(                          fake.sentence(
+fake.free_email(                      fake.sentences(
+fake.free_email_domain(               fake.set_arguments(
+fake.future_date(                     fake.set_formatter(
+fake.future_datetime(                 fake.sha1(
+fake.generator_attrs                  fake.sha256(
+fake.get_arguments(                   fake.simple_profile(
+fake.get_formatter(                   fake.slug(
+fake.get_providers(                   fake.ssn(
+fake.get_words_list(                  fake.state(
+fake.hex_color(                       fake.state_abbr(
+fake.hexify(                          fake.street_address(
+fake.hostname(                        fake.street_name(
+fake.http_method(                     fake.street_suffix(
+fake.http_status_code(                fake.suffix(
+fake.iana_id(                         fake.suffix_female(
+fake.iban(                            fake.suffix_male(
+fake.image(                           fake.suffix_nonbinary(
+fake.image_url(                       fake.swift(
+fake.internet_explorer(               fake.swift11(
+fake.invalid_ssn(                     fake.swift8(
+fake.ios_platform_token(              fake.tar(
+fake.ipv4(                            fake.text(
+fake.ipv4_network_class(              fake.texts(
+fake.ipv4_private(                    fake.time(
+fake.ipv4_public(                     fake.time_delta(
+fake.ipv6(                            fake.time_object(
+fake.isbn10(                          fake.time_series(
+fake.isbn13(                          fake.timezone(
+fake.iso8601(                         fake.tld(
+fake.items(                           fake.tsv(
+fake.itin(                            fake.unique
+fake.job(                             fake.unix_device(
+fake.job_female(                      fake.unix_partition(
+fake.job_male(                        fake.unix_time(
+fake.json(                            fake.upc_a(
+fake.json_bytes(                      fake.upc_e(
+fake.language_code(                   fake.uri(
+fake.language_name(                   fake.uri_extension(
+fake.last_name(                       fake.uri_page(
+fake.last_name_female(                fake.uri_path(
+fake.last_name_male(                  fake.url(
+fake.last_name_nonbinary(             fake.user_agent(
+fake.latitude(                        fake.user_name(
+fake.latlng(                          fake.uuid4(
+fake.lexify(                          fake.vin(
+fake.license_plate(                   fake.weights
+fake.linux_platform_token(            fake.windows_platform_token(
+fake.linux_processor(                 fake.word(
+fake.local_latlng(                    fake.words(
+fake.locale(                          fake.xml(
+fake.locales                          fake.year(
+fake.localized_ean(                   fake.zip(
+fake.localized_ean13(                 fake.zipcode(
+fake.localized_ean8(                  fake.zipcode_in_state(
+fake.location_on_land(                fake.zipcode_plus4(
+fake.longitude(
+>>> fake.
+KeyboardInterrupt
+>>> print('My name is {}.'.format(fake.name()))
+My name is Lindsay Castillo.
+>>> print('My name is {} and I wrote "{}" (ISBN {}).'.format(fake.name(),fake.catch_phrase(),fake.is
+bn13()))
+My name is Mrs. Kaitlin Peterson and I wrote "Centralized incremental function" (ISBN 978-0-290-3255
+7-1).
+>>> for i in range(10):
+...     print(fake.name())
+...
+Lindsey Smith
+Rebecca Ayers
+Grace Cain
+Jennifer Aguilar
+Sherry Smith MD
+Joshua Strong
+Stephanie Jones
+Angelica Leon
+Emily Hall
+Mary Anderson
+>>> quit()

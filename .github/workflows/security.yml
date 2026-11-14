@@ -31,7 +31,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: bandit
+      - name: bandit (инструменты стенда, блокирующая проверка)
         run: |
           pip install -q bandit==1.7.10
-          bandit -r tools labs -x "*/node_modules/*" --severity-level medium --confidence-level medium
+          bandit -r tools labs -x "*/node_modules/*,*/outputs/*,*/outputs-osm/*,*/materials/*" --severity-level medium --confidence-level medium
+      - name: bandit (код из лабораторных работ, только отчёт)
+        run: |
+          # Скрипты из методичек проверяются для сведения, сборку это не останавливает.
+          bandit -r labs/*/materials --severity-level medium --confidence-level medium --exit-zero

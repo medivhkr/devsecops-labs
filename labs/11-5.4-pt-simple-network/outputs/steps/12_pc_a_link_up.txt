@@ -1,0 +1,2 @@
+devasc@labvm:~$ sudo ip netns exec PC-A ip link set lo up && sudo ip netns exec PC-A ip link set Fa0
+ up

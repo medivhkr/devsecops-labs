@@ -1,0 +1,62 @@
+devasc@labvm:~/labs/devnet-src/school-library$ curl -i -X GET "http://library.demo.local/api/v1/book
+s?page=1" -H "accept: application/json"
+HTTP/1.0 200 OK
+Server: SchoolLibrarySim/1.0 Python/3.8.10
+Date: Sat, 14 Nov 2026 11:03:51 GMT
+Content-Type: application/json
+Content-Length: 1191
+Access-Control-Allow-Origin: *
+Link: <http://library.demo.local/api/v1/books?page=2>; rel="next"
+
+[
+    {
+        "id": 10,
+        "title": "Upgradable intangible policy",
+        "author": "Christopher Jenkins"
+    },
+    {
+        "id": 11,
+        "title": "Vision-oriented attitude-oriented leverage",
+        "author": "Jason Ryan"
+    },
+    {
+        "id": 12,
+        "title": "User-friendly even-keeled frame",
+        "author": "Benjamin Vazquez"
+    },
+    {
+        "id": 13,
+        "title": "Up-sized maximized array",
+        "author": "Andrew Griffin"
+    },
+    {
+        "id": 14,
+        "title": "Robust dynamic capability",
+        "author": "Heather Brown"
+    },
+    {
+        "id": 15,
+        "title": "Upgradable attitude-oriented paradigm",
+        "author": "Virginia Shelton DVM"
+    },
+    {
+        "id": 16,
+        "title": "Vision-oriented actuating focus group",
+        "author": "Justin Romero"
+    },
+    {
+        "id": 17,
+        "title": "Decentralized heuristic monitoring",
+        "author": "Danny Bell"
+    },
+    {
+        "id": 18,
+        "title": "Distributed explicit frame",
+        "author": "Anthony Glenn"
+    },
+    {
+        "id": 19,
+        "title": "De-engineered dynamic contingency",
+        "author": "Emily Bonilla"
+    }
+]

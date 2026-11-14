@@ -1,0 +1,11 @@
+devasc@labvm:~$ sudo ip netns list
+PC-B
+PC-A
+Example-Server
+DEVASC-Server
+S3
+S2
+Internet
+FIREWALL
+R3
+R1

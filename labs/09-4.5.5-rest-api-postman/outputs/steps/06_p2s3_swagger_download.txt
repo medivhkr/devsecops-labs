@@ -1,0 +1,4 @@
+devasc@labvm:~$ curl -o swagger.json http://library.demo.local/api/v1/swagger.json
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  8646  100  8646    0     0  8443k      0 --:--:-- --:--:-- --:--:-- 8443k

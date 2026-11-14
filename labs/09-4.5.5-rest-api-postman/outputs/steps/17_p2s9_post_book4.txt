@@ -1,0 +1,8 @@
+devasc@labvm:~$ curl -X POST "http://library.demo.local/api/v1/books" \
+>   -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+>   -d '{"id": 4, "title": "IPv6 Fundamentals", "author": "Rick Graziani"}'
+{
+    "id": 4,
+    "title": "IPv6 Fundamentals",
+    "author": "Rick Graziani"
+}

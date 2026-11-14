@@ -1,0 +1,2 @@
+devasc@labvm:~$ TOKEN=$(jq -r .token token.json); echo "X-API-KEY: $TOKEN"
+X-API-KEY: cisco|BXOPKO2ElA9yeh8zz5vKUi0w4SwYa2JnGdkQ7I-c9QI

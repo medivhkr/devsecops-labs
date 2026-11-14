@@ -1,0 +1,2 @@
+devasc@labvm:~$ sudo cat /var/log/DEVASC-Server-http.log
+172.16.3.2 - - [14/Nov/2026 11:04:00] "GET / HTTP/1.1" 200 -

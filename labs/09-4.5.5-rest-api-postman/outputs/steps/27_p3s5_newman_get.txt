@@ -1,0 +1,69 @@
+devasc@labvm:~$ newman run library.postman_collection.json --folder "GET /books" --verbose
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ GET /books
+  GET http://library.demo.local/api/v1/books
+  200 OK ★ 11ms time ★ 242B↑ 864B↓ size ★ 7↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 679B
+  │ [
+  │     {
+  │         "id": 0,
+  │         "title": "IP Routing Fundamentals",
+  │         "author": "Mark A. Sportack"
+  │     },
+  │     {
+  │         "id": 1,
+  │         "title": "Python for Dummies",
+  │         "author": "Stef Maruch Aahz Maruch"
+  │     },
+  │     {
+  │         "id": 2,
+  │         "title": "Linux for Networkers",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 3,
+  │         "title": "NetAcad: 20 Years Of Online-Learning",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 4,
+  │         "title": "IPv6 Fundamentals",
+  │         "author": "Rick Graziani"
+  │     },
+  │     {
+  │         "id": 5,
+  │         "title": "31 Days Before Your CCNA Exam",
+  │         "author": "Allan Johnson"
+  │     }
+  │ ]
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    598µs        273µs           991µs            3ms        258µs     18ms
+
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                   0 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 43ms                                           │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 679B (approx)                                 │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 11ms [min: 11ms, max: 11ms, s.d.: 0µs]      │
+├────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 598µs [min: 598µs, max: 598µs, s.d.: 0µs] │
+├────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 991µs [min: 991µs, max: 991µs, s.d.: 0µs] │
+└────────────────────────────────────────────────────────────────────┘

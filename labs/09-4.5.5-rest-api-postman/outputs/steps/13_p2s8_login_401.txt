@@ -1,0 +1,11 @@
+devasc@labvm:~$ curl -i -X POST "http://library.demo.local/api/v1/loginViaBasic" \
+>   -H "accept: application/json"
+HTTP/1.0 401 Unauthorized
+Server: SchoolLibrarySim/1.0 Python/3.8.10
+Date: Sat, 14 Nov 2026 11:03:10 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 19
+Access-Control-Allow-Origin: *
+WWW-Authenticate: Basic realm="Authentication Required"
+
+Unauthorized Access

@@ -1,0 +1,5 @@
+devasc@labvm:~/labs/devnet-src/school-library$ grep -n -E '^(APIHOST|LOGIN|PASSWORD) =' add100Random
+Books.py
+6:APIHOST = "http://library.demo.local"
+7:LOGIN = "cisco"
+8:PASSWORD = "Cisco123!"

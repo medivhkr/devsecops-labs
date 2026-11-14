@@ -1,0 +1,6 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -L OUTSIDE-DMZ -n -v --line-numbers
+Chain OUTSIDE-DMZ (1 references)
+num   pkts bytes target     prot opt in     out     source               destination
+1        3   180 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
+t:80
+2       11   660 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0

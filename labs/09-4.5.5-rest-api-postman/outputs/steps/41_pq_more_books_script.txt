@@ -1,0 +1,3 @@
+devasc@labvm:~/labs/devnet-src/school-library$ sed 's/range(4, 104)/range(104, 204)/' add100RandomBo
+oks.py > add100MoreBooks.py && grep -n 'range' add100MoreBooks.py
+39:for i in range(104, 204):

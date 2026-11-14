@@ -1,0 +1,28 @@
+devasc@labvm:~/labs/devnet-src/school-library$ python3 list_all_books.py
+GET http://library.demo.local/api/v1/books -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=1 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=2 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=3 -> 429 Too many requests. Loading in 2 seconds ...
+GET http://library.demo.local/api/v1/books?page=3 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=4 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=5 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=6 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=7 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=8 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=9 -> 429 Too many requests. Loading in 10 seconds ..
+.
+GET http://library.demo.local/api/v1/books?page=9 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=10 -> 200, 4 books
+
+Book ID  Title                                      Author
+0        IP Routing Fundamentals                    Mark A. Sportack
+1        Python for Dummies                         Stef Maruch Aahz Maruch
+2        Linux for Networkers                       Cisco Systems Inc.
+3        NetAcad: 20 Years Of Online-Learning       Cisco Systems Inc.
+4        Inverse eco-centric function               Mary Young
+5        Reverse-engineered responsive interface    Derek Skinner
+...
+101      Quality-focused clear-thinking Graphic Int Kathryn Hughes
+102      Networked multi-tasking open architecture  Ronald Peters
+103      Organized cohesive framework               John Thomas
+Total books: 104 (id 0..103)

@@ -1,0 +1,11 @@
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^def getAuthToken/,/^$/p' add100RandomBooks.
+py
+def getAuthToken():
+    authCreds = (LOGIN, PASSWORD)
+    r = requests.post(
+        f"{APIHOST}/api/v1/loginViaBasic",
+        auth = authCreds
+    )
+    if r.status_code == 200:
+        return r.json()["token"]
+    raise Exception(f"Status code {r.status_code} and text {r.text}, while trying to authenticate.")

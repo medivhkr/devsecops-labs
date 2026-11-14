@@ -1,0 +1,8 @@
+devasc@labvm:~$ jq '.securityDefinitions' swagger.json
+{
+  "apikey": {
+    "type": "apiKey",
+    "in": "header",
+    "name": "X-API-KEY"
+  }
+}

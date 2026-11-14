@@ -1,0 +1,9 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL ip -br address && sudo ip netns exec FIREWALL ip route
+lo               UNKNOWN        127.0.0.1/8
+VLAN1@if3        UP             192.168.1.1/24
+VLAN2@if2        UP             209.165.200.226/29 209.165.200.227/32
+VLAN3@if2        UP             192.168.2.1/24
+default via 209.165.200.225 dev VLAN2
+192.168.1.0/24 dev VLAN1 proto kernel scope link src 192.168.1.1
+192.168.2.0/24 dev VLAN3 proto kernel scope link src 192.168.2.1
+209.165.200.224/29 dev VLAN2 proto kernel scope link src 209.165.200.226

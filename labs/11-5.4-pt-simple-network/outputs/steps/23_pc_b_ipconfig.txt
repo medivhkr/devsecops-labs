@@ -1,0 +1,10 @@
+devasc@labvm:~$ sudo ip netns exec PC-B ip address show Fa0 && sudo ip netns exec PC-B ip route
+2: Fa0@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 100
+0
+    link/ether 12:2f:1c:3d:d8:a4 brd ff:ff:ff:ff:ff:ff link-netns S3
+    inet 172.16.3.2/24 scope global Fa0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::102f:1cff:fe3d:d8a4/64 scope link tentative
+       valid_lft forever preferred_lft forever
+default via 172.16.3.1 dev Fa0
+172.16.3.0/24 dev Fa0 proto kernel scope link src 172.16.3.2

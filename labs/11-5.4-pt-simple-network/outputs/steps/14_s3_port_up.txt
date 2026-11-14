@@ -1,0 +1,1 @@
+devasc@labvm:~$ sudo ip netns exec S3 ip link set Fa0-2 master br0 up

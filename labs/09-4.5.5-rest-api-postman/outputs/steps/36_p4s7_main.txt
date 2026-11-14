@@ -1,0 +1,13 @@
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^# Main part/,$p' add100RandomBooks.py
+# Main part: get the API key (token) once
+apiKey = getAuthToken()
+
+# Generate 100 random books with faker and add them through the API
+fake = Faker()
+for i in range(4, 104):
+    fakeTitle = fake.catch_phrase()
+    fakeAuthor = fake.name()
+    fakeISBN = fake.isbn13()
+    book = {"id": i, "title": fakeTitle, "author": fakeAuthor, "isbn": fakeISBN}
+    # add the new random "fake" book using the API
+    addBook(book, apiKey)

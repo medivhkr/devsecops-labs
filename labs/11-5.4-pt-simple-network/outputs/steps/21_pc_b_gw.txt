@@ -1,0 +1,1 @@
+devasc@labvm:~$ sudo ip netns exec PC-B ip route add default via 172.16.3.1

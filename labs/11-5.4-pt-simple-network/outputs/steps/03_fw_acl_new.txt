@@ -1,0 +1,1 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -N OUTSIDE-DMZ

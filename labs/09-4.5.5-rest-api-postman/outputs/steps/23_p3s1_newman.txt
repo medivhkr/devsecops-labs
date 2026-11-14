@@ -1,0 +1,3 @@
+devasc@labvm:~$ node --version && newman --version
+v20.20.2
+6.2.3

@@ -1,0 +1,18 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -t nat -L -n -v --line-numbers
+Chain PREROUTING (policy ACCEPT 1 packets, 84 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1       19  1164 DNAT       0    --  VLAN2  *       0.0.0.0/0            209.165.200.227      /* sta
+tic NAT 209.165.200.227 -> 192.168.2.3 */ to:192.168.2.3
+
+Chain INPUT (policy ACCEPT 1 packets, 84 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+
+Chain POSTROUTING (policy ACCEPT 5 packets, 324 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1        0     0 SNAT       0    --  *      VLAN2   192.168.2.3          0.0.0.0/0            /* sta
+tic NAT 192.168.2.3 -> 209.165.200.227 */ to:209.165.200.227
+2        0     0 MASQUERADE  0    --  *      VLAN2   192.168.1.0/24       0.0.0.0/0            /* PA
+T inside -> outside interface */

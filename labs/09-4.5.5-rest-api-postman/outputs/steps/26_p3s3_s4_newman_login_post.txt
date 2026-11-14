@@ -1,0 +1,63 @@
+devasc@labvm:~$ newman run library.postman_collection.json --verbose \
+>   --folder "POST /loginViaBasic" --folder "POST /books"
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ POST /loginViaBasic
+  POST http://library.demo.local/api/v1/loginViaBasic
+  200 OK ★ 12ms time ★ 313B↑ 253B↓ size ★ 9↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 69B
+  │ {
+  │     "token": "cisco|syy1R8qvvKKYPD2K2JJweCXreBYucXb6x7jyq1hIBbU"
+  │ }
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    659µs        281µs           1ms              3ms        291µs     18ms
+
+
+→ POST /books
+  POST http://library.demo.local/api/v1/books
+  200 OK ★ 3ms time ★ 459B↑ 265B↓ size ★ 10↑ 5↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 101B
+  │ {
+  │   "id": 4,
+  │   "title": "IPv6 Fundamentals",
+  │   "author": "Rick Graziani",
+  │   "isbn": "978 158144778"
+  │ }
+  └
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 81B
+  │ {
+  │     "id": 4,
+  │     "title": "IPv6 Fundamentals",
+  │     "author": "Rick Graziani"
+  │ }
+  └
+  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
+  611µs     637µs   138µs        145µs           634µs            643µs      34µs      2ms
+
+
+┌─────────────────────────┬──────────────────────┬─────────────────────┐
+│                         │             executed │              failed │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│              iterations │                    1 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│                requests │                    2 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│            test-scripts │                    1 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│      prerequest-scripts │                    0 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│              assertions │                    0 │                   0 │
+├─────────────────────────┴──────────────────────┴─────────────────────┤
+│ total run duration: 69ms                                             │
+├──────────────────────────────────────────────────────────────────────┤
+│ total data received: 150B (approx)                                   │
+├──────────────────────────────────────────────────────────────────────┤
+│ average response time: 7ms [min: 3ms, max: 12ms, s.d.: 4ms]          │
+├──────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 398µs [min: 138µs, max: 659µs, s.d.: 260µs] │
+├──────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 871µs [min: 634µs, max: 1ms, s.d.: 237µs]   │
+└──────────────────────────────────────────────────────────────────────┘

@@ -1,0 +1,480 @@
+{
+ "lab_id": "7.4.8",
+ "title_ru_lines": [
+  "Использование Ansible для автоматизации",
+  "установки веб-сервера"
+ ],
+ "blocks": [
+  {
+   "t": "label",
+   "label": "Цель работы:",
+   "text": "настроить Ansible для связи с веб-сервером, автоматизировать установку Apache с помощью плейбука и создать плейбук, который устанавливает Apache с заданными параметрами."
+  },
+  {
+   "t": "h1",
+   "text": "Задание"
+  },
+  {
+   "t": "numbered",
+   "items": [
+    "Запустить ВМ DEVASC.",
+    "Настроить Ansible.",
+    "Проверить связь с локальным веб-сервером.",
+    "Создать плейбуки Ansible для автоматизации установки веб-сервера.",
+    "Добавить параметры в плейбук Ansible для веб-серверов Apache."
+   ]
+  },
+  {
+   "t": "h1",
+   "text": "Оборудование и программное обеспечение"
+  },
+  {
+   "t": "p",
+   "text": "Состав стенда приведён в таблице {tab:env}."
+  },
+  {
+   "t": "table",
+   "id": "env",
+   "caption": "Состав лабораторного стенда",
+   "header": [
+    "Компонент",
+    "Версия / параметры",
+    "Назначение"
+   ],
+   "widths": [
+    3,
+    4,
+    4
+   ],
+   "rows": [
+    [
+     "Лабораторная ВМ (аналог DEVASC)",
+     "Ubuntu 24.04 LTS (noble), пользователь devasc, имя хоста labvm",
+     "управляющий узел Ansible и управляемый веб-сервер одновременно"
+    ],
+    [
+     "Ansible",
+     "ansible-core 2.16.3, Python 3.12.3, Jinja 3.1.2",
+     "ad-hoc команды и плейбуки"
+    ],
+    [
+     "SSH",
+     "openssh-server 1:9.6p1-3ubuntu13.20, sshpass 1.09-1",
+     "подключение Ansible к узлу по паролю"
+    ],
+    [
+     "Интерфейс dummy0",
+     "адреса от 192.0.2.1 до 192.0.2.5 с маской /32",
+     "адрес веб-сервера 192.0.2.3 из inventory"
+    ],
+    [
+     "Веб-сервер Apache",
+     "apache2 2.4.58-1ubuntu8.19",
+     "устанавливается и настраивается плейбуками"
+    ],
+    [
+     "Браузер",
+     "Google Chrome в режиме headless, окно 1280×900",
+     "снимки стартовой страницы Apache"
+    ],
+    [
+     "Среда выполнения",
+     "GitHub Actions, ВМ ubuntu-24.04 с systemd",
+     "запуск сценария прогона и запись протокола"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "text": "По методичке [1] работа выполняется в ВМ DEVASC, запущенной в VirtualBox или VMware. В ней установлены Ubuntu 20.04 и Ansible 2.9.6 (версию Ansible показывает методичка работы 7.4.7). Для этой работы нужен systemd, который управляет службами ssh и apache2, а в контейнере Ubuntu 20.04, где выполнялось большинство работ курса, systemd нет. Поэтому стендом была ВМ Ubuntu 24.04 в GitHub Actions. Скрипт `setup-labvm.sh` из каталога `lab-env` задал на ней имя хоста labvm, создал пользователя devasc с правом sudo без пароля и установил из пакетов Ubuntu Ansible, SSH-сервер и sshpass. Ansible из пакетов Ubuntu 24.04 новее, чем в ВМ DEVASC: ansible‑core 2.16.3 вместо Ansible 2.9.6."
+  },
+  {
+   "t": "p",
+   "text": "Остальные особенности ВМ DEVASC воспроизвёл скрипт `prepare.sh` (листинг {lst:prepare}): интерфейс dummy0 с пятью адресами от 192.0.2.1 до 192.0.2.5, пароль Cisco123! пользователя devasc и вход по SSH с паролем. В образе раннера GitHub Actions заранее установлены Apache и nginx. Скрипт удалил Apache вместе с каталогом `/etc/apache2`, а nginx остановил и отключил, чтобы плейбук установил Apache с нуля и порт 80 был свободен. Браузер Chromium с графическим интерфейсом на стенде не запускался. Снимки стартовой страницы сохранял в PNG браузер Google Chrome в режиме headless, его запускала служебная команда сценария прогона вне терминала пользователя devasc. Скрипты подготовки стенда хранятся в каталоге `lab-env` и в каталоге работы."
+  },
+  {
+   "t": "h1",
+   "text": "Краткие теоретические сведения"
+  },
+  {
+   "t": "p",
+   "text": "Ansible — система автоматизации, которая управляет узлами без установки на них агентов и подключается к ним по SSH с обычными учётными данными операционной системы [2]. Узлы перечисляются в inventory-файле и объединяются в группы, в этой работе используется группа webservers. Там же для узла задаются переменные подключения: в методичке это `ansible_ssh_user` и `ansible_ssh_pass`, в актуальной документации описаны переменные `ansible_user` и `ansible_password` [3]. Вход по SSH с паролем Ansible выполняет через утилиту sshpass, которая в ВМ DEVASC установлена заранее вместе с SSH-сервером [1]."
+  },
+  {
+   "t": "p",
+   "text": "Параметры по умолчанию Ansible читает из файла `ansible.cfg`. Файл ищется в таком порядке: путь из переменной окружения ANSIBLE_CONFIG, `ansible.cfg` в текущем каталоге, `~/.ansible.cfg` в домашнем каталоге, `/etc/ansible/ansible.cfg`; используется первый найденный файл [4]. Благодаря этому у каждой работы курса может быть свой `ansible.cfg` в её каталоге. В этой работе параметр `inventory` указывает на локальный файл `hosts`, `host_key_checking = False` отключает проверку ключа хоста SSH, а `retry_files_enabled = False` запрещает создавать файл `.retry` после неудачного запуска плейбука."
+  },
+  {
+   "t": "p",
+   "text": "Ad-hoc команда выполняет один модуль на узлах из inventory без написания плейбука, её общий вид: `ansible <шаблон> -m <модуль> -a \"<параметры>\"` [5]. Модуль ping, несмотря на название, не использует ICMP: он проверяет, что Ansible может войти на узел и что там есть пригодный интерпретатор Python, и в случае успеха возвращает pong [6]. По умолчанию ad-hoc команды используют модуль command. Он запускает программу на узле без командной оболочки, поэтому конвейеры и перенаправления в нём не работают [5]."
+  },
+  {
+   "t": "p",
+   "text": "Плейбук Ansible записывается в формате YAML и содержит упорядоченный список сценариев (play). Сценарий выбирает узлы по ключу `hosts` и по порядку выполняет задачи, каждая задача вызывает один модуль. Большинство модулей сначала проверяют, достигнуто ли уже нужное состояние, и ничего не делают, если оно достигнуто, так что повторное выполнение такой задачи не меняет итогового состояния [7]. Обработчик (handler) — задача, которая выполняется только по уведомлению `notify` от задачи с результатом changed. По умолчанию обработчики запускаются после всех задач сценария, причём один раз, сколько бы задач их ни уведомили [8]."
+  },
+  {
+   "t": "p",
+   "text": "Установкой пакетов в плейбуках этой работы управляет модуль apt [1], а запуском и перезапуском служб занимается модуль service. Модуль apache2_module включает и отключает модули самого Apache, в современных версиях Ansible он входит в коллекцию community.general [9]. Для правки конфигурационных файлов используется lineinfile: строку, найденную по регулярному выражению `regexp`, он заменяет значением `line`, причём заменяется последняя из найденных строк, а если совпадений нет, строка `line` добавляется в файл [10]."
+  },
+  {
+   "t": "p",
+   "text": "Конфигурация Apache в Ubuntu разделена на несколько файлов. Порт, на котором сервер принимает соединения, задаёт директива `Listen` в файле `/etc/apache2/ports.conf`, а стандартный сайт описан виртуальным хостом `<VirtualHost *:80>` в файле `/etc/apache2/sites-available/000-default.conf`. Директива `Listen` только сообщает серверу, какие адреса и порты слушать, а виртуальный хост, заданный для порта, который сервер не слушает, недоступен [11]. Поэтому для перевода сайта на порт 8081 нужно изменить оба файла."
+  },
+  {
+   "t": "h1",
+   "text": "Ход работы"
+  },
+  {
+   "t": "h2",
+   "text": "Запуск ВМ DEVASC"
+  },
+  {
+   "t": "p",
+   "text": "Часть 1 методички требует запустить ВМ DEVASC, установленную в работе 1.1.2. Вместо неё использовалась ВМ раннера GitHub Actions, которую до начала записи протокола подготовили скрипты `lab-env/setup-labvm.sh` и `prepare.sh` (листинг {lst:prepare}). Кроме того, `prepare.sh` остановил службу ssh, которая в ВМ DEVASC по умолчанию выключена, и создал каталог `~/labs/devnet-src/ansible/ansible-apache` с пустым файлом `hosts` и файлом `ansible.cfg`, где записан только комментарий. Этот комментарий методичка на шаге 5 части 2 разрешает удалить."
+  },
+  {
+   "t": "listing",
+   "id": "prepare",
+   "caption": "Скрипт подготовки стенда prepare.sh",
+   "code": "#!/usr/bin/env bash\n# Подготовка ВМ раннера (Ubuntu 24.04) к лабораторной 7.4.8. Выполняется от root.\n# Воспроизводит то, что в ВМ DEVASC есть \"из коробки\": интерфейс dummy0 с адресами\n# 192.0.2.1-5, пользователь devasc с паролем Cisco123!, установленные sshd и sshpass.\nset -euo pipefail\n\n# Интерфейс dummy0 с адресами из документационной сети 192.0.2.0/24 (RFC 5737)\nmodprobe dummy 2>/dev/null || true\nip link add dummy0 type dummy 2>/dev/null || true\nip link set dummy0 up\nfor i in 1 2 3 4 5; do ip addr add \"192.0.2.${i}/32\" dev dummy0 2>/dev/null || true; done\n\n# Пароль devasc из методички. Раннер одноразовый и недоступен из интернета.\necho 'devasc:Cisco123!' | chpasswd\n\n# sshd: вход по паролю (в образах облака он выключен), до шага методички сервис остановлен\nmkdir -p /etc/ssh/sshd_config.d\nprintf 'PasswordAuthentication yes\\nKbdInteractiveAuthentication yes\\n' > /etc/ssh/sshd_config.d/00-devasc-lab.conf\nsystemctl stop ssh.socket ssh.service 2>/dev/null || true\n\n# В образе раннера заранее стоят apache2/nginx; удаляем их, чтобы плейбук реально установил Apache\nsystemctl stop nginx apache2 2>/dev/null || true\nsystemctl disable nginx 2>/dev/null || true\napt-get purge -y -qq 'apache2*' >/dev/null 2>&1 || true\nrm -rf /etc/apache2 /var/www/html/index.html\n\n# Исходный каталог лабораторной (как в devnet-src)\nD=/home/devasc/labs/devnet-src/ansible/ansible-apache\nmkdir -p \"$D\"\n: > \"$D/hosts\"\necho \"# Add to this file for the Ansible lab\" > \"$D/ansible.cfg\"\nchown -R devasc:devasc /home/devasc/labs",
+   "font_size": 9
+  },
+  {
+   "t": "h2",
+   "text": "Настройка Ansible"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 части 2 открыт терминал. Все команды работы выполнялись в интерактивной оболочке bash пользователя devasc, её приглашение `devasc@labvm` видно на всех рисунках с протоколом терминала. На шаге 2 командой `sudo systemctl start ssh` запущен SSH-сервер, так как Ansible подключается по SSH даже к адресу собственной ВМ. Команда ничего не вывела, поэтому состояние службы и наличие пакетов проверены отдельно (рисунок {fig:ssh}). Служба ssh активна, установлены openssh-server 1:9.6p1-3ubuntu13.20 и sshpass 1.09-1. Эти пакеты, команды установки которых методичка приводит для справки, на стенде установил скрипт `setup-labvm.sh`."
+  },
+  {
+   "t": "terminal",
+   "id": "ssh",
+   "src": [
+    "steps/01_ssh_start.txt",
+    "steps/02_ssh_status.txt"
+   ],
+   "caption": "Запуск SSH-сервера, проверка службы ssh и пакетов openssh-server и sshpass"
+  },
+  {
+   "t": "p",
+   "text": "Шаг 3 предлагает открыть каталог `labs/devnet-src/ansible` в VS Code. Редактор на стенде не запускался, файлы работы записывал в подкаталог `ansible-apache` сценарий прогона. В терминале выполнен переход в этот подкаталог (первая строка рисунка {fig:ip})."
+  },
+  {
+   "t": "p",
+   "text": "На шаге 4 в inventory-файл `hosts` добавлены группа webservers и узел 192.0.2.3 с именем пользователя devasc и паролем Cisco123! (листинг {lst:hosts}). Адрес 192.0.2.3 принадлежит самой лабораторной ВМ, он назначен интерфейсу dummy0. Вместо полного вывода `ip addr` выведен только этот интерфейс командой `ip addr show dummy0` (рисунок {fig:ip}). На dummy0 пять адресов с маской /32, от 192.0.2.1 до 192.0.2.5, как в методичке. Отличаются номер интерфейса (5 вместо 3) и MAC-адрес."
+  },
+  {
+   "t": "listing",
+   "id": "hosts",
+   "caption": "Inventory-файл hosts",
+   "code": "[webservers]\n192.0.2.3 ansible_ssh_user=devasc ansible_ssh_pass=Cisco123!"
+  },
+  {
+   "t": "terminal",
+   "id": "ip",
+   "src": [
+    "steps/03_cd_lab.txt",
+    "steps/05_ip_addr.txt"
+   ],
+   "caption": "Переход в каталог ansible-apache и адреса интерфейса dummy0"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 5 комментарий в файле `ansible.cfg` заменён параметрами из методички (листинг {lst:cfg}). Какой файл конфигурации читает Ansible, проверено командой `ansible --version`, которой в методичке этой работы нет (рисунок {fig:ver}). В строке config file указан `/home/devasc/labs/devnet-src/ansible/ansible-apache/ansible.cfg`, то есть Ansible нашёл файл в текущем каталоге раньше, чем дошёл до остальных мест поиска [4]. В том же выводе видны версии ansible-core 2.16.3, Python 3.12.3 и Jinja 3.1.2."
+  },
+  {
+   "t": "listing",
+   "id": "cfg",
+   "caption": "Файл ansible.cfg",
+   "code": "[defaults]\n# Use local hosts file in this folder\ninventory=./hosts\n# Don't worry about RSA Fingerprints\nhost_key_checking = False\n# Do not create retry files\nretry_files_enabled = False"
+  },
+  {
+   "t": "terminal",
+   "id": "ver",
+   "src": "steps/07_ansible_version.txt",
+   "caption": "Версия Ansible и используемый файл конфигурации"
+  },
+  {
+   "t": "p",
+   "text": "Настройки из методички подходят только для учебного стенда. Пароль пользователя devasc записан в `hosts` открытым текстом, хотя документация Ansible требует никогда не хранить пароль подключения `ansible_password` в открытом виде и использовать для него Vault [3]. При `host_key_checking = False` Ansible к тому же не заметит подмену узла, к которому подключается по SSH. В рабочей среде пароль следует зашифровать средствами Ansible Vault [12], как в дополнительной части работы 7.4.7: там значение `ansible_password` зашифровано командой `ansible-vault encrypt_string` и вынесено из inventory в каталог `host_vars`. Можно также перейти на вход по SSH-ключам, тогда пароль в inventory и утилита sshpass не нужны. Если заранее занести ключи узлов в `known_hosts`, проверку ключа хоста можно оставить включённой."
+  },
+  {
+   "t": "h2",
+   "text": "Проверка связи с локальным веб-сервером"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 связь с группой webservers проверена модулем ping (рисунок {fig:adhoc}). Узел 192.0.2.3 ответил SUCCESS и `\"ping\": \"pong\"`, в поле discovered_interpreter_python указан найденный на нём интерпретатор `/usr/bin/python3`. Вход по SSH под пользователем devasc удался, значит, ansible-core 2.16.3 по-прежнему принимает переменные `ansible_ssh_user` и `ansible_ssh_pass` из методички. Поле changed равно false, потому что модуль ping ничего на узле не меняет."
+  },
+  {
+   "t": "p",
+   "text": "Модуль command на шаге 2 выполнил на узле `/bin/echo hello world` и вернул строку hello world с кодом возврата rc=0. Результат помечен как CHANGED, потому что модуль command не знает, изменила ли команда что-нибудь на узле, и по умолчанию всегда сообщает об изменении. Оба ответа совпадают с примерами из методички."
+  },
+  {
+   "t": "terminal",
+   "id": "adhoc",
+   "src": [
+    "steps/08_ad_hoc_ping.txt",
+    "steps/09_ad_hoc_echo.txt"
+   ],
+   "caption": "Проверка связи с узлом модулями ping и command"
+  },
+  {
+   "t": "h2",
+   "text": "Создание плейбуков Ansible для автоматизации установки веб‑сервера"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 создан плейбук `test_apache_playbook.yaml` (листинг {lst:pb_test}). В нём один сценарий для группы webservers с единственной задачей run echo command, которая выполняет ту же команду echo через модуль command."
+  },
+  {
+   "t": "listing",
+   "id": "pb_test",
+   "caption": "Плейбук test_apache_playbook.yaml",
+   "code": "---\n- hosts: webservers\n  tasks:\n    - name: run echo command\n      command: /bin/echo hello world"
+  },
+  {
+   "t": "p",
+   "text": "Запуск этого плейбука на шаге 2 выполнен с ключом -v, который добавляет в вывод результаты задач в формате JSON (рисунок {fig:run_test}). Первая строка вывода подтверждает, что использован `ansible.cfg` из каталога работы. В методичке в этой строке путь записан без каталога `devnet-src`. Перед задачами Ansible собрал факты об узле (задача Gathering Facts), затем задача run echo command вернула changed с полями cmd, rc=0 и stdout со значением hello world. Сама команда выполнялась 0,003 с. Итог PLAY RECAP: ok=2 changed=1 unreachable=0 failed=0, как в методичке."
+  },
+  {
+   "t": "terminal",
+   "id": "run_test",
+   "src": "steps/11_run_test_playbook.txt",
+   "caption": "Запуск плейбука test_apache_playbook.yaml с ключом -v"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 3 создан плейбук `install_apache_playbook.yaml` (листинг {lst:pb_install}), а на шаге 4 разобраны его строки. Ключ `hosts: webservers` выбирает узлы группы webservers из inventory, а `become: yes` включает выполнение задач через sudo, без которого установить пакет не получится [1]. Задача INSTALL APACHE2 вызывает модуль apt с параметрами `update_cache=yes` (обновить список пакетов) и `state=latest` (установить последнюю доступную версию apache2). Следующая задача, ENABLED MOD_REWRITE, включает модуль Apache mod_rewrite и, если что-то изменила, уведомляет обработчик RESTART APACHE2 из секции handlers, который перезапускает службу apache2 модулем service."
+  },
+  {
+   "t": "listing",
+   "id": "pb_install",
+   "caption": "Плейбук install_apache_playbook.yaml",
+   "code": "---\n- hosts: webservers\n  become: yes\n  tasks:\n    - name: INSTALL APACHE2\n      apt: name=apache2 update_cache=yes state=latest\n    - name: ENABLED MOD_REWRITE\n      apache2_module: name=rewrite state=present\n      notify:\n        - RESTART APACHE2\n  handlers:\n    - name: RESTART APACHE2\n      service: name=apache2 state=restarted"
+  },
+  {
+   "t": "p",
+   "text": "Установка Apache (шаг 5) запущена командой `ansible-playbook -v install_apache_playbook.yaml`. Протокол шага занял 215 строк терминала шириной 100 символов, почти все они приходятся на JSON с выводом apt и свойствами службы apache2. На рисунке {fig:run_install} оставлены начало вывода, результат задачи ENABLED MOD_REWRITE, первые строки вывода обработчика и итог PLAY RECAP, пропуски обозначены многоточием."
+  },
+  {
+   "t": "p",
+   "text": "Задача INSTALL APACHE2 обновила кэш пакетов (cache_updated: true) и установила четыре новых пакета: apache2, apache2-bin, apache2-data и apache2-utils версии 2.4.58-1ubuntu8.19 из репозитория noble-updates. Загружено 1693 кБ, после установки на диске занято ещё 6830 кБ. В пропущенной части вывода apt видно, что при настройке пакета включены 19 модулей Apache (среди них mpm_event, authz_core, dir и mime), сайт 000-default и автозапуск службы apache2. Задача ENABLED MOD_REWRITE вернула сообщение «Module rewrite enabled» и уведомила обработчик RESTART APACHE2, который перезапустил службу. Итог: ok=4 changed=3 failed=0. Методичка предупреждает, что при первой установке задача INSTALL APACHE2 выполняется от 30 с до нескольких минут в зависимости от скорости интернета; на стенде весь запуск плейбука занял меньше 15 с."
+  },
+  {
+   "t": "p",
+   "text": "В примере из методички у задач INSTALL APACHE2 и ENABLED MOD_REWRITE стоит ok, а итог равен ok=3 changed=0. Судя по этому, в ВМ, где снимался пример, Apache уже был установлен, а mod_rewrite включён, и обработчик не вызывался. На стенде пакет устанавливался впервые, и изменения внесли обе задачи и обработчик."
+  },
+  {
+   "t": "terminal",
+   "id": "run_install",
+   "src": [
+    "steps/13_run_install.txt",
+    "./steps/13_run_install.txt",
+    "steps/./13_run_install.txt"
+   ],
+   "lines": [
+    "1-23",
+    "105-110",
+    "213-215"
+   ],
+   "ellipsis_between": true,
+   "caption": "Фрагменты вывода ansible-playbook -v при установке Apache"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 6 проверено, что Apache установлен и работает (рисунок {fig:status}). Вывод `sudo systemctl status apache2` открылся в программе просмотра, выход из неё выполнен клавишей q, как указано в методичке. Служба apache2.service включена для автозапуска (enabled) и находится в состоянии active (running) с 10:01:43. Главный процесс службы имеет PID 6430, кроме него запущены ещё два процесса apache2; счётчик Tasks равен 55, служба занимает 5,7 МБ памяти. В журнале службы есть предупреждение AH00558, его строка обрезана программой просмотра по ширине экрана (знак > в конце). Такое предупреждение Apache выдаёт, когда не может определить полное доменное имя сервера, потому что директива ServerName не задана; на выдачу стартовой страницы оно не влияет."
+  },
+  {
+   "t": "terminal",
+   "id": "status",
+   "src": [
+    "steps/14_apache_status.txt",
+    "steps/15_curl_80.txt"
+   ],
+   "caption": "Состояние службы apache2 и заголовок стартовой страницы на порту 80"
+  },
+  {
+   "t": "p",
+   "text": "Время 10:01:43 позже значения ActiveEnterTimestamp 10:01:39 в выводе обработчика на рисунке {fig:run_install}. В пропущенной части того же вывода указан и другой главный процесс: MainPID 5998 вместо 6430. Модуль service сначала считывает свойства службы и только потом перезапускает её, поэтому в его вывод попали время и процесс первого запуска Apache сразу после установки пакета, а 10:01:43 соответствует перезапуску обработчиком."
+  },
+  {
+   "t": "p",
+   "text": "Пункт b шага 6 предлагает открыть адрес 192.0.2.3 в браузере Chromium. На стенде страница запрошена командой `curl`, из ответа командой `grep` выделен заголовок «Apache2 Ubuntu Default Page: It works» (последние строки рисунка {fig:status}). Снимок страницы http://192.0.2.3/, сделанный Google Chrome в режиме headless, приведён на рисунке {fig:shot80}. На нём стандартная страница Apache2 Default Page с логотипом Ubuntu и надписью «It works!»."
+  },
+  {
+   "t": "figure",
+   "id": "shot80",
+   "image": "../outputs/files/apache_80.png",
+   "width_mm": 150,
+   "caption": "Стартовая страница Apache по адресу http://192.0.2.3/"
+  },
+  {
+   "t": "h2",
+   "text": "Добавление параметров в плейбук Ansible для веб-серверов Apache"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 1 создан плейбук `install_apache_options_playbook.yaml` (листинг {lst:pb_options}). Он повторяет предыдущий и добавляет две задачи с модулем lineinfile. Задача APACHE2 LISTEN ON PORT 8081 заменяет в `ports.conf` строку, найденную по выражению `^Listen 80`, на `Listen 8081`. Задача APACHE2 VIRTUALHOST ON PORT 8081 заменяет в `000-default.conf` заголовок виртуального хоста `<VirtualHost *:80>` на `<VirtualHost *:8081>`. Обе задачи уведомляют тот же обработчик RESTART APACHE2. Отступы взяты из методички: элементы списков задач и обработчиков сдвинуты на три пробела, для YAML это допустимо."
+  },
+  {
+   "t": "listing",
+   "id": "pb_options",
+   "caption": "Плейбук install_apache_options_playbook.yaml",
+   "code": "---\n- hosts: webservers\n  become: yes\n  tasks:\n   - name: INSTALL APACHE2\n     apt: name=apache2 update_cache=yes state=latest\n   - name: ENABLED MOD_REWRITE\n     apache2_module: name=rewrite state=present\n     notify:\n       - RESTART APACHE2\n   - name: APACHE2 LISTEN ON PORT 8081\n     lineinfile: dest=/etc/apache2/ports.conf regexp=\"^Listen 80\" line=\"Listen 8081\" state=present\n     notify:\n       - RESTART APACHE2\n   - name: APACHE2 VIRTUALHOST ON PORT 8081\n     lineinfile: dest=/etc/apache2/sites-available/000-default.conf regexp=\"^<VirtualHost \\*:80>\" line=\"<VirtualHost *:8081>\" state=present\n     notify:\n       - RESTART APACHE2\n  handlers:\n   - name: RESTART APACHE2\n     service: name=apache2 state=restarted",
+   "font_size": 9
+  },
+  {
+   "t": "p",
+   "text": "Перед запуском (шаг 2) выведены оба файла, которые плейбук изменит (рисунок {fig:before}). В `ports.conf` задана директива `Listen 80`, а строки `Listen 443` находятся внутри блоков IfModule и действуют, только если загружен модуль ssl или gnutls. Файл `000-default.conf` начинается со строки `<VirtualHost *:80>`, на рисунке показаны его первые пять строк. Комментарий в начале `ports.conf` напоминает, что при смене порта нужно поменять и директиву VirtualHost в файле `000-default.conf` из каталога `sites-enabled`. Плейбук правит `000-default.conf` в каталоге `sites-available`, и это тот же файл: на него указывает символическая ссылка в `sites-enabled`, созданная при включении сайта (строка «Enabling site 000-default» в выводе apt)."
+  },
+  {
+   "t": "terminal",
+   "id": "before",
+   "src": [
+    "steps/18_ports_before.txt",
+    "steps/19_vhost_before.txt"
+   ],
+   "lines": [
+    "1-14",
+    "1-7"
+   ],
+   "append": "...",
+   "caption": "Файл ports.conf и начало файла 000-default.conf до изменения"
+  },
+  {
+   "t": "p",
+   "text": "На шаге 3 плейбук запущен без ключа -v, как в методичке (рисунок {fig:run_options}). Задачи INSTALL APACHE2 и ENABLED MOD_REWRITE вернули ok, так как последняя версия пакета уже установлена, а модуль rewrite включён. Обе задачи lineinfile вернули changed, и обработчик RESTART APACHE2 выполнился один раз, хотя его уведомили две задачи [8]. Итог: ok=6 changed=3 failed=0. В методичке на этом шаге показан итог ok=5 changed=0, который соответствует повторному запуску; результат повторного запуска на стенде приведён ниже."
+  },
+  {
+   "t": "p",
+   "text": "После запуска файлы выведены ещё раз (шаг 4, рисунок {fig:after}). В `ports.conf` строка `Listen 80` заменена на `Listen 8081`, а первая строка `000-default.conf` стала `<VirtualHost *:8081>`. Сравнение с выводом шага 2 и с копией `000-default.conf`, сохранённой в конце работы, показало, что других изменений в файлах нет."
+  },
+  {
+   "t": "terminal",
+   "id": "run_options",
+   "src": "steps/20_run_options.txt",
+   "caption": "Первый запуск плейбука install_apache_options_playbook.yaml"
+  },
+  {
+   "t": "terminal",
+   "id": "after",
+   "src": [
+    "steps/21_ports_after.txt",
+    "steps/22_vhost_after.txt"
+   ],
+   "caption": "Файл ports.conf и начало файла 000-default.conf после изменения"
+  },
+  {
+   "t": "p",
+   "text": "Дополнительно проверено, на каком порту Apache принимает соединения (рисунок {fig:check}). Команда `sudo ss -tlnp` с отбором строк по apache2 показала единственный прослушиваемый сокет *:8081, который держат три процесса apache2. Порт 443 не прослушивается, хотя в примечании методички сказано, что Apache слушает и его. Модулей ssl и gnutls нет в списке модулей, включённых при установке, и блоки IfModule из `ports.conf` не действуют. Запрос `curl` к порту 8081 вернул страницу с тем же заголовком, а запрос к порту 80 завершился ошибкой «Couldn't connect to server» с кодом возврата 7."
+  },
+  {
+   "t": "terminal",
+   "id": "check",
+   "src": [
+    "steps/23_ss_listen.txt",
+    "steps/24_curl_8081.txt",
+    "steps/25_curl_80_closed.txt"
+   ],
+   "caption": "Прослушиваемый порт apache2 и запросы к портам 8081 и 80"
+  },
+  {
+   "t": "p",
+   "text": "Пункт b шага 4 предлагает открыть в браузере адрес 192.0.2.3:8081. Снимок страницы http://192.0.2.3:8081/ приведён на рисунке {fig:shot8081}. Файл этого снимка побайтно совпадает со снимком на рисунке {fig:shot80} (оба по 173065 байт). В режиме headless браузер не рисует адресную строку, и одна и та же страница с разных адресов выглядит одинаково. Адрес с портом 8081 указан в команде этого шага в журнале `steps.json`, а порт 80 к этому моменту уже не отвечал."
+  },
+  {
+   "t": "figure",
+   "id": "shot8081",
+   "image": "../outputs/files/apache_8081.png",
+   "width_mm": 150,
+   "caption": "Стартовая страница Apache по адресу http://192.0.2.3:8081/"
+  },
+  {
+   "t": "p",
+   "text": "Чтобы проверить идемпотентность, плейбук запущен ещё раз (рисунок {fig:rerun}). Все пять задач (четыре задачи плейбука и Gathering Facts) вернули ok, обработчик не вызывался, итог ok=5 changed=0 совпадает с примером из методички. Итоги всех запусков плейбуков сведены в таблицу {tab:recap}, во всех запусках unreachable=0 и failed=0."
+  },
+  {
+   "t": "terminal",
+   "id": "rerun",
+   "src": "steps/27_rerun_options.txt",
+   "caption": "Повторный запуск плейбука install_apache_options_playbook.yaml"
+  },
+  {
+   "t": "table",
+   "id": "recap",
+   "caption": "Итоги запусков плейбуков на стенде и в методичке",
+   "header": [
+    "Плейбук и запуск",
+    "Итог на стенде",
+    "Итог в методичке"
+   ],
+   "widths": [
+    5,
+    3,
+    3
+   ],
+   "rows": [
+    [
+     "test_apache_playbook.yaml, запуск с ключом -v",
+     "ok=2 changed=1",
+     "ok=2 changed=1"
+    ],
+    [
+     "install_apache_playbook.yaml, запуск с ключом -v",
+     "ok=4 changed=3",
+     "ok=3 changed=0"
+    ],
+    [
+     "install_apache_options_playbook.yaml, первый запуск",
+     "ok=6 changed=3",
+     "ok=5 changed=0"
+    ],
+    [
+     "install_apache_options_playbook.yaml, повторный запуск",
+     "ok=5 changed=0",
+     "не приводится"
+    ]
+   ]
+  },
+  {
+   "t": "p",
+   "text": "При повторном запуске выражение `^Listen 80` совпадает и с заменённой строкой `Listen 8081`, поэтому первая задача lineinfile находит её и оставляет как есть. Выражение `^<VirtualHost \\*:80>` с новой строкой уже не совпадает. По документации в таком случае строка `line` добавляется в файл [10], однако задача вернула ok, и в итоговом `000-default.conf` строка `<VirtualHost *:8081>` одна: точно такая строка в файле уже была, и модуль не стал её дублировать. Документация советует составлять выражение так, чтобы оно совпадало и с исходной, и с заменённой строкой [10]; в методичке это выполнено только для `ports.conf`."
+  },
+  {
+   "t": "h1",
+   "text": "Выводы",
+   "num": false
+  },
+  {
+   "t": "p",
+   "text": "В работе Ansible настроен для управления веб-сервером на той же ВМ, где работает сам Ansible: в inventory-файле `hosts` описана группа webservers с узлом 192.0.2.3 на интерфейсе dummy0, а локальный `ansible.cfg` указывает Ansible на этот inventory. Связь с узлом подтвердили ad-hoc команды: модуль ping вернул pong, модуль command выполнил echo с кодом возврата 0. Пароль в inventory записан открытым текстом, а проверка ключей хоста отключена. На одноразовой ВМ раннера риск от этого невелик, но в рабочей среде пароль нужно зашифровать с помощью Ansible Vault или перейти на вход по SSH-ключам."
+  },
+  {
+   "t": "p",
+   "text": "Плейбук `install_apache_playbook.yaml` установил Apache 2.4.58 на ВМ, где его не было, включил модуль rewrite и перезапустил службу через обработчик (ok=4 changed=3). После установки служба apache2 работала и была включена для автозапуска, а по адресу 192.0.2.3 открывалась стандартная страница «Apache2 Ubuntu Default Page: It works»."
+  },
+  {
+   "t": "p",
+   "text": "Плейбук `install_apache_options_playbook.yaml` с двумя задачами lineinfile перевёл сервер на порт 8081: после запуска Apache слушает только *:8081, порт 80 закрыт. Повторный запуск ничего не изменил (ok=5 changed=0). Выражение задачи для `000-default.conf` с изменённой строкой уже не совпадает, и строка не продублировалась только потому, что lineinfile нашёл в файле точно такую же. Плейбуки из методички, написанные для Ansible 2.9, выполнились на ansible-core 2.16.3 без изменений."
+  },
+  {
+   "t": "sources",
+   "items": [
+    "Lab - Use Ansible to Automate Installing a Web Server : лабораторная работа 7.4.8 // DevNet Associate v1.0 / Cisco Networking Academy. – 2020. – 9 с.",
+    "Introduction to Ansible // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/getting_started/introduction.html (дата обращения: 14.11.2026).",
+    "How to build your inventory // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/inventory_guide/intro_inventory.html (дата обращения: 14.11.2026).",
+    "Ansible Configuration Settings // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html (дата обращения: 14.11.2026).",
+    "Introduction to ad hoc commands // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/command_guide/intro_adhoc.html (дата обращения: 14.11.2026).",
+    "ansible.builtin.ping module // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/ping_module.html (дата обращения: 14.11.2026).",
+    "Ansible playbooks // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_intro.html (дата обращения: 14.11.2026).",
+    "Handlers: running operations on change // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_handlers.html (дата обращения: 14.11.2026).",
+    "community.general.apache2_module module // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/collections/community/general/apache2_module_module.html (дата обращения: 14.11.2026).",
+    "ansible.builtin.lineinfile module // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/lineinfile_module.html (дата обращения: 14.11.2026).",
+    "Binding to Addresses and Ports // Apache HTTP Server Version 2.4 Documentation : [сайт]. – URL: https://httpd.apache.org/docs/2.4/bind.html (дата обращения: 14.11.2026).",
+    "Protecting sensitive data with Ansible vault // Ansible Community Documentation : [сайт]. – URL: https://docs.ansible.com/projects/ansible/latest/vault_guide/index.html (дата обращения: 14.11.2026)."
+   ]
+  }
+ ]
+}

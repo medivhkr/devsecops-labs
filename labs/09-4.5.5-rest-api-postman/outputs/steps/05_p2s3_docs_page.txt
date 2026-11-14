@@ -1,0 +1,17 @@
+devasc@labvm:~$ curl -s http://library.demo.local/api/v1/docs
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>School Library API</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui.css">
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui-bundle.js"></script>
+  <script>
+    window.ui = SwaggerUIBundle({url: "/api/v1/swagger.json", dom_id: "#swagger-ui", docExpansion: "
+list"});
+  </script>
+</body>
+</html>

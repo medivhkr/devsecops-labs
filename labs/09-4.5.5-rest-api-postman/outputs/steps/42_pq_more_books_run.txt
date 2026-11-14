@@ -1,0 +1,7 @@
+devasc@labvm:~/labs/devnet-src/school-library$ python3 add100MoreBooks.py | tail -n 3
+Book {'id': 201, 'title': 'Diverse client-server concept', 'author': 'Garrett Scott MD', 'isbn': '97
+8-1-890056-04-9'} added.
+Book {'id': 202, 'title': 'Re-engineered grid-enabled ability', 'author': 'Katrina Jones', 'isbn': '
+978-0-03-734078-2'} added.
+Book {'id': 203, 'title': 'Open-source optimizing intranet', 'author': 'Stacey Foster', 'isbn': '978
+-0-527-59202-8'} added.

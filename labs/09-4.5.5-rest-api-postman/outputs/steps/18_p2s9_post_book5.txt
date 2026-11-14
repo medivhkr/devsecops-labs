@@ -1,0 +1,8 @@
+devasc@labvm:~$ curl -X POST "http://library.demo.local/api/v1/books" \
+>   -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+>   -d '{"id": 5, "title": "31 Days Before Your CCNA Exam", "author": "Allan Johnson"}'
+{
+    "id": 5,
+    "title": "31 Days Before Your CCNA Exam",
+    "author": "Allan Johnson"
+}

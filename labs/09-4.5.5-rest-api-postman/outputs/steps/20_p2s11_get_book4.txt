@@ -1,0 +1,6 @@
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books/4" -H "accept: application/json"
+{
+    "id": 4,
+    "title": "IPv6 Fundamentals",
+    "author": "Rick Graziani"
+}

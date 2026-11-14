@@ -1,0 +1,1358 @@
+devasc@labvm:~$ head -n 4 /etc/os-release && hostname && python3 --version && curl --version | head
+-n 1
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+labvm
+Python 3.8.10
+curl 7.68.0 (x86_64-pc-linux-gnu) libcurl/7.68.0 OpenSSL/1.1.1f zlib/1.2.11 brotli/1.0.7 libidn2/2.2
+.0 libpsl/0.21.0 (+libidn2/2.2.0) libssh/0.9.3/openssl/zlib nghttp2/1.40.0 librtmp/2.3
+devasc@labvm:~$ pgrep -a -f school_library_sim
+7176 python3 -u /opt/school-library-sim/school_library_sim.py --host 127.0.0.1 --port 80
+devasc@labvm:~$ getent hosts library.demo.local
+127.0.0.1       library.demo.local
+devasc@labvm:~$ curl -s http://library.demo.local/ | grep -E 'title>|Welcome|API docs|Our Books'
+<title>School Library</title>
+<div>Welcome to the <b>School Library</b></div>
+<div>Are you a developer? We have APIs! Click <a href="/api/v1/docs" target="_blank">here</a> for AP
+I docs.</div>
+<a data-tab="books">Our Books</a>
+devasc@labvm:~$ curl -s http://library.demo.local/api/v1/docs
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>School Library API</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui.css">
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3.52.5/swagger-ui-bundle.js"></script>
+  <script>
+    window.ui = SwaggerUIBundle({url: "/api/v1/swagger.json", dom_id: "#swagger-ui", docExpansion: "
+list"});
+  </script>
+</body>
+</html>
+devasc@labvm:~$ curl -o swagger.json http://library.demo.local/api/v1/swagger.json
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  8646  100  8646    0     0  8443k      0 --:--:-- --:--:-- --:--:-- 8443k
+devasc@labvm:~$ jq '.info, .basePath, .tags' swagger.json
+{
+  "title": "School Library API",
+  "version": "1",
+  "description": "API access to the School Library - build your own apps using this API."
+}
+"/api/v1"
+[
+  {
+    "name": "/api/v1",
+    "description": "Default namespace"
+  }
+]
+devasc@labvm:~$ jq '.paths | map_values(map_values(has("security")))' swagger.json
+{
+  "/loginViaBasic": {
+    "post": false
+  },
+  "/loginViaJSON": {
+    "post": false
+  },
+  "/books": {
+    "get": false,
+    "post": true
+  },
+  "/books/{id}": {
+    "get": false,
+    "put": true,
+    "delete": true
+  }
+}
+devasc@labvm:~$ jq '.produces, .paths."/books".get' swagger.json
+[
+  "application/json",
+  "application/xml",
+  "application/yaml"
+]
+{
+  "tags": [
+    "/api/v1"
+  ],
+  "operationId": "get_books",
+  "parameters": [
+    {
+      "name": "includeISBN",
+      "in": "query",
+      "type": "boolean",
+      "description": "Include in the results the ISBN numbers. Default=false"
+    },
+    {
+      "name": "sortBy",
+      "in": "query",
+      "type": "string",
+      "enum": [
+        "id",
+        "title",
+        "author",
+        "isbn"
+      ],
+      "description": "Sort results using the specified parameter. Default=id"
+    },
+    {
+      "name": "author",
+      "in": "query",
+      "type": "string",
+      "description": "Return only books by the given Author."
+    },
+    {
+      "name": "page",
+      "in": "query",
+      "type": "integer",
+      "description": "Replies are split into pages of 10 records. The RFC 5988 'Link' response heade
+r points to the next page; use this parameter to request a page. Pages are numbered from 0."
+    }
+  ],
+  "responses": {
+    "200": {
+      "description": "Success"
+    }
+  }
+}
+devasc@labvm:~$ curl -i "http://library.demo.local/api/v1/books" -H "accept: application/json"
+HTTP/1.0 200 OK
+Server: SchoolLibrarySim/1.0 Python/3.8.10
+Date: Sat, 14 Nov 2026 11:03:06 GMT
+Content-Type: application/json
+Content-Length: 463
+Access-Control-Allow-Origin: *
+
+[
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc."
+    }
+]
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books" -H "accept: application/json"
+[
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc."
+    }
+]
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books?includeISBN=true" -H "accept: ap
+plication/json"
+[
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack",
+        "isbn": "978-1578700714"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch",
+        "isbn": "978-0471778646"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc.",
+        "isbn": "000-0000000123"
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc.",
+        "isbn": "000-0000001123"
+    }
+]
+devasc@labvm:~$ curl -i -X POST "http://library.demo.local/api/v1/loginViaBasic" \
+>   -H "accept: application/json"
+HTTP/1.0 401 Unauthorized
+Server: SchoolLibrarySim/1.0 Python/3.8.10
+Date: Sat, 14 Nov 2026 11:03:10 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 19
+Access-Control-Allow-Origin: *
+WWW-Authenticate: Basic realm="Authentication Required"
+
+Unauthorized Access
+devasc@labvm:~$ curl -s -X POST "http://library.demo.local/api/v1/loginViaBasic" -u cisco \
+>   -H "accept: application/json" | tee token.json
+Enter host password for user 'cisco':
+{
+    "token": "cisco|BXOPKO2ElA9yeh8zz5vKUi0w4SwYa2JnGdkQ7I-c9QI"
+}
+devasc@labvm:~$ jq '.securityDefinitions' swagger.json
+{
+  "apikey": {
+    "type": "apiKey",
+    "in": "header",
+    "name": "X-API-KEY"
+  }
+}
+devasc@labvm:~$ TOKEN=$(jq -r .token token.json); echo "X-API-KEY: $TOKEN"
+X-API-KEY: cisco|BXOPKO2ElA9yeh8zz5vKUi0w4SwYa2JnGdkQ7I-c9QI
+devasc@labvm:~$ curl -X POST "http://library.demo.local/api/v1/books" \
+>   -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+>   -d '{"id": 4, "title": "IPv6 Fundamentals", "author": "Rick Graziani"}'
+{
+    "id": 4,
+    "title": "IPv6 Fundamentals",
+    "author": "Rick Graziani"
+}
+devasc@labvm:~$ curl -X POST "http://library.demo.local/api/v1/books" \
+>   -H "accept: application/json" -H "X-API-KEY: $TOKEN" -H "Content-Type: application/json" \
+>   -d '{"id": 5, "title": "31 Days Before Your CCNA Exam", "author": "Allan Johnson"}'
+{
+    "id": 5,
+    "title": "31 Days Before Your CCNA Exam",
+    "author": "Allan Johnson"
+}
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books" -H "accept: application/json"
+[
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 4,
+        "title": "IPv6 Fundamentals",
+        "author": "Rick Graziani"
+    },
+    {
+        "id": 5,
+        "title": "31 Days Before Your CCNA Exam",
+        "author": "Allan Johnson"
+    }
+]
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books/4" -H "accept: application/json"
+{
+    "id": 4,
+    "title": "IPv6 Fundamentals",
+    "author": "Rick Graziani"
+}
+devasc@labvm:~$ curl -X DELETE "http://library.demo.local/api/v1/books/4" \
+>   -H "accept: application/json" -H "X-API-KEY: $TOKEN"
+{
+    "id": 4,
+    "title": "IPv6 Fundamentals",
+    "author": "Rick Graziani"
+}
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books" -H "accept: application/json"
+[
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc."
+    },
+    {
+        "id": 5,
+        "title": "31 Days Before Your CCNA Exam",
+        "author": "Allan Johnson"
+    }
+]
+devasc@labvm:~$ node --version && newman --version
+v20.20.2
+6.2.3
+devasc@labvm:~$ cat library.postman_collection.json
+{
+  "info": {
+    "name": "School Library API (DEVASC lab 4.5.5)",
+    "description": "Requests of the Postman tabs in lab 4.5.5 Part 3: GET /books, POST /loginViaBasi
+c (Basic Auth), POST /books (API Key X-API-KEY, raw JSON body) and GET /books with the Query Params
+includeISBN and sortBy.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /loginViaBasic",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// In the lab the token is copied by hand from this response into the API Key",
+              "// Value of POST /books. Newman has no GUI: the token goes to {{token}} instead.",
+              "pm.collectionVariables.set(\"token\", pm.response.json().token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {"key": "username", "value": "cisco", "type": "string"},
+            {"key": "password", "value": "Cisco123!", "type": "string"}
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/loginViaBasic",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "loginViaBasic"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /books",
+      "request": {
+        "auth": {
+          "type": "apikey",
+          "apikey": [
+            {"key": "key", "value": "X-API-KEY", "type": "string"},
+            {"key": "value", "value": "{{token}}", "type": "string"},
+            {"key": "in", "value": "header", "type": "string"}
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 4,\n  \"title\": \"IPv6 Fundamentals\",\n  \"author\": \"Rick Grazian
+i\",\n  \"isbn\": \"978 158144778\"\n}",
+          "options": {"raw": {"language": "json"}}
+        },
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /books (Params)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author",
+          "protocol": "http",
+          "host": ["library", "demo", "local"],
+          "path": ["api", "v1", "books"],
+          "query": [
+            {"key": "includeISBN", "value": "true"},
+            {"key": "sortBy", "value": "author"}
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {"key": "token", "value": ""}
+  ]
+}
+devasc@labvm:~$ newman run library.postman_collection.json --folder "GET /books" --verbose
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ GET /books
+  GET http://library.demo.local/api/v1/books
+  200 OK ★ 12ms time ★ 242B↑ 762B↓ size ★ 7↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 577B
+  │ [
+  │     {
+  │         "id": 0,
+  │         "title": "IP Routing Fundamentals",
+  │         "author": "Mark A. Sportack"
+  │     },
+  │     {
+  │         "id": 1,
+  │         "title": "Python for Dummies",
+  │         "author": "Stef Maruch Aahz Maruch"
+  │     },
+  │     {
+  │         "id": 2,
+  │         "title": "Linux for Networkers",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 3,
+  │         "title": "NetAcad: 20 Years Of Online-Learning",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 5,
+  │         "title": "31 Days Before Your CCNA Exam",
+  │         "author": "Allan Johnson"
+  │     }
+  │ ]
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    596µs        293µs           1ms              3ms        260µs     18ms
+
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                   0 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 44ms                                           │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 577B (approx)                                 │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 12ms [min: 12ms, max: 12ms, s.d.: 0µs]      │
+├────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 596µs [min: 596µs, max: 596µs, s.d.: 0µs] │
+├────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 1ms [min: 1ms, max: 1ms, s.d.: 0µs]       │
+└────────────────────────────────────────────────────────────────────┘
+devasc@labvm:~$ newman run library.postman_collection.json --verbose \
+>   --folder "POST /loginViaBasic" --folder "POST /books"
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ POST /loginViaBasic
+  POST http://library.demo.local/api/v1/loginViaBasic
+  200 OK ★ 12ms time ★ 313B↑ 253B↓ size ★ 9↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 69B
+  │ {
+  │     "token": "cisco|syy1R8qvvKKYPD2K2JJweCXreBYucXb6x7jyq1hIBbU"
+  │ }
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    659µs        281µs           1ms              3ms        291µs     18ms
+
+
+→ POST /books
+  POST http://library.demo.local/api/v1/books
+  200 OK ★ 3ms time ★ 459B↑ 265B↓ size ★ 10↑ 5↓ headers ★ 0 cookies
+  ┌ ↑ raw ★ 101B
+  │ {
+  │   "id": 4,
+  │   "title": "IPv6 Fundamentals",
+  │   "author": "Rick Graziani",
+  │   "isbn": "978 158144778"
+  │ }
+  └
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 81B
+  │ {
+  │     "id": 4,
+  │     "title": "IPv6 Fundamentals",
+  │     "author": "Rick Graziani"
+  │ }
+  └
+  prepare   wait    dns-lookup   tcp-handshake   transfer-start   download   process   total
+  611µs     637µs   138µs        145µs           634µs            643µs      34µs      2ms
+
+
+┌─────────────────────────┬──────────────────────┬─────────────────────┐
+│                         │             executed │              failed │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│              iterations │                    1 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│                requests │                    2 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│            test-scripts │                    1 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│      prerequest-scripts │                    0 │                   0 │
+├─────────────────────────┼──────────────────────┼─────────────────────┤
+│              assertions │                    0 │                   0 │
+├─────────────────────────┴──────────────────────┴─────────────────────┤
+│ total run duration: 69ms                                             │
+├──────────────────────────────────────────────────────────────────────┤
+│ total data received: 150B (approx)                                   │
+├──────────────────────────────────────────────────────────────────────┤
+│ average response time: 7ms [min: 3ms, max: 12ms, s.d.: 4ms]          │
+├──────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 398µs [min: 138µs, max: 659µs, s.d.: 260µs] │
+├──────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 871µs [min: 634µs, max: 1ms, s.d.: 237µs]   │
+└──────────────────────────────────────────────────────────────────────┘
+devasc@labvm:~$ newman run library.postman_collection.json --folder "GET /books" --verbose
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ GET /books
+  GET http://library.demo.local/api/v1/books
+  200 OK ★ 11ms time ★ 242B↑ 864B↓ size ★ 7↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 679B
+  │ [
+  │     {
+  │         "id": 0,
+  │         "title": "IP Routing Fundamentals",
+  │         "author": "Mark A. Sportack"
+  │     },
+  │     {
+  │         "id": 1,
+  │         "title": "Python for Dummies",
+  │         "author": "Stef Maruch Aahz Maruch"
+  │     },
+  │     {
+  │         "id": 2,
+  │         "title": "Linux for Networkers",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 3,
+  │         "title": "NetAcad: 20 Years Of Online-Learning",
+  │         "author": "Cisco Systems Inc."
+  │     },
+  │     {
+  │         "id": 4,
+  │         "title": "IPv6 Fundamentals",
+  │         "author": "Rick Graziani"
+  │     },
+  │     {
+  │         "id": 5,
+  │         "title": "31 Days Before Your CCNA Exam",
+  │         "author": "Allan Johnson"
+  │     }
+  │ ]
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    598µs        273µs           991µs            3ms        258µs     18ms
+
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                   0 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 43ms                                           │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 679B (approx)                                 │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 11ms [min: 11ms, max: 11ms, s.d.: 0µs]      │
+├────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 598µs [min: 598µs, max: 598µs, s.d.: 0µs] │
+├────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 991µs [min: 991µs, max: 991µs, s.d.: 0µs] │
+└────────────────────────────────────────────────────────────────────┘
+devasc@labvm:~$ curl -X GET "http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author"
+-H "accept: application/json"
+[
+    {
+        "id": 5,
+        "title": "31 Days Before Your CCNA Exam",
+        "author": "Allan Johnson"
+    },
+    {
+        "id": 2,
+        "title": "Linux for Networkers",
+        "author": "Cisco Systems Inc.",
+        "isbn": "000-0000000123"
+    },
+    {
+        "id": 3,
+        "title": "NetAcad: 20 Years Of Online-Learning",
+        "author": "Cisco Systems Inc.",
+        "isbn": "000-0000001123"
+    },
+    {
+        "id": 0,
+        "title": "IP Routing Fundamentals",
+        "author": "Mark A. Sportack",
+        "isbn": "978-1578700714"
+    },
+    {
+        "id": 4,
+        "title": "IPv6 Fundamentals",
+        "author": "Rick Graziani",
+        "isbn": "978 158144778"
+    },
+    {
+        "id": 1,
+        "title": "Python for Dummies",
+        "author": "Stef Maruch Aahz Maruch",
+        "isbn": "978-0471778646"
+    }
+]
+devasc@labvm:~$ newman run library.postman_collection.json --folder "GET /books (Params)" --verbose
+newman
+
+School Library API (DEVASC lab 4.5.5)
+
+→ GET /books (Params)
+  GET http://library.demo.local/api/v1/books?includeISBN=true&sortBy=author
+  200 OK ★ 12ms time ★ 273B↑ 1.03kB↓ size ★ 7↑ 5↓ headers ★ 0 cookies
+  ┌ ↓ application/json ★ text ★ json ★ utf8 ★ 848B
+  │ [
+  │     {
+  │         "id": 5,
+  │         "title": "31 Days Before Your CCNA Exam",
+  │         "author": "Allan Johnson"
+  │     },
+  │     {
+  │         "id": 2,
+  │         "title": "Linux for Networkers",
+  │         "author": "Cisco Systems Inc.",
+  │         "isbn": "000-0000000123"
+  │     },
+  │     {
+  │         "id": 3,
+  │         "title": "NetAcad: 20 Years Of Online-Learning",
+  │         "author": "Cisco Systems Inc.",
+  │         "isbn": "000-0000001123"
+  │     },
+  │     {
+  │         "id": 0,
+  │         "title": "IP Routing Fundamentals",
+  │         "author": "Mark A. Sportack",
+  │         "isbn": "978-1578700714"
+  │     },
+  │     {
+  │         "id": 4,
+  │         "title": "IPv6 Fundamentals",
+  │         "author": "Rick Graziani",
+  │         "isbn": "978 158144778"
+  │     },
+  │     {
+  │         "id": 1,
+  │         "title": "Python for Dummies",
+  │         "author": "Stef Maruch Aahz Maruch",
+  │         "isbn": "978-0471778646"
+  │     }
+  │ ]
+  └
+  prepare   wait   dns-lookup   tcp-handshake   transfer-start   download   process   total
+  7ms       5ms    578µs        319µs           1ms              3ms        268µs     18ms
+
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                   0 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 44ms                                           │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 848B (approx)                                 │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 12ms [min: 12ms, max: 12ms, s.d.: 0µs]      │
+├────────────────────────────────────────────────────────────────────┤
+│ average DNS lookup time: 578µs [min: 578µs, max: 578µs, s.d.: 0µs] │
+├────────────────────────────────────────────────────────────────────┤
+│ average first byte time: 1ms [min: 1ms, max: 1ms, s.d.: 0µs]       │
+└────────────────────────────────────────────────────────────────────┘
+devasc@labvm:~$ cd labs/devnet-src/school-library && ls -l
+total 4
+-rw-r--r-- 1 devasc devasc 1313 Nov 14 11:03 add100RandomBooks.py
+devasc@labvm:~/labs/devnet-src/school-library$ cat add100RandomBooks.py
+#!/usr/bin/env python3
+import requests
+import json
+from faker import Faker
+
+APIHOST = "http://library.demo.local"
+LOGIN = "cisco"
+PASSWORD = "Cisco123!"
+
+def getAuthToken():
+    authCreds = (LOGIN, PASSWORD)
+    r = requests.post(
+        f"{APIHOST}/api/v1/loginViaBasic",
+        auth = authCreds
+    )
+    if r.status_code == 200:
+        return r.json()["token"]
+    raise Exception(f"Status code {r.status_code} and text {r.text}, while trying to authenticate.")
+
+def addBook(book, apiKey):
+    r = requests.post(
+        f"{APIHOST}/api/v1/books",
+        headers = {
+            "Content-type": "application/json",
+            "X-API-Key": apiKey
+        },
+        data = json.dumps(book)
+    )
+    if r.status_code == 200:
+        print(f"Book {book} added.")
+    else:
+        raise Exception(f"Error code {r.status_code} and text {r.text}, while trying to add book {bo
+ok}.")
+
+# Main part: get the API key (token) once
+apiKey = getAuthToken()
+
+# Generate 100 random books with faker and add them through the API
+fake = Faker()
+for i in range(4, 104):
+    fakeTitle = fake.catch_phrase()
+    fakeAuthor = fake.name()
+    fakeISBN = fake.isbn13()
+    book = {"id": i, "title": fakeTitle, "author": fakeAuthor, "isbn": fakeISBN}
+    # add the new random "fake" book using the API
+    addBook(book, apiKey)
+devasc@labvm:~/labs/devnet-src/school-library$ python3
+Python 3.8.10 (default, Mar 18 2025, 20:04:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from faker import Faker
+>>> fake = Faker()
+>>> fake.
+Display all 301 possibilities? (y or n)
+fake.aba(                             fake.mac_address(
+fake.add_provider(                    fake.mac_platform_token(
+fake.address(                         fake.mac_processor(
+fake.administrative_unit(             fake.md5(
+fake.am_pm(                           fake.military_apo(
+fake.android_platform_token(          fake.military_dpo(
+fake.ascii_company_email(             fake.military_ship(
+fake.ascii_email(                     fake.military_state(
+fake.ascii_free_email(                fake.mime_type(
+fake.ascii_safe_email(                fake.month(
+fake.bank_country(                    fake.month_name(
+fake.basic_phone_number(              fake.msisdn(
+fake.bban(                            fake.name(
+fake.binary(                          fake.name_female(
+fake.boolean(                         fake.name_male(
+fake.bothify(                         fake.name_nonbinary(
+fake.bs(                              fake.nic_handle(
+fake.building_number(                 fake.nic_handles(
+fake.cache_pattern                    fake.null_boolean(
+fake.catch_phrase(                    fake.numerify(
+fake.century(                         fake.opera(
+fake.chrome(                          fake.optional
+fake.city(                            fake.paragraph(
+fake.city_prefix(                     fake.paragraphs(
+fake.city_suffix(                     fake.parse(
+fake.color(                           fake.passport_dates(
+fake.color_hsl(                       fake.passport_dob(
+fake.color_hsv(                       fake.passport_full(
+fake.color_name(                      fake.passport_gender(
+fake.color_rgb(                       fake.passport_number(
+fake.color_rgb_float(                 fake.passport_owner(
+fake.company(                         fake.password(
+fake.company_email(                   fake.past_date(
+fake.company_suffix(                  fake.past_datetime(
+fake.coordinate(                      fake.phone_number(
+fake.country(                         fake.port_number(
+fake.country_calling_code(            fake.postalcode(
+fake.country_code(                    fake.postalcode_in_state(
+fake.credit_card_expire(              fake.postalcode_plus4(
+fake.credit_card_full(                fake.postcode(
+fake.credit_card_number(              fake.postcode_in_state(
+fake.credit_card_provider(            fake.prefix(
+fake.credit_card_security_code(       fake.prefix_female(
+fake.cryptocurrency(                  fake.prefix_male(
+fake.cryptocurrency_code(             fake.prefix_nonbinary(
+fake.cryptocurrency_name(             fake.pricetag(
+fake.csv(                             fake.profile(
+fake.currency(                        fake.provider(
+fake.currency_code(                   fake.providers
+fake.currency_name(                   fake.psv(
+fake.currency_symbol(                 fake.pybool(
+fake.current_country(                 fake.pydecimal(
+fake.current_country_code(            fake.pydict(
+fake.date(                            fake.pyfloat(
+fake.date_between(                    fake.pyint(
+fake.date_between_dates(              fake.pyiterable(
+fake.date_object(                     fake.pylist(
+fake.date_of_birth(                   fake.pyobject(
+fake.date_this_century(               fake.pyset(
+fake.date_this_decade(                fake.pystr(
+fake.date_this_month(                 fake.pystr_format(
+fake.date_this_year(                  fake.pystruct(
+fake.date_time(                       fake.pytimezone(
+fake.date_time_ad(                    fake.pytuple(
+fake.date_time_between(               fake.random
+fake.date_time_between_dates(         fake.random_choices(
+fake.date_time_this_century(          fake.random_digit(
+fake.date_time_this_decade(           fake.random_digit_above_two(
+fake.date_time_this_month(            fake.random_digit_not_null(
+fake.date_time_this_year(             fake.random_digit_not_null_or_empty(
+fake.day_of_month(                    fake.random_digit_or_empty(
+fake.day_of_week(                     fake.random_element(
+fake.del_arguments(                   fake.random_elements(
+fake.dga(                             fake.random_int(
+fake.domain_name(                     fake.random_letter(
+fake.domain_word(                     fake.random_letters(
+fake.dsv(                             fake.random_lowercase_letter(
+fake.ean(                             fake.random_number(
+fake.ean13(                           fake.random_sample(
+fake.ean8(                            fake.random_uppercase_letter(
+fake.ein(                             fake.randomize_nb_elements(
+fake.email(                           fake.rgb_color(
+fake.emoji(                           fake.rgb_css_color(
+fake.enum(                            fake.ripe_id(
+fake.factories                        fake.safari(
+fake.file_extension(                  fake.safe_color_name(
+fake.file_name(                       fake.safe_domain_name(
+fake.file_path(                       fake.safe_email(
+fake.firefox(                         fake.safe_hex_color(
+fake.first_name(                      fake.sbn9(
+fake.first_name_female(               fake.secondary_address(
+fake.first_name_male(                 fake.seed
+fake.first_name_nonbinary(            fake.seed_instance(
+fake.fixed_width(                     fake.seed_locale(
+fake.format(                          fake.sentence(
+fake.free_email(                      fake.sentences(
+fake.free_email_domain(               fake.set_arguments(
+fake.future_date(                     fake.set_formatter(
+fake.future_datetime(                 fake.sha1(
+fake.generator_attrs                  fake.sha256(
+fake.get_arguments(                   fake.simple_profile(
+fake.get_formatter(                   fake.slug(
+fake.get_providers(                   fake.ssn(
+fake.get_words_list(                  fake.state(
+fake.hex_color(                       fake.state_abbr(
+fake.hexify(                          fake.street_address(
+fake.hostname(                        fake.street_name(
+fake.http_method(                     fake.street_suffix(
+fake.http_status_code(                fake.suffix(
+fake.iana_id(                         fake.suffix_female(
+fake.iban(                            fake.suffix_male(
+fake.image(                           fake.suffix_nonbinary(
+fake.image_url(                       fake.swift(
+fake.internet_explorer(               fake.swift11(
+fake.invalid_ssn(                     fake.swift8(
+fake.ios_platform_token(              fake.tar(
+fake.ipv4(                            fake.text(
+fake.ipv4_network_class(              fake.texts(
+fake.ipv4_private(                    fake.time(
+fake.ipv4_public(                     fake.time_delta(
+fake.ipv6(                            fake.time_object(
+fake.isbn10(                          fake.time_series(
+fake.isbn13(                          fake.timezone(
+fake.iso8601(                         fake.tld(
+fake.items(                           fake.tsv(
+fake.itin(                            fake.unique
+fake.job(                             fake.unix_device(
+fake.job_female(                      fake.unix_partition(
+fake.job_male(                        fake.unix_time(
+fake.json(                            fake.upc_a(
+fake.json_bytes(                      fake.upc_e(
+fake.language_code(                   fake.uri(
+fake.language_name(                   fake.uri_extension(
+fake.last_name(                       fake.uri_page(
+fake.last_name_female(                fake.uri_path(
+fake.last_name_male(                  fake.url(
+fake.last_name_nonbinary(             fake.user_agent(
+fake.latitude(                        fake.user_name(
+fake.latlng(                          fake.uuid4(
+fake.lexify(                          fake.vin(
+fake.license_plate(                   fake.weights
+fake.linux_platform_token(            fake.windows_platform_token(
+fake.linux_processor(                 fake.word(
+fake.local_latlng(                    fake.words(
+fake.locale(                          fake.xml(
+fake.locales                          fake.year(
+fake.localized_ean(                   fake.zip(
+fake.localized_ean13(                 fake.zipcode(
+fake.localized_ean8(                  fake.zipcode_in_state(
+fake.location_on_land(                fake.zipcode_plus4(
+fake.longitude(
+>>> fake.
+KeyboardInterrupt
+>>> print('My name is {}.'.format(fake.name()))
+My name is Lindsay Castillo.
+>>> print('My name is {} and I wrote "{}" (ISBN {}).'.format(fake.name(),fake.catch_phrase(),fake.is
+bn13()))
+My name is Mrs. Kaitlin Peterson and I wrote "Centralized incremental function" (ISBN 978-0-290-3255
+7-1).
+>>> for i in range(10):
+...     print(fake.name())
+...
+Lindsey Smith
+Rebecca Ayers
+Grace Cain
+Jennifer Aguilar
+Sherry Smith MD
+Joshua Strong
+Stephanie Jones
+Angelica Leon
+Emily Hall
+Mary Anderson
+>>> quit()
+devasc@labvm:~/labs/devnet-src/school-library$ grep -n -E '^(APIHOST|LOGIN|PASSWORD) =' add100Random
+Books.py
+6:APIHOST = "http://library.demo.local"
+7:LOGIN = "cisco"
+8:PASSWORD = "Cisco123!"
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^def getAuthToken/,/^$/p' add100RandomBooks.
+py
+def getAuthToken():
+    authCreds = (LOGIN, PASSWORD)
+    r = requests.post(
+        f"{APIHOST}/api/v1/loginViaBasic",
+        auth = authCreds
+    )
+    if r.status_code == 200:
+        return r.json()["token"]
+    raise Exception(f"Status code {r.status_code} and text {r.text}, while trying to authenticate.")
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^def addBook/,/^$/p' add100RandomBooks.py
+def addBook(book, apiKey):
+    r = requests.post(
+        f"{APIHOST}/api/v1/books",
+        headers = {
+            "Content-type": "application/json",
+            "X-API-Key": apiKey
+        },
+        data = json.dumps(book)
+    )
+    if r.status_code == 200:
+        print(f"Book {book} added.")
+    else:
+        raise Exception(f"Error code {r.status_code} and text {r.text}, while trying to add book {bo
+ok}.")
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^# Main part/,$p' add100RandomBooks.py
+# Main part: get the API key (token) once
+apiKey = getAuthToken()
+
+# Generate 100 random books with faker and add them through the API
+fake = Faker()
+for i in range(4, 104):
+    fakeTitle = fake.catch_phrase()
+    fakeAuthor = fake.name()
+    fakeISBN = fake.isbn13()
+    book = {"id": i, "title": fakeTitle, "author": fakeAuthor, "isbn": fakeISBN}
+    # add the new random "fake" book using the API
+    addBook(book, apiKey)
+devasc@labvm:~/labs/devnet-src/school-library$ python3 add100RandomBooks.py
+Book {'id': 4, 'title': 'Inverse eco-centric function', 'author': 'Mary Young', 'isbn': '978-0-234-8
+6435-7'} added.
+Book {'id': 5, 'title': 'Reverse-engineered responsive interface', 'author': 'Derek Skinner', 'isbn'
+: '978-0-7900-0357-3'} added.
+Book {'id': 6, 'title': 'Self-enabling even-keeled application', 'author': 'Lisa Delgado', 'isbn': '
+978-0-619-11170-0'} added.
+Book {'id': 7, 'title': 'Down-sized contextually-based software', 'author': 'Ian English', 'isbn': '
+978-1-145-44323-5'} added.
+Book {'id': 8, 'title': 'Inverse intangible project', 'author': 'Angela Garner', 'isbn': '978-0-279-
+84192-4'} added.
+Book {'id': 9, 'title': 'Switchable zero-defect knowledgebase', 'author': 'Mark Smith Jr.', 'isbn':
+'978-1-70856-650-0'} added.
+Book {'id': 10, 'title': 'Upgradable intangible policy', 'author': 'Christopher Jenkins', 'isbn': '9
+78-1-4054-6741-4'} added.
+Book {'id': 11, 'title': 'Vision-oriented attitude-oriented leverage', 'author': 'Jason Ryan', 'isbn
+': '978-0-214-92129-2'} added.
+Book {'id': 12, 'title': 'User-friendly even-keeled frame', 'author': 'Benjamin Vazquez', 'isbn': '9
+78-0-491-48548-7'} added.
+Book {'id': 13, 'title': 'Up-sized maximized array', 'author': 'Andrew Griffin', 'isbn': '978-1-08-8
+80679-1'} added.
+Book {'id': 14, 'title': 'Robust dynamic capability', 'author': 'Heather Brown', 'isbn': '978-1-8611
+3-337-3'} added.
+Book {'id': 15, 'title': 'Upgradable attitude-oriented paradigm', 'author': 'Virginia Shelton DVM',
+'isbn': '978-1-4157-8943-8'} added.
+Book {'id': 16, 'title': 'Vision-oriented actuating focus group', 'author': 'Justin Romero', 'isbn':
+ '978-1-75297-768-0'} added.
+Book {'id': 17, 'title': 'Decentralized heuristic monitoring', 'author': 'Danny Bell', 'isbn': '978-
+1-01-582648-9'} added.
+Book {'id': 18, 'title': 'Distributed explicit frame', 'author': 'Anthony Glenn', 'isbn': '978-1-946
+814-31-9'} added.
+Book {'id': 19, 'title': 'De-engineered dynamic contingency', 'author': 'Emily Bonilla', 'isbn': '97
+8-0-250-24174-3'} added.
+Book {'id': 20, 'title': 'Organized dynamic artificial intelligence', 'author': 'Mercedes Rose', 'is
+bn': '978-0-386-39912-7'} added.
+Book {'id': 21, 'title': 'Future-proofed multi-tasking archive', 'author': 'Lisa Clark', 'isbn': '97
+8-0-87338-962-4'} added.
+Book {'id': 22, 'title': 'Vision-oriented motivating time-frame', 'author': 'Wayne Johnson', 'isbn':
+ '978-1-4149-8104-8'} added.
+Book {'id': 23, 'title': 'User-friendly static encryption', 'author': 'Angela Townsend', 'isbn': '97
+8-1-62728-727-2'} added.
+Book {'id': 24, 'title': 'Quality-focused didactic architecture', 'author': 'Lisa Jacobson', 'isbn':
+ '978-1-60527-992-3'} added.
+Book {'id': 25, 'title': 'Intuitive asymmetric concept', 'author': 'David Harrell', 'isbn': '978-1-9
+68596-42-2'} added.
+Book {'id': 26, 'title': 'Virtual next generation superstructure', 'author': 'Katherine Ward', 'isbn
+': '978-1-5177-5156-2'} added.
+Book {'id': 27, 'title': 'Future-proofed 4thgeneration knowledgebase', 'author': 'Amber Bennett', 'i
+sbn': '978-0-7445-6740-3'} added.
+Book {'id': 28, 'title': 'Team-oriented contextually-based encoding', 'author': 'Nicholas Durham', '
+isbn': '978-0-615-01912-3'} added.
+Book {'id': 29, 'title': 'Open-source bifurcated initiative', 'author': 'Brian Bruce', 'isbn': '978-
+0-07-144819-2'} added.
+Book {'id': 30, 'title': 'Virtual modular structure', 'author': 'Kevin Spencer', 'isbn': '978-0-373-
+74764-1'} added.
+Book {'id': 31, 'title': 'Multi-lateral upward-trending leverage', 'author': 'Mindy Austin', 'isbn':
+ '978-0-06-440904-9'} added.
+Book {'id': 32, 'title': 'Re-contextualized regional success', 'author': 'Diana Fisher', 'isbn': '97
+8-1-75015-293-5'} added.
+Book {'id': 33, 'title': 'Distributed directional middleware', 'author': 'Richard Arnold', 'isbn': '
+978-1-109-13624-1'} added.
+Book {'id': 34, 'title': 'Horizontal scalable hardware', 'author': 'Frederick Greene', 'isbn': '978-
+0-9949651-3-4'} added.
+Book {'id': 35, 'title': 'Proactive neutral info-mediaries', 'author': 'Stacy Hutchinson', 'isbn': '
+978-0-13-254976-9'} added.
+Book {'id': 36, 'title': 'Intuitive tangible database', 'author': 'Tracy Lloyd', 'isbn': '978-0-546-
+53484-9'} added.
+Book {'id': 37, 'title': 'Total solution-oriented projection', 'author': 'Carmen Simmons', 'isbn': '
+978-0-15-218054-6'} added.
+Book {'id': 38, 'title': 'Secured secondary software', 'author': 'Robert Anderson', 'isbn': '978-0-2
+63-36686-0'} added.
+Book {'id': 39, 'title': 'Optional national middleware', 'author': 'Dawn Graham', 'isbn': '978-0-11-
+836101-9'} added.
+Book {'id': 40, 'title': 'Multi-tiered optimal database', 'author': 'Mary Mack', 'isbn': '978-1-4615
+-3540-9'} added.
+Book {'id': 41, 'title': 'Operative reciprocal migration', 'author': 'Kimberly Morales', 'isbn': '97
+8-0-531-08221-8'} added.
+Book {'id': 42, 'title': 'Reduced fault-tolerant utilization', 'author': 'William Lamb', 'isbn': '97
+8-0-500-93525-5'} added.
+Book {'id': 43, 'title': 'Reactive 5thgeneration migration', 'author': 'Joshua Powers', 'isbn': '978
+-1-76261-007-2'} added.
+Book {'id': 44, 'title': 'Visionary grid-enabled hardware', 'author': 'Travis Wright', 'isbn': '978-
+1-78399-824-1'} added.
+Book {'id': 45, 'title': 'Ameliorated client-driven flexibility', 'author': 'Natalie Shaw', 'isbn':
+'978-1-924074-47-6'} added.
+Book {'id': 46, 'title': 'Multi-tiered composite concept', 'author': 'Wayne Massey', 'isbn': '978-1-
+83841-239-5'} added.
+Book {'id': 47, 'title': 'Centralized disintermediate conglomeration', 'author': 'Robert Richards',
+'isbn': '978-0-400-02861-3'} added.
+Book {'id': 48, 'title': 'Profound dynamic methodology', 'author': 'Marcus Rivera', 'isbn': '978-1-4
+674-1581-1'} added.
+Book {'id': 49, 'title': 'User-centric bi-directional emulation', 'author': 'Susan Barnett', 'isbn':
+ '978-0-8396-3042-5'} added.
+Book {'id': 50, 'title': 'Configurable background hardware', 'author': 'Virginia Mitchell', 'isbn':
+'978-0-11-933571-2'} added.
+Book {'id': 51, 'title': 'Future-proofed impactful ability', 'author': 'Sharon Bush', 'isbn': '978-0
+-8496-1966-3'} added.
+Book {'id': 52, 'title': 'Automated stable challenge', 'author': 'Mark Ryan', 'isbn': '978-1-85979-5
+90-3'} added.
+Book {'id': 53, 'title': 'Optimized responsive knowledge user', 'author': 'Kelsey Johnston', 'isbn':
+ '978-1-146-01923-1'} added.
+Book {'id': 54, 'title': 'Public-key system-worthy system engine', 'author': 'Lisa Cook', 'isbn': '9
+78-1-04-832284-2'} added.
+Book {'id': 55, 'title': 'Devolved stable Graphic Interface', 'author': 'Julia Cortez', 'isbn': '978
+-1-69167-627-9'} added.
+Book {'id': 56, 'title': 'Configurable content-based throughput', 'author': 'Autumn Roth', 'isbn': '
+978-1-09-197572-9'} added.
+Book {'id': 57, 'title': 'Enterprise-wide eco-centric flexibility', 'author': 'Lynn Young', 'isbn':
+'978-0-692-22322-2'} added.
+Book {'id': 58, 'title': 'Networked zero administration strategy', 'author': 'Aaron Nguyen', 'isbn':
+ '978-1-06-625158-2'} added.
+Book {'id': 59, 'title': 'Grass-roots motivating policy', 'author': 'Martin Hanna', 'isbn': '978-1-6
+5069-316-3'} added.
+Book {'id': 60, 'title': 'Future-proofed asymmetric utilization', 'author': 'Nicole Floyd', 'isbn':
+'978-0-04-470220-7'} added.
+Book {'id': 61, 'title': 'Reactive client-server productivity', 'author': 'Tiffany Gilbert', 'isbn':
+ '978-1-245-41933-8'} added.
+Book {'id': 62, 'title': 'Triple-buffered stable productivity', 'author': 'Erin Orr', 'isbn': '978-0
+-374-17753-9'} added.
+Book {'id': 63, 'title': 'Horizontal upward-trending system engine', 'author': 'Joshua Owens', 'isbn
+': '978-0-931040-40-5'} added.
+Book {'id': 64, 'title': 'Open-source client-driven projection', 'author': 'Michael Jones', 'isbn':
+'978-0-300-78014-7'} added.
+Book {'id': 65, 'title': 'Upgradable discrete service-desk', 'author': 'Ashlee Reid', 'isbn': '978-0
+-306-66288-1'} added.
+Book {'id': 66, 'title': 'Balanced discrete contingency', 'author': 'April Willis', 'isbn': '978-0-9
+05978-96-3'} added.
+Book {'id': 67, 'title': 'Optional contextually-based help-desk', 'author': 'David Thompson', 'isbn'
+: '978-0-8321-3916-1'} added.
+Book {'id': 68, 'title': 'Configurable even-keeled throughput', 'author': 'Richard Owen', 'isbn': '9
+78-0-309-40857-8'} added.
+Book {'id': 69, 'title': 'Reactive object-oriented functionalities', 'author': 'James Hill', 'isbn':
+ '978-1-84171-484-4'} added.
+Book {'id': 70, 'title': 'Business-focused client-server approach', 'author': 'Mrs. Amanda Montgomer
+y', 'isbn': '978-0-86612-301-3'} added.
+Book {'id': 71, 'title': 'Optional global info-mediaries', 'author': 'Brittany Lewis', 'isbn': '978-
+1-01-198091-8'} added.
+Book {'id': 72, 'title': 'Self-enabling human-resource capacity', 'author': 'Rachel Wade', 'isbn': '
+978-0-15-370264-8'} added.
+Book {'id': 73, 'title': 'Extended 3rdgeneration help-desk', 'author': 'Amy Hall', 'isbn': '978-1-63
+040-480-2'} added.
+Book {'id': 74, 'title': 'Front-line modular analyzer', 'author': 'Susan Horne', 'isbn': '978-0-9476
+11-17-0'} added.
+Book {'id': 75, 'title': 'Multi-lateral demand-driven concept', 'author': 'Valerie Cox', 'isbn': '97
+8-0-292-96258-3'} added.
+Book {'id': 76, 'title': 'Front-line context-sensitive Graphic Interface', 'author': 'Mrs. Katherine
+ Higgins', 'isbn': '978-1-04-174533-4'} added.
+Book {'id': 77, 'title': 'Monitored mission-critical projection', 'author': 'Jordan Rodriguez', 'isb
+n': '978-0-7229-2930-8'} added.
+Book {'id': 78, 'title': 'User-centric optimal algorithm', 'author': 'Shelly Frazier', 'isbn': '978-
+0-642-83603-8'} added.
+Book {'id': 79, 'title': 'Triple-buffered transitional orchestration', 'author': 'Michael Webster',
+'isbn': '978-0-267-20572-1'} added.
+Book {'id': 80, 'title': 'Sharable foreground utilization', 'author': 'Amber Dillon', 'isbn': '978-0
+-474-63195-5'} added.
+Book {'id': 81, 'title': 'Versatile heuristic emulation', 'author': 'Jessica Wood', 'isbn': '978-1-2
+07-36956-5'} added.
+Book {'id': 82, 'title': 'Devolved context-sensitive portal', 'author': 'David Schmidt', 'isbn': '97
+8-1-83435-667-9'} added.
+Book {'id': 83, 'title': 'Extended tangible hub', 'author': 'Diane Davis', 'isbn': '978-0-206-85095-
+1'} added.
+Book {'id': 84, 'title': 'Implemented radical concept', 'author': 'Tiffany Lloyd', 'isbn': '978-1-70
+482-742-1'} added.
+Book {'id': 85, 'title': 'Quality-focused empowering structure', 'author': 'Willie Summers', 'isbn':
+ '978-1-4434-1489-0'} added.
+Book {'id': 86, 'title': 'Progressive transitional algorithm', 'author': 'Erika Flores', 'isbn': '97
+8-0-7566-0538-4'} added.
+Book {'id': 87, 'title': 'Multi-layered bottom-line migration', 'author': 'Molly Martinez', 'isbn':
+'978-1-7323640-0-4'} added.
+Book {'id': 88, 'title': 'Persistent contextually-based product', 'author': 'Dawn Smith', 'isbn': '9
+78-0-86702-964-2'} added.
+Book {'id': 89, 'title': 'Multi-tiered systemic hub', 'author': 'Kathryn Stewart', 'isbn': '978-1-08
+-494343-8'} added.
+Book {'id': 90, 'title': 'Ergonomic optimal implementation', 'author': 'Christopher Harmon', 'isbn':
+ '978-1-936160-10-5'} added.
+Book {'id': 91, 'title': 'Automated upward-trending workforce', 'author': 'Jimmy Lopez', 'isbn': '97
+8-1-02-929524-0'} added.
+Book {'id': 92, 'title': 'Stand-alone cohesive encoding', 'author': 'Hannah Howard', 'isbn': '978-1-
+198-58321-6'} added.
+Book {'id': 93, 'title': 'Devolved high-level moderator', 'author': 'Anna Wagner', 'isbn': '978-0-45
+8-19281-6'} added.
+Book {'id': 94, 'title': 'Cloned transitional encryption', 'author': 'Jill Yates', 'isbn': '978-0-14
+-826652-0'} added.
+Book {'id': 95, 'title': 'Adaptive incremental open architecture', 'author': 'Leslie Levy', 'isbn':
+'978-1-995512-74-7'} added.
+Book {'id': 96, 'title': 'Horizontal motivating service-desk', 'author': 'Patricia Rodriguez', 'isbn
+': '978-0-7726-0720-1'} added.
+Book {'id': 97, 'title': 'Triple-buffered intangible success', 'author': 'Richard Roberts', 'isbn':
+'978-1-80423-069-5'} added.
+Book {'id': 98, 'title': 'Compatible responsive alliance', 'author': 'Michael Owen', 'isbn': '978-0-
+7249-8023-9'} added.
+Book {'id': 99, 'title': 'Up-sized solution-oriented Internet solution', 'author': 'Travis Jones', '
+isbn': '978-0-624-42956-2'} added.
+Book {'id': 100, 'title': 'Universal value-added project', 'author': 'Lisa Santiago', 'isbn': '978-0
+-642-45386-0'} added.
+Book {'id': 101, 'title': 'Quality-focused clear-thinking Graphic Interface', 'author': 'Kathryn Hug
+hes', 'isbn': '978-0-318-96768-4'} added.
+Book {'id': 102, 'title': 'Networked multi-tasking open architecture', 'author': 'Ronald Peters', 'i
+sbn': '978-0-389-75161-8'} added.
+Book {'id': 103, 'title': 'Organized cohesive framework', 'author': 'John Thomas', 'isbn': '978-0-08
+-088798-2'} added.
+devasc@labvm:~/labs/devnet-src/school-library$ python3 list_all_books.py
+GET http://library.demo.local/api/v1/books -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=1 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=2 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=3 -> 429 Too many requests. Loading in 2 seconds ...
+GET http://library.demo.local/api/v1/books?page=3 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=4 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=5 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=6 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=7 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=8 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=9 -> 429 Too many requests. Loading in 10 seconds ..
+.
+GET http://library.demo.local/api/v1/books?page=9 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=10 -> 200, 4 books
+
+Book ID  Title                                      Author
+0        IP Routing Fundamentals                    Mark A. Sportack
+1        Python for Dummies                         Stef Maruch Aahz Maruch
+2        Linux for Networkers                       Cisco Systems Inc.
+3        NetAcad: 20 Years Of Online-Learning       Cisco Systems Inc.
+4        Inverse eco-centric function               Mary Young
+5        Reverse-engineered responsive interface    Derek Skinner
+...
+101      Quality-focused clear-thinking Graphic Int Kathryn Hughes
+102      Networked multi-tasking open architecture  Ronald Peters
+103      Organized cohesive framework               John Thomas
+Total books: 104 (id 0..103)
+devasc@labvm:~/labs/devnet-src/school-library$ curl -i -X GET "http://library.demo.local/api/v1/book
+s?page=1" -H "accept: application/json"
+HTTP/1.0 200 OK
+Server: SchoolLibrarySim/1.0 Python/3.8.10
+Date: Sat, 14 Nov 2026 11:03:51 GMT
+Content-Type: application/json
+Content-Length: 1191
+Access-Control-Allow-Origin: *
+Link: <http://library.demo.local/api/v1/books?page=2>; rel="next"
+
+[
+    {
+        "id": 10,
+        "title": "Upgradable intangible policy",
+        "author": "Christopher Jenkins"
+    },
+    {
+        "id": 11,
+        "title": "Vision-oriented attitude-oriented leverage",
+        "author": "Jason Ryan"
+    },
+    {
+        "id": 12,
+        "title": "User-friendly even-keeled frame",
+        "author": "Benjamin Vazquez"
+    },
+    {
+        "id": 13,
+        "title": "Up-sized maximized array",
+        "author": "Andrew Griffin"
+    },
+    {
+        "id": 14,
+        "title": "Robust dynamic capability",
+        "author": "Heather Brown"
+    },
+    {
+        "id": 15,
+        "title": "Upgradable attitude-oriented paradigm",
+        "author": "Virginia Shelton DVM"
+    },
+    {
+        "id": 16,
+        "title": "Vision-oriented actuating focus group",
+        "author": "Justin Romero"
+    },
+    {
+        "id": 17,
+        "title": "Decentralized heuristic monitoring",
+        "author": "Danny Bell"
+    },
+    {
+        "id": 18,
+        "title": "Distributed explicit frame",
+        "author": "Anthony Glenn"
+    },
+    {
+        "id": 19,
+        "title": "De-engineered dynamic contingency",
+        "author": "Emily Bonilla"
+    }
+]
+devasc@labvm:~/labs/devnet-src/school-library$ sed 's/range(4, 104)/range(104, 204)/' add100RandomBo
+oks.py > add100MoreBooks.py && grep -n 'range' add100MoreBooks.py
+39:for i in range(104, 204):
+devasc@labvm:~/labs/devnet-src/school-library$ python3 add100MoreBooks.py | tail -n 3
+Book {'id': 201, 'title': 'Diverse client-server concept', 'author': 'Garrett Scott MD', 'isbn': '97
+8-1-890056-04-9'} added.
+Book {'id': 202, 'title': 'Re-engineered grid-enabled ability', 'author': 'Katrina Jones', 'isbn': '
+978-0-03-734078-2'} added.
+Book {'id': 203, 'title': 'Open-source optimizing intranet', 'author': 'Stacey Foster', 'isbn': '978
+-0-527-59202-8'} added.
+devasc@labvm:~/labs/devnet-src/school-library$ python3 list_all_books.py
+GET http://library.demo.local/api/v1/books -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=1 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=2 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=3 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=4 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=5 -> 429 Too many requests. Loading in 9 seconds ...
+GET http://library.demo.local/api/v1/books?page=5 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=6 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=7 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=8 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=9 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=10 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=11 -> 429 Too many requests. Loading in 10 seconds .
+..
+GET http://library.demo.local/api/v1/books?page=11 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=12 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=13 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=14 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=15 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=16 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=17 -> 429 Too many requests. Loading in 10 seconds .
+..
+GET http://library.demo.local/api/v1/books?page=17 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=18 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=19 -> 200, 10 books
+GET http://library.demo.local/api/v1/books?page=20 -> 200, 4 books
+
+Book ID  Title                                      Author
+0        IP Routing Fundamentals                    Mark A. Sportack
+1        Python for Dummies                         Stef Maruch Aahz Maruch
+2        Linux for Networkers                       Cisco Systems Inc.
+3        NetAcad: 20 Years Of Online-Learning       Cisco Systems Inc.
+4        Inverse eco-centric function               Mary Young
+5        Reverse-engineered responsive interface    Derek Skinner
+...
+201      Diverse client-server concept              Garrett Scott MD
+202      Re-engineered grid-enabled ability         Katrina Jones
+203      Open-source optimizing intranet            Stacey Foster
+Total books: 204 (id 0..203)
+devasc@labvm:~/labs/devnet-src/school-library$

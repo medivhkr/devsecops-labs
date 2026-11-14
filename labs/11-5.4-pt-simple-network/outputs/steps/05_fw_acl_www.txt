@@ -1,0 +1,2 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -A OUTSIDE-DMZ -p tcp -d 192.168.2.3 --dport 80
+ -j ACCEPT

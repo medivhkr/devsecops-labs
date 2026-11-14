@@ -1,0 +1,23 @@
+devasc@labvm:~$ sudo ip netns exec FIREWALL iptables -L -n -v --line-numbers
+Chain INPUT (policy ACCEPT 4 packets, 336 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1       60  3999 ACCEPT     0    --  *      *       0.0.0.0/0            0.0.0.0/0            ctstat
+e RELATED,ESTABLISHED /* stateful: return traffic */
+2        0     0 ACCEPT     0    --  VLAN1  *       0.0.0.0/0            0.0.0.0/0            /* ins
+ide(100) -> dmz/outside: permit */
+3        0     0 ACCEPT     0    --  VLAN3  VLAN2   0.0.0.0/0            0.0.0.0/0            /* dmz
+(70) -> outside(0): permit */
+4       16   984 OUTSIDE-DMZ  0    --  VLAN2  *       0.0.0.0/0            0.0.0.0/0
+
+Chain OUTPUT (policy ACCEPT 7 packets, 600 bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTSIDE-DMZ (1 references)
+num   pkts bytes target     prot opt in     out     source               destination
+1        2   144 ACCEPT     1    --  *      *       0.0.0.0/0            192.168.2.3
+2        3   180 ACCEPT     6    --  *      *       0.0.0.0/0            192.168.2.3          tcp dp
+t:80
+3       11   660 DROP       0    --  *      *       0.0.0.0/0            0.0.0.0/0

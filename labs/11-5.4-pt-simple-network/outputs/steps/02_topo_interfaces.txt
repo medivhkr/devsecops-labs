@@ -1,0 +1,41 @@
+devasc@labvm:~$ sudo ip -all netns exec ip -br address
+
+netns: Example-Server
+lo               UNKNOWN        127.0.0.1/8
+Fa0@if4          UP             64.100.0.10/24
+
+netns: DEVASC-Server
+lo               UNKNOWN        127.0.0.1/8
+Fa0@if4          UP             192.168.2.3/24
+
+netns: S3
+lo               UNKNOWN        127.0.0.1/8
+br0              UP
+G0-1@if3         UP
+
+netns: S2
+lo               UNKNOWN        127.0.0.1/8
+br0              UP
+Fa0-1@if2        UP
+
+netns: Internet
+lo               UNKNOWN        127.0.0.1/8
+to-R1@if3        UP             10.1.1.1/30
+to-R3@if2        UP             10.2.2.1/30
+to-Example@if2   UP             64.100.0.1/24
+
+netns: FIREWALL
+lo               UNKNOWN        127.0.0.1/8
+VLAN1@if3        UP             192.168.1.1/24
+VLAN2@if2        UP             209.165.200.226/29 209.165.200.227/32
+VLAN3@if2        UP             192.168.2.1/24
+
+netns: R3
+lo               UNKNOWN        127.0.0.1/8
+G0-0-0@if3       UP             10.2.2.2/30
+G0-0-1@if3       UP             172.16.3.1/24
+
+netns: R1
+lo               UNKNOWN        127.0.0.1/8
+G0-0-0@if3       UP             209.165.200.225/29
+G0-0-1@if2       UP             10.1.1.2/30

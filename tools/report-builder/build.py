@@ -62,10 +62,10 @@ def resolve(lab_dir):
         srcs = b["src"] if isinstance(b["src"], list) else [b["src"]]
         ranges = b.get("lines")
         ranges = ranges if isinstance(ranges, list) else [ranges] * len(srcs)
-        for src, rng in zip(srcs, ranges):
+        for i, (src, rng) in enumerate(zip(srcs, ranges)):
             path = os.path.join(lab_dir, "outputs", src)
             texts.extend(select_lines(open(path, encoding="utf-8").read(), rng))
-            if b.get("ellipsis_between") and src != srcs[-1]:
+            if b.get("ellipsis_between") and i < len(srcs) - 1:
                 texts.append("...")
         if b.get("append"):
             texts.extend(b["append"].split("\n"))

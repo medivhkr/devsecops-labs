@@ -1,0 +1,2 @@
+devasc@labvm:~$ getent hosts library.demo.local
+127.0.0.1       library.demo.local

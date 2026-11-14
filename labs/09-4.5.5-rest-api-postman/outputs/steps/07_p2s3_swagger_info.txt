@@ -1,0 +1,13 @@
+devasc@labvm:~$ jq '.info, .basePath, .tags' swagger.json
+{
+  "title": "School Library API",
+  "version": "1",
+  "description": "API access to the School Library - build your own apps using this API."
+}
+"/api/v1"
+[
+  {
+    "name": "/api/v1",
+    "description": "Default namespace"
+  }
+]

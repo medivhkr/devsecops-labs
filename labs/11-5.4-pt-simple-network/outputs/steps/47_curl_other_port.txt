@@ -1,0 +1,2 @@
+devasc@labvm:~$ sudo ip netns exec PC-B curl -sS -m 5 http://209.165.200.227:8080/
+curl: (28) Connection timed out after 5002 milliseconds

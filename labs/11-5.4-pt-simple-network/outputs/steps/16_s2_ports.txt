@@ -1,0 +1,5 @@
+devasc@labvm:~$ sudo ip netns exec S2 bridge link
+3: Fa0-1@br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0 state forwarding priority 32 cos
+t 2
+4: Fa0-2@br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br0 state forwarding priority 32 cos
+t 2

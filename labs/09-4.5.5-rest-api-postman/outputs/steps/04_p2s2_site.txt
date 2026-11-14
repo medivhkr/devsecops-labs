@@ -1,0 +1,6 @@
+devasc@labvm:~$ curl -s http://library.demo.local/ | grep -E 'title>|Welcome|API docs|Our Books'
+<title>School Library</title>
+<div>Welcome to the <b>School Library</b></div>
+<div>Are you a developer? We have APIs! Click <a href="/api/v1/docs" target="_blank">here</a> for AP
+I docs.</div>
+<a data-tab="books">Our Books</a>

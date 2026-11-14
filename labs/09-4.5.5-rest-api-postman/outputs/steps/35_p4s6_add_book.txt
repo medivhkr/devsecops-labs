@@ -1,0 +1,15 @@
+devasc@labvm:~/labs/devnet-src/school-library$ sed -n '/^def addBook/,/^$/p' add100RandomBooks.py
+def addBook(book, apiKey):
+    r = requests.post(
+        f"{APIHOST}/api/v1/books",
+        headers = {
+            "Content-type": "application/json",
+            "X-API-Key": apiKey
+        },
+        data = json.dumps(book)
+    )
+    if r.status_code == 200:
+        print(f"Book {book} added.")
+    else:
+        raise Exception(f"Error code {r.status_code} and text {r.text}, while trying to add book {bo
+ok}.")
